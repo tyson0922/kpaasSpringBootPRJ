@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kopo.kpaas.mapper.IInjuryMapper">
+    <!-- Insert injury data -->
+    <insert id="insertInjury" parameterType="InjuryDTO">
+        INSERT INTO INJURY_DETECTION (INJURY_CLASS, CONFIDENCE_LEVEL)
+        VALUES (#{injuryClass}, #{confidenceLevel});
+    </insert>
+
+    <!-- Get all injuries -->
+    <select id="getAllInjuries" resultType="InjuryDTO">
+        SELECT INJURY_SEQ as id, INJURY_CLASS as injuryClass, CONFIDENCE_LEVEL as confidenceLevel, DETECTED_AT as detectedAt
+        FROM INJURY_DETECTION;
+    </select>
+
+    <select id="getLatestInjury" resultType="InjuryDTO">
+        SELECT * FROM INJURY_DETECTION
+        ORDER BY INJURY_SEQ DESC
+            LIMIT 1
+    </select>
+</mapper>

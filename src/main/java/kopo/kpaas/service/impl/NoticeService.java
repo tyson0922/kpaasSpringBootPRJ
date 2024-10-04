@@ -65,4 +65,13 @@ public class NoticeService implements INoticeService {
         noticeMapper.deleteNoticeInfo(pDTO);
 
     }
+    @Transactional
+    @Override
+    public void deleteNoticeInfo(NoticeDTO pDTO) throws Exception {
+
+        log.info("{}.deleteNoticeInfo Start!", this.getClass().getName());
+
+        noticeMapper.deleteNoticeInfo(pDTO);
+    }
+
 }

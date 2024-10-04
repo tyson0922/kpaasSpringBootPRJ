@@ -39,4 +39,11 @@ public interface INoticeService {
      */
     void updateNoticeInfo(NoticeDTO pDTO) throws Exception;
 
+    /**
+     * 공지사항 삭제
+     *
+     * @param pDTO 삭제할 noticeSeq 값
+     * @throws Exception
+     */
+    void deleteNoticeInfo(NoticeDTO pDTO) throws Exception;
 }
