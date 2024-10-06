@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 
-
 <!--
 =========================================================
 * Material Kit 2 - v3.0.4
@@ -44,31 +43,19 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e2e64bae7979a2d70f06079aa585acce"></script>
-    <script>
-        window.onload = function() {
-            var container = document.getElementById('map');
-            var options = {
-                center: new kakao.maps.LatLng(33.450701, 126.570667),
-                level: 3
-            };
+    <%--    naverMap API--%>
+    <script type="text/javascript"
+            src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}&callback=initMap"></script>
+    <script type="text/javascript">
+        var map = null;
 
-            var map = new kakao.maps.Map(container, options);
-            console.log(map); // Log the map object to see if it's created
-        };
-    </script>
-
-    <style>
-        /*#map {*/
-        /*    background-color: red; !* For testing visibility *!*/
-        /*}*/
-        #map {
-            width: 100%;
-            height: 400px;
-            position: relative;
-            z-index: 300; /* Give it a high z-index to be sure */
+        function initMap() {
+            map = new naver.maps.Map('map', {
+                center: new naver.maps.LatLng(37.3595704, 127.105399),
+                zoom: 10
+            });
         }
-    </style>
+    </script>
 </head>
 
 <body class="blog-author bg-gray-200">
@@ -564,27 +551,34 @@
 <!-- End Navbar -->
 <div class="page-header align-items-start min-vh-100"
      style="background-image: url('${pageContext.request.contextPath}/img/kpaas/kpaasBackground.webp');">
-    <!-- -------- START HEADER 4 w/ search book a ticket form ------- -->
-    <!--<header>-->
-    <!--    <div class="page-header min-height-400" loading="lazy">-->
-    <!--        <span class="mask bg-gradient-dark opacity-8"></span>-->
-    <!--    </div>-->
-    <!--</header>-->
-    <!-- -------- END HEADER 4 w/ search book a ticket form ------- -->
-    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto"
-         style="max-width: 80%;">
 
-        <%--        map display--%>
-        <!-- START Blogs w/ 4 cards w/ image & text & link -->
-        <section class="py-3">
-            <div class="container">
-                <div id="map" style="width:500px;height:400px;"></div>
-            </div>
-        </section>
+<%--    산 지도 및 파라미터 시작--%>
+    <div class="card card-body blur shadow-blur mx-auto my-9"
+         style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem;">
+        <div id="map" style="width:100%;height:100%;"></div>
+        <div style="padding-top: 1rem;">
+            <form id="mapParamsForm">
+                <div class="form-group">
+                    <label for="mountainName">산 이름</label>
+                    <input type="text" id="mountainName" name="mountainName" class="form-control"
+                           placeholder="산이름 입력하세요">
+                </div>
 
+                <div class="form-group">
+                    <label for="routeDifficulty">등산로 난이도 (하, 중, 상)</label>
+                    <select id="routeDifficulty" name="routeDifficulty" class="form-control">
+                        <option value="하">하</option>
+                        <option value="중">중</option>
+                        <option value="상">상</option>
+                    </select>
+                </div>
 
-        <!-- END Blogs w/ 4 cards w/ image & text & link -->
+                <button type="submit" class="btn btn-primary mt-3">Search Hiking Route</button>
+            </form>
+        </div>
+
     </div>
+    <%--    산 지도 및 파라미터 끝--%>
 
     <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
     <footer class="footer position-absolute bottom-2 py-2 w-100">
