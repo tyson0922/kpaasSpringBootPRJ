@@ -49,27 +49,6 @@
 
     <script src="${pageContext.request.contextPath}/js/kpaasJs/mapHandler.js"></script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </head>
 
 <body class="blog-author bg-gray-200">

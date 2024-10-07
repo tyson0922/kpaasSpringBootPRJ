@@ -1,126 +1,126 @@
+var map = null;
+var markers = [];
+var polygon = null;
+var infoWindow = null; // Store the info window reference
+var clickCount = 0;
+var points = [];
 
-    var map = null;
-    var startMarker = null;
-    var endMarker = null;
-    var giantRectangle = null;
-    var clickCount = 0;
-    var startPoint = null;
-    var endPoint = null;
-
-    function initMap() {
+function initMap() {
     map = new naver.maps.Map('map', {
         center: new naver.maps.LatLng(37.3595704, 127.105399),
         zoom: 10
     });
 
     naver.maps.Event.addListener(map, 'click', function (e) {
-    var latlng = e.latlng;
+        var latlng = e.latlng;
 
-    console.log('Map clicked at Lat:', latlng.lat(), 'Lng:', latlng.lng());
+        const pointNumber = ['First', 'Second', 'Third', 'Fourth']; // Labels for the points
+        console.log(`${pointNumber[clickCount]} point set at Lat: ${latlng.lat()}, Lng: ${latlng.lng()}`);
 
-    if (clickCount === 0) {
-    if (startMarker) startMarker.setMap(null);
-    startMarker = new naver.maps.Marker({
-    position: latlng,
-    map: map,
-    title: 'Starting Point'
-});
-    startPoint = latlng;
-    console.log('Starting Point set to:', startPoint.lat(), startPoint.lng());
-    clickCount++;
-} else if (clickCount === 1) {
-    if (endMarker) endMarker.setMap(null);
-    endMarker = new naver.maps.Marker({
-    position: latlng,
-    map: map,
-    title: 'Ending Point'
-});
-    endPoint = latlng;
-    console.log('Ending Point set to:', endPoint.lat(), endPoint.lng());
+        if (clickCount < 4) {
+            // Add the clicked point to the list of points
+            points.push(latlng);
+            clickCount++;
 
-    // Draw the giant rectangle
-    if (startPoint && endPoint) {
-    drawGiantRectangle(startPoint, endPoint);
+            // Add a marker at the clicked location
+            var marker = new naver.maps.Marker({
+                position: latlng,
+                map: map,
+                title: `Point ${String.fromCharCode(64 + clickCount)}`
+            });
+            markers.push(marker);
+
+            // Draw the polygon or connecting lines dynamically
+            drawPolygonOrLines();
+
+            // If four points have been clicked, calculate and display the area
+            if (clickCount === 4) {
+                displayPolygonArea();
+            }
+        } else {
+            // If the fifth click, reset the map and allow starting a new polygon
+            resetMap();
+        }
+    });
 }
 
-    clickCount++;
-} else {
-    resetMap();
-}
-});
-}
+function drawPolygonOrLines() {
+    // Remove the previous polygon or lines from the map if they exist
+    if (polygon) {
+        polygon.setMap(null);
+    }
 
-    function drawGiantRectangle(start, end) {
-    // Calculate the direction vector from start to end
-    var dx = end.lng() - start.lng();
-    var dy = end.lat() - start.lat();
-    var lineLength = Math.sqrt(dx * dx + dy * dy);
+    // Draw the polygon with the current set of points
+    polygon = new naver.maps.Polygon({
+        map: map,
+        paths: points,
+        fillColor: '#00FF00',
+        fillOpacity: 0.4,
+        strokeColor: '#00FF00',
+        strokeWeight: 2
+    });
 
-    // Calculate the unit vector for the perpendicular direction
-    var perpendicularUnitVectorX = -(dy / lineLength);
-    var perpendicularUnitVectorY = dx / lineLength;
-
-    // Define the height of the giant rectangle (2 km)
-    var halfHeightDegreesLat = (1 / 111); // 1 km up and 1 km down in degrees latitude
-    var halfHeightDegreesLng = halfHeightDegreesLat / Math.cos(start.lat() * Math.PI / 180); // Adjust for map scale
-
-    // Calculate the four corners of the giant rectangle
-    var corner1 = new naver.maps.LatLng(
-    start.lat() + halfHeightDegreesLat * perpendicularUnitVectorY,
-    start.lng() + halfHeightDegreesLng * perpendicularUnitVectorX
-    );
-    var corner2 = new naver.maps.LatLng(
-    start.lat() - halfHeightDegreesLat * perpendicularUnitVectorY,
-    start.lng() - halfHeightDegreesLng * perpendicularUnitVectorX
-    );
-    var corner3 = new naver.maps.LatLng(
-    end.lat() - halfHeightDegreesLat * perpendicularUnitVectorY,
-    end.lng() - halfHeightDegreesLng * perpendicularUnitVectorX
-    );
-    var corner4 = new naver.maps.LatLng(
-    end.lat() + halfHeightDegreesLat * perpendicularUnitVectorY,
-    end.lng() + halfHeightDegreesLng * perpendicularUnitVectorX
-    );
-
-    // Log the individual corners to verify their values
-    console.log('Corner 1:', corner1.lat(), corner1.lng());
-    console.log('Corner 2:', corner2.lat(), corner2.lng());
-    console.log('Corner 3:', corner3.lat(), corner3.lng());
-    console.log('Corner 4:', corner4.lat(), corner4.lng());
-
-    // Draw the giant rectangle on the map
-    giantRectangle = new naver.maps.Polygon({
-    map: map,
-    paths: [corner1, corner2, corner3, corner4, corner1],
-    fillColor: '#00FF00',
-    fillOpacity: 0.4,
-    strokeColor: '#00FF00',
-    strokeWeight: 2
-});
-
-    // Explicitly convert the coordinates to numbers before calculating the bounding box
-    var minLat = Math.min(Number(corner1.lat()), Number(corner2.lat()), Number(corner3.lat()), Number(corner4.lat()));
-    var minLng = Math.min(Number(corner1.lng()), Number(corner2.lng()), Number(corner3.lng()), Number(corner4.lng()));
-    var maxLat = Math.max(Number(corner1.lat()), Number(corner2.lat()), Number(corner3.lat()), Number(corner4.lat()));
-    var maxLng = Math.max(Number(corner1.lng()), Number(corner2.lng()), Number(corner3.lng()), Number(corner4.lng()));
-
-    // Log the calculated values before creating the bounding box
-    console.log(`minLat: ${minLat}, minLng: ${minLng}, maxLat: ${maxLat}, maxLng: ${maxLng}`);
-
-    // Log the bounding box coordinates in BOX(minx, miny, maxx, maxy) format
-    if (!isNaN(minLat) && !isNaN(minLng) && !isNaN(maxLat) && !isNaN(maxLng)) {
-    console.log(`BOX(${minLng}, ${minLat}, ${maxLng}, ${maxLat})`);
-} else {
-    console.error("Error: Invalid coordinates for bounding box.");
-}
+    // If the polygon has four points, close it by connecting the last point to the first point
+    if (clickCount === 4) {
+        points.push(points[0]); // Close the polygon by adding the first point at the end
+        polygon.setPaths(points); // Update the polygon with the closed path
+    }
 }
 
-    function resetMap() {
+function displayPolygonArea() {
+    if (points.length < 4) return; // Ensure we have a complete polygon
+
+    // Calculate the area of the polygon using the Shoelace formula
+    let area = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+        area += points[i].lng() * points[i + 1].lat() - points[i + 1].lng() * points[i].lat();
+    }
+    area += points[points.length - 1].lng() * points[0].lat() - points[0].lng() * points[points.length - 1].lat(); // Close the polygon
+    area = Math.abs(area / 2);
+
+    // Convert area from degrees to square meters (approximate conversion)
+    const conversionFactor = 111000 * 111000; // Approximate meters per degree squared at the equator
+    const areaInSquareMeters = area * conversionFactor;
+    const areaInSquareKilometers = areaInSquareMeters / 1_000_000; // Convert to square kilometers
+
+    // Alert the user if the area exceeds 30 square kilometers
+    if (areaInSquareKilometers > 30) {
+        alert(`Warning: The polygon area is too large! The area is approximately ${areaInSquareKilometers.toFixed(2)} square kilometers, which exceeds the 30 square kilometer limit.`);
+    }
+
+    console.log(`Area calculated: 면적: ${areaInSquareKilometers.toFixed(2)} km^2`);
+
+    // Display the area on the map as an overlay or info window with the new label format
+    infoWindow = new naver.maps.InfoWindow({
+        content: `<div style="padding:5px;">면적: ${areaInSquareKilometers.toFixed(2)} km^2</div>`,
+        position: points[points.length - 1], // Position the info window at the last point
+        borderWidth: 2,
+        borderColor: '#00FF00'
+    });
+
+    infoWindow.open(map);
+}
+
+function resetMap() {
+    // Reset all markers, polygon, and counters
     clickCount = 0;
-    if (startMarker) startMarker.setMap(null);
-    if (endMarker) endMarker.setMap(null);
-    if (giantRectangle) giantRectangle.setMap(null);
-    startPoint = null;
-    endPoint = null;
-    console.log('Markers and rectangle reset. Click to set a new starting point.');
+    points = [];
+
+    // Remove markers from the map
+    markers.forEach(marker => marker.setMap(null));
+    markers = [];
+
+    // Remove the polygon from the map
+    if (polygon) {
+        polygon.setMap(null);
+        polygon = null;
+    }
+
+    // Close the info window if it exists
+    if (infoWindow) {
+        infoWindow.close();
+        infoWindow = null;
+    }
+
+    console.log('Markers and polygon reset. Click to start a new polygon.');
 }
