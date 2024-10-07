@@ -44,18 +44,83 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
     <%--    naverMap API--%>
-    <script type="text/javascript"
-            src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}&callback=initMap"></script>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}&callback=initMap"></script>
+
     <script type="text/javascript">
         var map = null;
+        var startMarker = null;
+        var endMarker = null;
+        var clickCount = 0;
+        var startPoint = null;
+        var endPoint = null;
 
         function initMap() {
             map = new naver.maps.Map('map', {
                 center: new naver.maps.LatLng(37.3595704, 127.105399),
                 zoom: 10
             });
+
+            naver.maps.Event.addListener(map, 'click', function(e) {
+                var latlng = e.latlng;
+
+                console.log('Map clicked at Lat:', latlng.lat(), 'Lng:', latlng.lng());
+
+                if (clickCount === 0) {
+                    if (startMarker) startMarker.setMap(null);
+                    startMarker = new naver.maps.Marker({
+                        position: latlng,
+                        map: map,
+                        title: 'Starting Point'
+                    });
+                    startPoint = latlng;
+                    console.log('Starting Point set to:', startPoint.lat(), startPoint.lng());
+                    clickCount++;
+                } else if (clickCount === 1) {
+                    if (endMarker) endMarker.setMap(null);
+                    endMarker = new naver.maps.Marker({
+                        position: latlng,
+                        map: map,
+                        title: 'Ending Point'
+                    });
+                    endPoint = latlng;
+                    console.log('Ending Point set to:', endPoint.lat(), endPoint.lng());
+                    clickCount = 0;
+
+                    // Make reverse geocode API call
+                    getReverseGeocode(startPoint, 'start');
+                    getReverseGeocode(endPoint, 'end');
+                }
+            });
+        }
+
+        function getReverseGeocode(latlng, pointType) {
+            if (!latlng) {
+                console.error('Lat/Lng is missing or invalid');
+                return;
+            }
+
+            const lat = encodeURIComponent(latlng.lat());
+            const lng = encodeURIComponent(latlng.lng());
+
+            console.log(`Fetching reverse geocode for ${pointType} point at Lat: ${lat}, Lng: ${lng}`);
+
+            const url = `/reverseGeocode?lat=${lat}&lng=${lng}`;
+            console.log(`Request URL: ${url}`);  // Log the URL being called
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error in reverse geocode API: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(`${pointType.charAt(0).toUpperCase() + pointType.slice(1)} Point Address:`, data);
+                })
+                .catch(error => console.error('Error during reverse geocode:', error));
         }
     </script>
+
 </head>
 
 <body class="blog-author bg-gray-200">
