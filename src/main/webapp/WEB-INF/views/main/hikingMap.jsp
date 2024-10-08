@@ -47,7 +47,7 @@
     <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}&callback=initMap"></script>
 
 
-    <script src="${pageContext.request.contextPath}/js/kpaasJs/mapHandler.js"></script>
+    <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapHandler.js"></script>
 
 </head>
 
@@ -547,75 +547,39 @@
 
 <%--    산 지도 및 파라미터 시작--%>
     <div class="card card-body blur shadow-blur mx-auto my-9"
-         style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem;">
-        <div id="map" style="width:100%;height:100%;"></div>
-        <div style="padding-top: 1rem;">
-            <form id="mapParamsForm">
-                <div class="form-group">
-                    <label for="mountainName">산 이름</label>
-                    <input type="text" id="mountainName" name="mountainName" class="form-control"
-                           placeholder="산이름 입력하세요">
-                </div>
+         style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem; display: flex; flex-direction: row;">
 
-                <div class="form-group">
-                    <label for="routeDifficulty">등산로 난이도 (하, 중, 상)</label>
-                    <select id="routeDifficulty" name="routeDifficulty" class="form-control">
-                        <option value="하">하</option>
-                        <option value="중">중</option>
-                        <option value="상">상</option>
-                    </select>
-                </div>
+        <!-- Map Container -->
+        <div id="map" style="width: 75%; height: 100%;"></div>
 
-                <button type="submit" class="btn btn-primary mt-3">Search Hiking Route</button>
-            </form>
-        </div>
+        <!-- Button Container -->
+        <div style="width: 25%; padding-left: 1rem; display: flex; flex-direction: column; align-items: flex-start;">
 
-    </div>
-    <%--    산 지도 및 파라미터 끝--%>
 
-    <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
-    <footer class="footer position-absolute bottom-2 py-2 w-100">
-        <div class="container">
-            <div class="row align-items-center justify-content-lg-between">
-                <div class="col-12 col-md-6 my-auto">
-                    <div class="copyright text-center text-sm text-white text-lg-start">
-                        ©
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                        ,
-                        made with <i class="fa fa-heart" aria-hidden="true"></i> by
-                        <a href="https://www.creative-tim.com" class="font-weight-bold text-white" target="_blank">Creative
-                            Tim</a>
-                        for a better web.
+            <div style="padding-top: 1rem; width: 100%;">
+                <form id="mapParamsForm">
+                    <div class="form-group">
+                        <label for="mountainName">산 이름</label>
+                        <input type="text" id="mountainName" name="mountainName" class="form-control"
+                               placeholder="산이름 입력하세요">
                     </div>
-                </div>
-                <div class="col-12 col-md-6">
-                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com" class="nav-link text-white" target="_blank">Creative
-                                Tim</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/presentation" class="nav-link text-white"
-                               target="_blank">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/blog" class="nav-link text-white"
-                               target="_blank">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-white"
-                               target="_blank">License</a>
-                        </li>
-                    </ul>
-                </div>
+
+                    <div class="form-group">
+                        <label for="routeDifficulty">등산로 난이도 (하, 중, 상)</label>
+                        <select id="routeDifficulty" name="routeDifficulty" class="form-control">
+                            <option value="하">하</option>
+                            <option value="중">중</option>
+                            <option value="상">상</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Search Hiking Route</button>
+                </form>
             </div>
         </div>
-    </footer>
-    <!-- -------- END FOOTER 5 w/ DARK BACKGROUND ------- -->
-</div>
-<!--   Core JS Files   -->
+    </div>
+
+    <!--   Core JS Files   -->
 <script src="${pageContext.request.contextPath}/js/core/popper.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/core/bootstrap.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/plugins/perfect-scrollbar.min.js"></script>

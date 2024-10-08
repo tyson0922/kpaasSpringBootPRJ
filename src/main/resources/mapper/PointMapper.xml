@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kopo.kpaas.mapper.IPointMapper">
+
+    <select id="selectPoints" resultType="PolygonPointsDTO">
+        SELECT * FROM PolygonPoints LIMIT 1
+    </select>
+
+    <insert id="insertPoints">
+        INSERT INTO PolygonPoints (FirstPointLat, FirstPointLng, SecondPointLat, SecondPointLng,
+                                   ThirdPointLat, ThirdPointLng, FourthPointLat, FourthPointLng,
+                                   CentroidLat, CentroidLng)
+        VALUES (#{firstPointLat}, #{firstPointLng}, #{secondPointLat}, #{secondPointLng},
+                #{thirdPointLat}, #{thirdPointLng}, #{fourthPointLat}, #{fourthPointLng},
+                #{centroidLat}, #{centroidLng})
+    </insert>
+
+    <update id="updatePoints">
+        UPDATE PolygonPoints
+        SET FirstPointLat = #{firstPointLat}, FirstPointLng = #{firstPointLng},
+            SecondPointLat = #{secondPointLat}, SecondPointLng = #{secondPointLng},
+            ThirdPointLat = #{thirdPointLat}, ThirdPointLng = #{thirdPointLng},
+            FourthPointLat = #{fourthPointLat}, FourthPointLng = #{fourthPointLng},
+            CentroidLat = #{centroidLat}, CentroidLng = #{centroidLng}
+        WHERE ID = 1
+    </update>
+
+    <select id="countRows" resultType="int">
+        SELECT COUNT(*) FROM PolygonPoints
+    </select>
+
+</mapper>

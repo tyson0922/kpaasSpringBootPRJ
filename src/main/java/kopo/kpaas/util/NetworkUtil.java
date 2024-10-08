@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.Map;
 
 @Slf4j
-public class NetworkUtil {
+public class  NetworkUtil {
 
     /**
      * GET 방식으로 OpenAPI 호출하기(전송할 헤더값이 존재하지 않는 경우 사용)

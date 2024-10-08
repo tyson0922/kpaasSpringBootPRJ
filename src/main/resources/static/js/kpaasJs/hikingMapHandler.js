@@ -2,13 +2,15 @@ var map = null;
 var markers = [];
 var polygon = null;
 var infoWindow = null; // Store the info window reference
+var centroidMarker = null; // Store the centroid marker reference
 var clickCount = 0;
 var points = [];
 
 function initMap() {
     map = new naver.maps.Map('map', {
         center: new naver.maps.LatLng(37.3595704, 127.105399),
-        zoom: 10
+        zoom: 13, // Initial zoom level
+        minZoom: 13 // Set the minimum zoom level here
     });
 
     naver.maps.Event.addListener(map, 'click', function (e) {
@@ -36,6 +38,8 @@ function initMap() {
             // If four points have been clicked, calculate and display the area
             if (clickCount === 4) {
                 displayPolygonArea();
+                calculateCentroid(); // Calculate and display the centroid
+                savePointsToDatabase(); // Save the points and centroid to the database
             }
         } else {
             // If the fifth click, reset the map and allow starting a new polygon
@@ -101,6 +105,90 @@ function displayPolygonArea() {
     infoWindow.open(map);
 }
 
+function calculateCentroid() {
+    let sumLat = 0, sumLng = 0, numPoints = points.length - 1; // Exclude the repeated first point
+    console.log(`Number of unique points used for centroid calculation: ${numPoints}`);
+
+    // Calculate the centroid by averaging the latitude and longitude values
+    for (let i = 0; i < numPoints; i++) {
+        console.log(`Point ${i + 1}: Lat: ${points[i].lat()}, Lng: ${points[i].lng()}`);
+        sumLat += points[i].lat();
+        sumLng += points[i].lng();
+    }
+
+    const centroidLat = sumLat / numPoints;
+    const centroidLng = sumLng / numPoints;
+
+    // Debugging statements to verify the centroid calculation
+    console.log(`Sum of latitudes: ${sumLat}, Sum of longitudes: ${sumLng}`);
+    console.log(`Calculated centroid coordinates: Lat: ${centroidLat}, Lng: ${centroidLng}`);
+
+    // Check if centroid values are valid
+    if (isNaN(centroidLat) || isNaN(centroidLng)) {
+        console.error("Centroid calculation error: Invalid latitude or longitude values.");
+        return; // Exit if the centroid coordinates are invalid
+    }
+
+// Create a button element to be displayed as a marker
+    const buttonElement = `
+    <button type="button" class="btn btn-primary" onclick="window.location.href='hikingRoute.jsp';" 
+        style="padding: 5px 10px; font-size: 12px; white-space: normal; line-height: 1.2; width: auto; height: auto;">
+        등산로 <br/> 조회
+    </button>`;
+
+    // Remove the existing centroid marker (if any)
+    if (centroidMarker) {
+        centroidMarker.setMap(null);
+        centroidMarker = null;
+    }
+
+    // Display the button as a marker at the centroid location
+    centroidMarker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(centroidLat, centroidLng),
+        map: map,
+        icon: {
+            content: buttonElement,
+            anchor: new naver.maps.Point(12, 12)
+        }
+    });
+
+    console.log('Centroid button successfully added to the map.');
+}
+
+function savePointsToDatabase() {
+    const data = {
+        firstPointLat: points[0].lat(),
+        firstPointLng: points[0].lng(),
+        secondPointLat: points[1].lat(),
+        secondPointLng: points[1].lng(),
+        thirdPointLat: points[2].lat(),
+        thirdPointLng: points[2].lng(),
+        fourthPointLat: points[3].lat(),
+        fourthPointLng: points[3].lng(),
+        centroidLat: centroidMarker.getPosition().lat(),
+        centroidLng: centroidMarker.getPosition().lng()
+    };
+
+    fetch('/api/savePoints', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Data successfully saved:', result);
+        })
+        .catch(error => {
+            console.error('Error saving data:', error);
+        });
+}
+
+
+
+
+
 function resetMap() {
     // Reset all markers, polygon, and counters
     clickCount = 0;
@@ -109,6 +197,12 @@ function resetMap() {
     // Remove markers from the map
     markers.forEach(marker => marker.setMap(null));
     markers = [];
+
+    // Remove the centroid marker from the map
+    if (centroidMarker) {
+        centroidMarker.setMap(null);
+        centroidMarker = null;
+    }
 
     // Remove the polygon from the map
     if (polygon) {

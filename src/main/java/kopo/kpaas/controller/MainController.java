@@ -1,5 +1,7 @@
 package kopo.kpaas.controller;
 
+import kopo.kpaas.dto.PolygonPointsDTO;
+import kopo.kpaas.service.IPointService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,4 +40,6 @@ public class MainController {
         model.addAttribute("naverApiClientKey", naverApiClientKey); // Inject the key into the model
         return "main/hikingMap";
     }
+
+
 }
