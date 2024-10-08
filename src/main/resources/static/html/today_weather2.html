@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>실시간 날씨 조회하기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('/img/kpaas/kpaasBackground.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        input[type="date"] {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            color: black;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .divTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .divTableRow {
+            display: table-row;
+        }
+        .divTableCell {
+            display: table-cell;
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            color: green;
+        }
+        .divTableHeading {
+            background-color: #f2f2f2;
+        }
+        .divTableHeading .divTableCell {
+            color: black;
+        }
+    </style>
+    <script src="/js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>날씨 조회</h1>
+
+    <button type="button" id="currentWeatherBtn">현재 날씨 알기</button>
+    <button type="button" id="tomorrowWeatherBtn">내일 날씨 알기</button>
+
+    <div>
+        <label for="date">날짜 선택:</label>
+        <input type="date" id="date" name="date">
+        <button type="button" style="width: 160px;" onclick="getWeatherByDate()">선택한 날짜 날씨 알기</button>
+    </div>
+
+    <div class="result" id="result">
+        <p>날씨 정보가 여기에 표시됩니다.</p>
+    </div>
+
+    <div class="divTable minimalistBlack" style="margin-top: 20px;">
+        <div class="divTableHeading">
+            <div class="divTableRow">
+                <div class="divTableCell">해 뜨는 시간</div>
+                <div class="divTableCell">해 지는 시간</div>
+                <div class="divTableCell">달 뜨는 시간</div>
+                <div class="divTableCell">달 지는 시간</div>
+            </div>
+        </div>
+        <div class="divTableBody" id="daily_weather"></div>
+    </div>
+</div>
+
+<script>
+    const apiBaseUrl = '/weather/getWeather'; // 사용자 위치에 기반한 날씨 API
+
+    // 현재 날씨 가져오기
+    $('#currentWeatherBtn').click(function() {
+        fetchWeather('current');
+    });
+
+    // 내일 날씨 가져오기
+    $('#tomorrowWeatherBtn').click(function() {
+        fetchWeather('tomorrow');
+    });
+
+    // 날씨 정보 가져오기
+    function fetchWeather(type) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            $.ajax({
+                url: apiBaseUrl,
+                type: 'GET',
+                dataType: 'JSON',
+                data: { lon: lon, lat: lat },
+                success: function(data) {
+                    console.log(data); // 응답 데이터 확인
+                    displayWeather(data, type);
+                },
+                error: function() {
+                    alert('날씨 정보를 가져오는 데 실패했습니다.');
+                }
+            });
+        }, function() {
+            alert('위치 정보를 가져오는 데 실패했습니다. 위치 서비스가 활성화되어 있는지 확인하세요.');
+        });
+    }
+
+    // 날씨 정보 출력
+    function displayWeather(data, type) {
+        const resultDiv = document.getElementById('result');
+        const dailyWeather = $("#daily_weather");
+        dailyWeather.empty();  // 기존 테이블 비우기
+
+        let title = type === 'current' ? '현재 날씨' : '내일 날씨';
+        const dailyData = type === 'current' ? data.dailyList[0] : data.dailyList[1]; // 오늘과 내일 데이터 선택
+
+        // 오류 메시지 처리
+        if (!dailyData) {
+            resultDiv.innerHTML = `<h3>${title}</h3><p>날씨 데이터가 없습니다.</p>`;
+            return;
+        }
+
+        // 기온 정보를 상단에 표시
+        const currentTemp = data.currentTemp || "N/A";
+        const dayTempMax = dailyData.dayTempMax || "N/A";
+        const dayTempMin = dailyData.dayTempMin || "N/A";
+
+        resultDiv.innerHTML = `
+            <h3>${title}</h3>
+            <p style="background-color: white; padding: 10px; border-radius: 5px;">
+                현재 기온: ${currentTemp}°C <br>
+                최고 기온: ${dayTempMax}°C / 최저 기온: ${dayTempMin}°C
+            </p>
+        `;
+
+        // 날씨에 따른 메시지 추가
+        const tempMessage = currentTemp > 20 ?
+            "산책하기 딱 좋은 날씨네요!" :
+            "날씨가 쌀쌀하니 겉옷을 준비하세요!";
+        resultDiv.innerHTML += `<p>${tempMessage}</p>`;
+
+        // 시간 데이터를 변환하여 출력
+        const sunriseTime = dailyData.sunrise ? formatTime(dailyData.sunrise) : "N/A";
+        const sunsetTime = dailyData.sunset ? formatTime(dailyData.sunset) : "N/A";
+        const moonriseTime = dailyData.moonrise ? formatTime(dailyData.moonrise) : "N/A";
+        const moonsetTime = dailyData.moonset ? formatTime(dailyData.moonset) : "N/A";
+
+        dailyWeather.append(`
+            <div class="divTableRow">
+                <div class="divTableCell">${sunriseTime}</div>
+                <div class="divTableCell">${sunsetTime}</div>
+                <div class="divTableCell">${moonriseTime}</div>
+                <div class="divTableCell">${moonsetTime}</div>
+            </div>
+        `);
+    }
+
+    // UNIX 시간을 포맷팅하는 함수
+    function formatTime(unixTimestamp) {
+        if (!unixTimestamp) return "N/A";
+        const date = new Date(unixTimestamp * 1000); // UNIX timestamp to milliseconds
+        if (isNaN(date.getTime())) return "N/A"; // 유효한 날짜인지 확인
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }); // 2자리 시간과 분으로 형식화
+    }
+
+    // 선택한 날짜의 날씨 가져오기
+    function getWeatherByDate() {
+        const selectedDate = document.getElementById('date').value;
+        if (!selectedDate) {
+            alert('날짜를 선택하세요.');
+            return;
+        }
+
+        fetch(`${apiBaseUrl}/date?date=${selectedDate}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('날씨 정보를 가져오는 데 실패했습니다.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayWeather(data, selectedDate);
+            })
+            .catch(error => {
+                alert('선택한 날짜의 날씨 정보를 불러오는 데 실패했습니다. ' + error.message);
+            });
+    }
+</script>
+
+</body>
+</html>
