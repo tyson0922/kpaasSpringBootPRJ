@@ -131,7 +131,7 @@ function calculateCentroid() {
 
 // Create a button element to be displayed as a marker
     const buttonElement = `
-    <button type="button" class="btn btn-primary" onclick="window.location.href='hikingRoute.jsp';" 
+    <button type="button" class="btn btn-primary" onclick="window.location.href='hikingRouteTest.jsp';" 
         style="padding: 5px 10px; font-size: 12px; white-space: normal; line-height: 1.2; width: auto; height: auto;">
         등산로 <br/> 조회
     </button>`;
