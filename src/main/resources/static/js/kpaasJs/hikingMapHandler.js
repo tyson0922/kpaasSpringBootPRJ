@@ -131,7 +131,7 @@ function calculateCentroid() {
 
 // Create a button element to be displayed as a marker
     const buttonElement = `
-    <button type="button" class="btn btn-primary" onclick="window.location.href='hikingRouteTest.jsp';" 
+    <button type="button" class="btn btn-primary" onclick="fetchHikingRouteAndRedirect();" 
         style="padding: 5px 10px; font-size: 12px; white-space: normal; line-height: 1.2; width: auto; height: auto;">
         등산로 <br/> 조회
     </button>`;
@@ -217,4 +217,31 @@ function resetMap() {
     }
 
     console.log('Markers and polygon reset. Click to start a new polygon.');
+}
+
+function fetchHikingRouteAndRedirect() {
+    const apiUrl = '/api/hiking-route';  // Your API endpoint
+
+    // Optionally show a loading message here
+    console.log('Fetching hiking routes...');
+
+    // Send the API request
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())  // Parse the response as JSON
+        .then(data => {
+            // Log the API response for debugging
+            console.log("API Response:", data);
+
+            // After receiving and logging the response, redirect to hikingRouteTest.jsp
+            window.location.href = '/main/hikingRouteTest';
+        })
+        .catch(error => {
+            console.error('Error fetching hiking routes:', error);
+            alert('Failed to fetch hiking routes.');
+        });
 }
