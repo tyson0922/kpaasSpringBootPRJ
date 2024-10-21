@@ -37,6 +37,8 @@ public class MainController {
     @Value("${naver.api.client.key}")
     private String naverApiClientKey;
 
+    @Value("${naver.api.client.secret}")
+    private String naverClientSecret;
     @GetMapping(value="hikingMap")
     public String hikingMap(Model model) {
         log.info(this.getClass().getName()+ ".main/hikingMap");
@@ -52,7 +54,7 @@ public class MainController {
         // Optionally, call the service to get data if needed
         Map<String, Object> hikingRouteData = hikingRouteService.getAndSaveHikingRoutes();
         model.addAttribute("hikingRouteData", hikingRouteData); // Pass data to the JSP
-
+        model.addAttribute("naverClientSecret", naverClientSecret);
         return "hiking/hikingRouteTest";  // This loads hikingRouteTest.jsp
     }
 

@@ -44,10 +44,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
     <%--    naverMap API--%>
-    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}&callback=initMap"></script>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}&submodules=geocoder&callback=initMap"></script>
 
+    <script type="text/javascript">
+        const naverClientKey = '${naverClientKey}';
+        const naverClientSecret = '${naverClientSecret}';
+    </script>
+    <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapHandler.js" defer></script>
 
-    <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapHandler.js"></script>
 
 </head>
 
@@ -554,27 +558,12 @@
 
         <!-- Button Container -->
         <div style="width: 25%; padding-left: 1rem; display: flex; flex-direction: column; align-items: flex-start;">
-
-
             <div style="padding-top: 1rem; width: 100%;">
-                <form id="mapParamsForm">
-                    <div class="form-group">
-                        <label for="mountainName">산 이름</label>
-                        <input type="text" id="mountainName" name="mountainName" class="form-control"
-                               placeholder="산이름 입력하세요">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="routeDifficulty">등산로 난이도 (하, 중, 상)</label>
-                        <select id="routeDifficulty" name="routeDifficulty" class="form-control">
-                            <option value="하">하</option>
-                            <option value="중">중</option>
-                            <option value="상">상</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary mt-3">Search Hiking Route</button>
-                </form>
+                <div class="form-group">
+                    <label for="mountainName">산 이름</label>
+                    <input type="text" id="mountainName" name="mountainName" class="form-control" placeholder="산 이름을 입력하세요">
+                </div>
+                <button id="searchButton" class="btn btn-primary mt-3">산 위치로 이동하기</button>
             </div>
         </div>
     </div>
