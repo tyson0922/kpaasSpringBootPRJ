@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kopo.kpaas.mapper.HikingRouteMapper">
 
-    <!-- Select to fetch Polygon Points -->
+    <!-- Fetch the polygon points -->
     <select id="getPolygonPoints" resultType="kopo.kpaas.dto.PolygonPointsDTO">
         SELECT
             FirstPointLat, FirstPointLng,
@@ -16,37 +16,51 @@
                  LIMIT 1
     </select>
 
-    <!-- Insert into RouteProperties -->
+    <!-- Check if a route exists by ID -->
+    <select id="countRouteById" resultType="int">
+        SELECT COUNT(*) FROM RouteProperties WHERE id = #{id}
+    </select>
+
+    <!-- Fetch route properties by ID -->
+    <select id="getRoutePropertiesById" resultType="kopo.kpaas.dto.RoutePropertiesDTO">
+        SELECT id, sec_len, up_min, down_min, cat_nam, mntn_nm
+        FROM RouteProperties
+        WHERE id = #{id}
+    </select>
+
+    <!-- Insert route properties -->
     <insert id="insertRouteProperties">
         INSERT INTO RouteProperties (id, sec_len, up_min, down_min, cat_nam, mntn_nm)
         VALUES (#{id}, #{secLen}, #{upMin}, #{downMin}, #{catNam}, #{mntnNm})
     </insert>
 
-    <!-- Insert into RouteGeometry -->
+    <!-- Update route properties -->
+    <update id="updateRouteProperties">
+        UPDATE RouteProperties
+        SET sec_len = #{secLen}, up_min = #{upMin}, down_min = #{downMin}, cat_nam = #{catNam}, mntn_nm = #{mntnNm}
+        WHERE id = #{id}
+    </update>
+
+    <!-- Fetch route geometry by ID -->
+    <select id="getRouteGeometryById" resultType="kopo.kpaas.dto.RouteGeometryDTO">
+        SELECT id, geometry
+        FROM RouteGeometry
+        WHERE id = #{id}
+    </select>
+
+    <!-- Insert route geometry -->
     <insert id="insertRouteGeometry">
         INSERT INTO RouteGeometry (id, geometry)
         VALUES (#{id}, ST_GeomFromText(#{multiLineString}))
     </insert>
 
-    <!-- Update RouteGeometry when ID exists and geometry is null -->
+    <!-- Update route geometry -->
     <update id="updateRouteGeometry">
         UPDATE RouteGeometry
         SET geometry = ST_GeomFromText(#{multiLineString})
-        WHERE id = #{id} AND geometry IS NULL
+        WHERE id = #{id}
     </update>
 
-    <!-- Count if RouteProperties exists by ID -->
-    <select id="countRoutePropertiesById" resultType="int">
-        SELECT COUNT(*)
-        FROM RouteProperties
-        WHERE id = #{id}
-    </select>
-
-    <!-- Count if RouteGeometry exists by ID -->
-    <select id="countRouteGeometryById" resultType="int">
-        SELECT COUNT(*)
-        FROM RouteGeometry
-        WHERE id = #{id}
-    </select>
-
 </mapper>
+
+

@@ -83,7 +83,6 @@ public class HikingRouteService implements IHikingRouteService {
         JsonNode features = root.path("response").path("result").path("featureCollection").path("features");
 
         for (JsonNode feature : features) {
-            // Extract route properties
             String id = feature.path("id").asText();
             String secLen = feature.path("properties").path("sec_len").asText();
             String upMin = feature.path("properties").path("up_min").asText();
@@ -95,22 +94,45 @@ public class HikingRouteService implements IHikingRouteService {
             log.info("Parsed Route Properties - ID: {}, sec_len: {}, up_min: {}, down_min: {}, cat_nam: {}, mntn_nm: {}",
                     id, secLen, upMin, downMin, catNam, mntnNm);
 
-            // Save route properties to RouteProperties table
             RoutePropertiesDTO routeProperties = new RoutePropertiesDTO(id, secLen, upMin, downMin, catNam, mntnNm);
-            hikingRouteMapper.insertRouteProperties(routeProperties);
 
-            // Format the MultiLineString before saving it to the database
+            // Check if the route already exists
+            if (hikingRouteMapper.countRouteById(id) > 0) {
+                // If it exists, check if the data is the same before updating
+                RoutePropertiesDTO existingProperties = hikingRouteMapper.getRoutePropertiesById(id);
+
+                // Only update if the properties have changed
+                if (!routeProperties.equals(existingProperties)) {
+                    hikingRouteMapper.updateRouteProperties(routeProperties);
+                }
+            } else {
+                // Insert new route properties if the route does not exist
+                hikingRouteMapper.insertRouteProperties(routeProperties);
+            }
+
+            // Format the MultiLineString
             JsonNode coordinates = feature.path("geometry").path("coordinates");
             String multiLineString = formatMultiLineString(coordinates);
 
-            // Log the parsed and formatted MultiLineString
+            // Log the formatted MultiLineString
             log.info("Parsed MultiLineString for ID {}: {}", id, multiLineString);
 
-            // Save the formatted MultiLineString to RouteGeometry table
             RouteGeometryDTO routeGeometry = new RouteGeometryDTO(id, multiLineString);
-            hikingRouteMapper.insertRouteGeometry(routeGeometry);
+
+            // Check if the geometry already exists
+            RouteGeometryDTO existingGeometry = hikingRouteMapper.getRouteGeometryById(id);
+
+            // Only update if the geometry has changed
+            if (existingGeometry == null || !routeGeometry.equals(existingGeometry)) {
+                if (existingGeometry != null) {
+                    hikingRouteMapper.updateRouteGeometry(routeGeometry);
+                } else {
+                    hikingRouteMapper.insertRouteGeometry(routeGeometry);
+                }
+            }
         }
     }
+
 
 
 
@@ -126,9 +148,9 @@ public class HikingRouteService implements IHikingRouteService {
     }
 
     private String buildApiUrl(String geomFilter) {
-        String hardcodedPolygon = "POLYGON((127.023087 37.359161, 127.000943 37.333505, 127.034932 37.316988, 127.057935 37.332413, 127.023087 37.359161))";
         try {
-            hardcodedPolygon = URLEncoder.encode(hardcodedPolygon, StandardCharsets.UTF_8.toString());
+            // Encode the dynamically generated polygon
+            geomFilter = URLEncoder.encode(geomFilter, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Error encoding polygon", e);
         }
@@ -140,7 +162,7 @@ public class HikingRouteService implements IHikingRouteService {
                 + "&format=json"
                 + "&errorformat=json"
                 + "&data=LT_L_FRSTCLIMB"
-                + "&geomfilter=" + hardcodedPolygon
+                + "&geomfilter=" + geomFilter
                 + "&columns=sec_len,up_min,down_min,cat_nam,mntn_nm,ag_geom"
                 + "&geometry=true"
                 + "&attribute=true"
