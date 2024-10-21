@@ -1,8 +1,11 @@
 package kopo.kpaas.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kopo.kpaas.dto.PolygonPointsDTO;
+import kopo.kpaas.dto.RouteGeometryDTO;
+import kopo.kpaas.dto.RoutePropertiesDTO;
 import kopo.kpaas.mapper.HikingRouteMapper;
 import kopo.kpaas.service.IHikingRouteService;
 import kopo.kpaas.util.NetworkUtil;
@@ -11,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -38,20 +42,17 @@ public class HikingRouteService implements IHikingRouteService {
         // Step 2: Format the points into POLYGON format
         String geomFilter = formatPointsAsPolygon(polygonPoints);  // Ensure geomFilter is created
 
-        // Log the POLYGON format to verify it's correct
         log.info("Formatted POLYGON: {}", geomFilter);
 
         // Step 3: Use the POLYGON string in the API call
         String apiUrl = buildApiUrl(geomFilter);  // Pass geomFilter to the buildApiUrl method
 
-        // **Log the full API URL** for debugging
         log.info("Full API URL: {}", apiUrl);
 
         try {
             // Fetch data from the API using the formatted POLYGON
             String jsonResponse = NetworkUtil.get(apiUrl);
 
-            // Log the raw JSON response for inspection
             log.info("Raw API Response: {}", jsonResponse);
 
             // Check if the response is HTML (error page) instead of JSON
@@ -63,6 +64,10 @@ public class HikingRouteService implements IHikingRouteService {
             // Parse the JSON response using ObjectMapper
             Map<String, Object> responseMap = objectMapper.readValue(jsonResponse, new TypeReference<>() {
             });
+
+            // Step 4: Save the parsed data into the database
+            saveParsedData(jsonResponse);
+
             return responseMap;
 
         } catch (Exception e) {
@@ -70,6 +75,43 @@ public class HikingRouteService implements IHikingRouteService {
             throw new RuntimeException("Failed to fetch hiking routes.");
         }
     }
+
+    // Method to save parsed data
+    public void saveParsedData(String apiResponse) throws IOException {
+        // Parse the API response
+        JsonNode root = objectMapper.readTree(apiResponse);
+        JsonNode features = root.path("response").path("result").path("featureCollection").path("features");
+
+        for (JsonNode feature : features) {
+            // Extract route properties
+            String id = feature.path("id").asText();
+            String secLen = feature.path("properties").path("sec_len").asText();
+            String upMin = feature.path("properties").path("up_min").asText();
+            String downMin = feature.path("properties").path("down_min").asText();
+            String catNam = feature.path("properties").path("cat_nam").asText();
+            String mntnNm = feature.path("properties").path("mntn_nm").asText();
+
+            // Log the parsed route properties
+            log.info("Parsed Route Properties - ID: {}, sec_len: {}, up_min: {}, down_min: {}, cat_nam: {}, mntn_nm: {}",
+                    id, secLen, upMin, downMin, catNam, mntnNm);
+
+            // Save route properties to RouteProperties table
+            RoutePropertiesDTO routeProperties = new RoutePropertiesDTO(id, secLen, upMin, downMin, catNam, mntnNm);
+            hikingRouteMapper.insertRouteProperties(routeProperties);
+
+            // Format the MultiLineString before saving it to the database
+            JsonNode coordinates = feature.path("geometry").path("coordinates");
+            String multiLineString = formatMultiLineString(coordinates);
+
+            // Log the parsed and formatted MultiLineString
+            log.info("Parsed MultiLineString for ID {}: {}", id, multiLineString);
+
+            // Save the formatted MultiLineString to RouteGeometry table
+            RouteGeometryDTO routeGeometry = new RouteGeometryDTO(id, multiLineString);
+            hikingRouteMapper.insertRouteGeometry(routeGeometry);
+        }
+    }
+
 
 
     // Method to format points into POLYGON format
@@ -105,5 +147,28 @@ public class HikingRouteService implements IHikingRouteService {
                 + "&crs=EPSG:4326"
                 + "&domain=" + apiDomain
                 + "&key=" + apiKey;
+    }
+
+    private String formatMultiLineString(JsonNode coordinates) {
+        StringBuilder multiLineStringBuilder = new StringBuilder();
+        multiLineStringBuilder.append("MULTILINESTRING(");
+
+        for (JsonNode line : coordinates) {
+            multiLineStringBuilder.append("(");
+            for (JsonNode point : line) {
+                multiLineStringBuilder.append(point.get(0).asText())
+                        .append(" ")
+                        .append(point.get(1).asText())
+                        .append(", ");
+            }
+            // Remove the last comma and space
+            multiLineStringBuilder.setLength(multiLineStringBuilder.length() - 2);
+            multiLineStringBuilder.append("), ");
+        }
+        // Remove the last comma and space
+        multiLineStringBuilder.setLength(multiLineStringBuilder.length() - 2);
+        multiLineStringBuilder.append(")");
+
+        return multiLineStringBuilder.toString();
     }
 }

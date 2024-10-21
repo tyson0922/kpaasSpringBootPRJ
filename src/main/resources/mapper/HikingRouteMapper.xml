@@ -4,17 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kopo.kpaas.mapper.HikingRouteMapper">
 
-    <!-- Insert new hiking route -->
-    <insert id="insertHikingRoute">
-        INSERT INTO HikingRoutes (route_id, route_geometry, sec_len, up_min, down_min, cat_nam, mntn_nm, ag_geom)
-        VALUES (#{routeId}, #{routeGeometry}, #{secLen}, #{upMin}, #{downMin}, #{catNam}, #{mntnNm}, #{agGeom})
-    </insert>
-
-    <!-- Retrieve all saved hiking routes -->
-    <select id="findAllRoutes" resultType="kopo.kpaas.dto.HikingRouteDTO">
-        SELECT * FROM HikingRoutes
-    </select>
-
+    <!-- Select to fetch Polygon Points -->
     <select id="getPolygonPoints" resultType="kopo.kpaas.dto.PolygonPointsDTO">
         SELECT
             FirstPointLat, FirstPointLng,
@@ -25,4 +15,38 @@
         FROM PolygonPoints
                  LIMIT 1
     </select>
+
+    <!-- Insert into RouteProperties -->
+    <insert id="insertRouteProperties">
+        INSERT INTO RouteProperties (id, sec_len, up_min, down_min, cat_nam, mntn_nm)
+        VALUES (#{id}, #{secLen}, #{upMin}, #{downMin}, #{catNam}, #{mntnNm})
+    </insert>
+
+    <!-- Insert into RouteGeometry -->
+    <insert id="insertRouteGeometry">
+        INSERT INTO RouteGeometry (id, geometry)
+        VALUES (#{id}, ST_GeomFromText(#{multiLineString}))
+    </insert>
+
+    <!-- Update RouteGeometry when ID exists and geometry is null -->
+    <update id="updateRouteGeometry">
+        UPDATE RouteGeometry
+        SET geometry = ST_GeomFromText(#{multiLineString})
+        WHERE id = #{id} AND geometry IS NULL
+    </update>
+
+    <!-- Count if RouteProperties exists by ID -->
+    <select id="countRoutePropertiesById" resultType="int">
+        SELECT COUNT(*)
+        FROM RouteProperties
+        WHERE id = #{id}
+    </select>
+
+    <!-- Count if RouteGeometry exists by ID -->
+    <select id="countRouteGeometryById" resultType="int">
+        SELECT COUNT(*)
+        FROM RouteGeometry
+        WHERE id = #{id}
+    </select>
+
 </mapper>

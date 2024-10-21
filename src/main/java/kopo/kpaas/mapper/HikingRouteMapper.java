@@ -1,21 +1,28 @@
 package kopo.kpaas.mapper;
 
-import kopo.kpaas.dto.HikingRouteDTO;
 import kopo.kpaas.dto.PolygonPointsDTO;
+import kopo.kpaas.dto.RouteGeometryDTO;
+import kopo.kpaas.dto.RoutePropertiesDTO;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
-
 
 @Mapper
 public interface HikingRouteMapper {
 
-    // Insert a hiking route into the database
-    void insertHikingRoute(HikingRouteDTO hikingRoute);
+    // Fetch polygon points from the database
+    PolygonPointsDTO getPolygonPoints();
 
-    // Find all saved hiking routes
-    List<HikingRouteDTO> findAllRoutes();
+    // Insert route properties into the RouteProperties table
+    void insertRouteProperties(RoutePropertiesDTO routeProperties);
 
-    // Fetch the polygon points from the database
-    PolygonPointsDTO getPolygonPoints();  // This is the method you're missing
+    // Insert route geometry into the RouteGeometry table
+    void insertRouteGeometry(RouteGeometryDTO routeGeometry);
+
+    // Update route geometry if ID exists and geometry is null
+    void updateRouteGeometry(RouteGeometryDTO routeGeometry);
+
+    // Check if a RouteProperties record exists by ID
+    int countRoutePropertiesById(String id);
+
+    // Check if a RouteGeometry record exists by ID
+    int countRouteGeometryById(String id);
 }
