@@ -8,27 +8,12 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface HikingRouteMapper {
 
-    // Fetch the polygon points from the database
-    PolygonPointsDTO getPolygonPoints();
+    // Check if the user has any saved route data
+    int countRoutesByUserId(String userId);
 
-    // Check if a route with the given ID exists
-    Integer countRouteById(String id);
+    // Delete the user's route data by userId
+    void deleteRoutesByUserId(String userId);
 
-    // Fetch existing route properties by ID
-    RoutePropertiesDTO getRoutePropertiesById(String id);
-
-    // Insert new route properties
+    // Insert new route data using RoutePropertiesDTO
     void insertRouteProperties(RoutePropertiesDTO routeProperties);
-
-    // Update existing route properties
-    void updateRouteProperties(RoutePropertiesDTO routeProperties);
-
-    // Fetch existing route geometry by ID
-    RouteGeometryDTO getRouteGeometryById(String id);
-
-    // Insert new route geometry
-    void insertRouteGeometry(RouteGeometryDTO routeGeometry);
-
-    // Update existing route geometry
-    void updateRouteGeometry(RouteGeometryDTO routeGeometry);
 }

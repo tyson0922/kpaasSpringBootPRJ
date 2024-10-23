@@ -55,7 +55,7 @@
         NOTICE_YN = #{noticeYn},
         CONTENTS  = #{contents},
         CHG_ID    = #{userId},
-        CHG_DT    = NOW()   <!-- Make sure this matches your DB syntax -->
+        CHG_DT    = NOW()
         WHERE NOTICE_SEQ = #{noticeSeq}
     </update>
 

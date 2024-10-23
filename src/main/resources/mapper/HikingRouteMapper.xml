@@ -4,63 +4,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kopo.kpaas.mapper.HikingRouteMapper">
 
-    <!-- Fetch the polygon points -->
-    <select id="getPolygonPoints" resultType="kopo.kpaas.dto.PolygonPointsDTO">
-        SELECT
-            FirstPointLat, FirstPointLng,
-            SecondPointLat, SecondPointLng,
-            ThirdPointLat, ThirdPointLng,
-            FourthPointLat, FourthPointLng,
-            CentroidLat, CentroidLng
-        FROM PolygonPoints
-                 LIMIT 1
-    </select>
-
-    <!-- Check if a route exists by ID -->
-    <select id="countRouteById" resultType="int">
-        SELECT COUNT(*) FROM RouteProperties WHERE id = #{id}
-    </select>
-
-    <!-- Fetch route properties by ID -->
-    <select id="getRoutePropertiesById" resultType="kopo.kpaas.dto.RoutePropertiesDTO">
-        SELECT id, sec_len, up_min, down_min, cat_nam, mntn_nm
+    <!-- Check if the user has any saved route data -->
+    <select id="countRoutesByUserId" resultType="int">
+        SELECT COUNT(*)
         FROM RouteProperties
-        WHERE id = #{id}
+        WHERE USER_ID = #{userId}
     </select>
 
-    <!-- Insert route properties -->
+    <!-- Delete the user's route data by userId -->
+    <delete id="deleteRoutesByUserId">
+        DELETE FROM RouteProperties
+        WHERE USER_ID = #{userId}
+    </delete>
+
+    <!-- Insert new route data -->
     <insert id="insertRouteProperties">
-        INSERT INTO RouteProperties (id, sec_len, up_min, down_min, cat_nam, mntn_nm)
-        VALUES (#{id}, #{secLen}, #{upMin}, #{downMin}, #{catNam}, #{mntnNm})
+        INSERT INTO RouteProperties
+        (USER_ID, ROUTE_ID, SEC_LEN, UP_MIN, DOWN_MIN, CAT_NAM, MNTN_NM, GEOMETRY, REG_ID, REG_DT, CHG_ID, CHG_DT)
+        VALUES
+            (#{userId}, #{routeId}, #{secLen}, #{upMin}, #{downMin}, #{catNam}, #{mntnNm}, ST_GeomFromText(#{geometry}),
+             #{userId}, NOW(), #{userId}, NOW())
     </insert>
-
-    <!-- Update route properties -->
-    <update id="updateRouteProperties">
-        UPDATE RouteProperties
-        SET sec_len = #{secLen}, up_min = #{upMin}, down_min = #{downMin}, cat_nam = #{catNam}, mntn_nm = #{mntnNm}
-        WHERE id = #{id}
-    </update>
-
-    <!-- Fetch route geometry by ID -->
-    <select id="getRouteGeometryById" resultType="kopo.kpaas.dto.RouteGeometryDTO">
-        SELECT id, geometry
-        FROM RouteGeometry
-        WHERE id = #{id}
-    </select>
-
-    <!-- Insert route geometry -->
-    <insert id="insertRouteGeometry">
-        INSERT INTO RouteGeometry (id, geometry)
-        VALUES (#{id}, ST_GeomFromText(#{multiLineString}))
-    </insert>
-
-    <!-- Update route geometry -->
-    <update id="updateRouteGeometry">
-        UPDATE RouteGeometry
-        SET geometry = ST_GeomFromText(#{multiLineString})
-        WHERE id = #{id}
-    </update>
 
 </mapper>
-
 
