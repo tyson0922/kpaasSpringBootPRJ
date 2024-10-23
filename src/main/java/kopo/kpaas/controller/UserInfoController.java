@@ -545,13 +545,23 @@ public class UserInfoController {
 
     @GetMapping(value = "logout")
     public String logout(HttpSession session) {
-        log.info("User logged out, session invalidated");
+
 
         // Invalidate the session to log out the user
         session.invalidate();
+        log.info("User logged out, session invalidated");
 
         // Redirect to the login page after logout
         return "redirect:/main/mainPage";
     }
+
+//    @RequestMapping("logout")
+//    public String logout(HttpServletRequest request) {
+//        request.getSession().invalidate();  // 세션 무효화
+//
+//        log.info("logout Start!");
+//
+//        return "redirect:index";  // 로그아웃 후 메인 페이지로 리다이렉트
+//    }
 
 }

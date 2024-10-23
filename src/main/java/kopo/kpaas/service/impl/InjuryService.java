@@ -9,16 +9,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class InjuryService implements IInjuryService {
 
-    private final IInjuryMapper injuryMapper;  // Injected via constructor due to @RequiredArgsConstructor
+    private final IInjuryMapper injuryMapper;
 
     @Override
-    public void saveInjury(InjuryDTO pDTO) {
-        log.info("Saving injury: Class = {}, Confidence = {}", pDTO.getInjuryClass(), pDTO.getConfidenceLevel());
+    public void saveInjury(InjuryDTO pDTO) throws Exception {
+        // Get the next available INJURY_SEQ for the given USER_ID
+        Integer nextInjurySeq = injuryMapper.getNextInjurySeq(pDTO.getUserId());
+        pDTO.setInjurySeq(nextInjurySeq);  // Set the generated injurySeq in DTO
+
+        log.info("Saving injury: Class = {}, Confidence = {}, Injury Seq = {}, User ID = {}",
+                pDTO.getInjuryClass(), pDTO.getConfidenceLevel(), nextInjurySeq, pDTO.getUserId());
+
         try {
             injuryMapper.insertInjury(pDTO);
             log.info("Injury saved successfully in the database.");
@@ -29,20 +35,12 @@ public class InjuryService implements IInjuryService {
     }
 
     @Override
-    public List<InjuryDTO> getInjuries() {
-        log.info("Fetching all injuries from the database.");
-        try {
-            List<InjuryDTO> rDTO = injuryMapper.getAllInjuries();
-            log.info("Injuries fetched successfully, count: {}", rDTO.size());
-            return rDTO;
-        } catch (Exception e) {
-            log.error("Error fetching injuries from the database: {}", e.getMessage());
-            throw e;
-        }
+    public List<InjuryDTO> getInjuries() throws Exception {
+        return injuryMapper.getAllInjuries();
     }
 
     @Override
-    public InjuryDTO getLatestInjury() {
-        return injuryMapper.getLatestInjury();
+    public InjuryDTO getLatestInjury(String userId) throws Exception {
+        return injuryMapper.getLatestInjury(userId);
     }
 }

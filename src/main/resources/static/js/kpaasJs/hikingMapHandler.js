@@ -6,6 +6,7 @@ var infoWindow = null;
 var centroidMarker = null;
 var clickCount = 0;
 var points = [];
+const userId = "${userId}";
 
 // Function to initialize the map
 function initMap() {

@@ -1000,6 +1000,12 @@
 
     // Function to send the detected injury data to the backend
     function saveInjuryDataToDB(injuryClass, confidenceLevel, detectedAt) {
+        const userId = "${userId}";  // Retrieve the userId passed from the backend (via JSP or server-side code)
+        const regId = userId;        // Set regId to be the same as userId
+        const chgId = userId;        // Set chgId to be the same as userId
+        const regDt = detectedAt;    // Set regDt to the detectedAt timestamp
+        const chgDt = detectedAt;    // Set chgDt to the detectedAt timestamp
+
         $.ajax({
             url: '/injuries/save',  // Matches your Spring Boot controller mapping
             method: 'POST',
@@ -1007,7 +1013,11 @@
             data: JSON.stringify({
                 injuryClass: injuryClass,
                 confidenceLevel: confidenceLevel,
-                detectedAt: detectedAt  // Sending the detectedAt timestamp
+                userId: userId,     // Adding userId
+                regId: regId,       // Adding regId
+                chgId: chgId,       // Adding chgId
+                regDt: regDt,       // Adding regDt
+                chgDt: chgDt        // Adding chgDt
             }),
             success: function (response) {
                 console.log('Injury data saved successfully:', response);

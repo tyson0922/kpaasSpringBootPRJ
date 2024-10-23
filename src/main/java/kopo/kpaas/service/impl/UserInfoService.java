@@ -197,4 +197,8 @@ public class UserInfoService implements IUserInfoService {
         return success;
     }
 
+//    @Override
+//    public UserInfoDTO getUserInfoById(String userId) throws Exception {
+//        return userInfoMapper.getUserInfoById(userId);
+//    }
 }

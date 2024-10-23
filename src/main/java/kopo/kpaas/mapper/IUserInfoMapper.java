@@ -2,6 +2,7 @@ package kopo.kpaas.mapper;
 
 import kopo.kpaas.dto.UserInfoDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface IUserInfoMapper {
@@ -28,5 +29,5 @@ public interface IUserInfoMapper {
     // 비밀번호 재설정
     int updatePassword(UserInfoDTO pDTO) throws Exception;
 
-
+//    UserInfoDTO getUserInfoById(@Param("userId") String userId);
 }

@@ -9,8 +9,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class InjuryDTO {
-    private int INJURY_SEQ;  // Primary key
-    private String injuryClass;
-    private BigDecimal confidenceLevel;
-    private LocalDateTime detectedAt;
+    private Integer injurySeq;  // for INJURY_SEQ
+    private String userId;  // for USER_ID
+    private String injuryClass;  // for INJURY_CLASS
+    private BigDecimal confidenceLevel;  // for CONFIDENCE_LEVEL
+    private String regId;  // for REG_ID
+    private LocalDateTime regDt;  // for REG_DT
+    private String chgId;
+    private LocalDateTime chgDt;
 }

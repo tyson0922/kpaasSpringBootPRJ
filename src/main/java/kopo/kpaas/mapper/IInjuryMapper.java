@@ -8,10 +8,15 @@ import java.util.List;
 @Mapper
 public interface IInjuryMapper {
 
-    void insertInjury(InjuryDTO pDTO);  // pDTO as parameter
+    // Get the next available INJURY_SEQ for a specific USER_ID
+    Integer getNextInjurySeq(String userId);
 
-    List<InjuryDTO> getAllInjuries();  // rDTO will be used as the return type
+    // Insert injury data
+    void insertInjury(InjuryDTO pDTO);
 
-    InjuryDTO getLatestInjury();  // Query for the most recent injury
+    // Get all injuries
+    List<InjuryDTO> getAllInjuries();
 
+    // Get the latest injury (ordering by INJURY_SEQ)
+    InjuryDTO getLatestInjury(String userId);
 }

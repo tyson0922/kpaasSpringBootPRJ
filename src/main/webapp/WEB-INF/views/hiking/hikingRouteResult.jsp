@@ -1,57 +1,4 @@
-<%@ page import="kopo.kpaas.dto.InjuryDTO" %>
 <%@ page contentType="text/html;charset=utf-8" %>
-<%
-    InjuryDTO rDTO = (InjuryDTO) request.getAttribute("rDTO");
-
-    // Translate the injury class from English to Korean
-    String injuryClassTranslated = "";
-    String link = "";
-
-    if (rDTO != null) {
-        switch (rDTO.getInjuryClass()) {
-            case "Siyrik":
-                injuryClassTranslated = "찰과상";
-                link = "abrasion.jsp";
-                break;
-            case "Unlabeled":
-                injuryClassTranslated = "라벨이 없는";
-                link = "#"; // No link for unlabeled
-                break;
-            case "bite":
-                injuryClassTranslated = "물림";
-                link = "bite.jsp";
-                break;
-            case "bruises":
-                injuryClassTranslated = "멍";
-                link = "bruise.jsp";
-                break;
-            case "burns":
-                injuryClassTranslated = "화상";
-                link = "burn.jsp";
-                break;
-            case "cut":
-                injuryClassTranslated = "베임";
-                link = "cut.jsp";
-                break;
-            case "laceration":
-                injuryClassTranslated = "열상";
-                link = "laceration.jsp";
-                break;
-            case "snake-bite":
-                injuryClassTranslated = "뱀에 물림";
-                link = "snakebite.jsp";
-                break;
-            case "Stab-wound":
-                injuryClassTranslated = "자창";
-                link = "stabwound.jsp";
-                break;
-            default:
-                injuryClassTranslated = "알 수 없는 부상";
-                link = "#"; // Default no link
-                break;
-        }
-    }
-%>
 
 <!--
 =========================================================
@@ -95,6 +42,15 @@
     <!-- Bootstrap JavaScript and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <%--    naverMap API--%>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}&submodules=geocoder&callback=initMap"></script>
+
+    <script type="text/javascript">
+        const naverClientKey = '${naverClientKey}';
+        const naverClientSecret = '${naverClientSecret}';
+    </script>
+    <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapResult.js" defer></script>
 
 
 </head>
@@ -592,93 +548,32 @@
 <!-- End Navbar -->
 <div class="page-header align-items-start min-vh-100"
      style="background-image: url('${pageContext.request.contextPath}/img/kpaas/kpaasBackground.webp');">
-    <!-- -------- START HEADER 4 w/ search book a ticket form ------- -->
-    <!--<header>-->
-    <!--    <div class="page-header min-height-400" loading="lazy">-->
-    <!--        <span class="mask bg-gradient-dark opacity-8"></span>-->
-    <!--    </div>-->
-    <!--</header>-->
-    <!-- -------- END HEADER 4 w/ search book a ticket form ------- -->
+
+    <%--    산 지도 및 파라미터 시작--%>
     <div class="card card-body blur shadow-blur mx-auto my-9"
-         style="max-width: 600px; min-width: 300px; width: auto;">
+         style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem; display: flex; flex-direction: row;">
 
-        <h2>${userName}님의 부상 감지 결과</h2>
+        <!-- Map Container -->
+        <div id="map" style="width: 75%; height: 100%;"></div>
 
-        <div id="injuryResult">
-            <div class="mb-3">
-                <strong>부상 종류:</strong> <%= injuryClassTranslated %>
-            </div>
-
-            <div class="mb-3">
-                <strong>신뢰 수준:</strong> <%= rDTO.getConfidenceLevel() %>%
-            </div>
-
-            <div class="mb-3">
-                <strong>감지 시간:</strong> <%= rDTO.getRegDt() %>
-            </div>
-
-            <div class="mt-4">
-                <button type="button" class="btn btn-outline-success" style="min-width: 150px;"
-                        onclick="window.location.href='<%= link %>'">
-                    결과 상세보기
-                </button>
+        <!-- Button Container -->
+        <div style="width: 25%; padding-left: 1rem; display: flex; flex-direction: column; align-items: flex-start;">
+            <div style="padding-top: 1rem; width: 100%;">
+                <div class="form-group">
+                    <label for="mountainName">산 이름</label>
+                    <input type="text" id="mountainName" name="mountainName" class="form-control" placeholder="산 이름을 입력하세요">
+                </div>
+                <button id="searchButton" class="btn btn-primary mt-3">산 위치로 이동하기</button>
             </div>
         </div>
-
-
-
-
-        <!-- END Blogs w/ 4 cards w/ image & text & link -->
     </div>
 
-    <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
-    <footer class="footer position-absolute bottom-2 py-2 w-100">
-        <div class="container">
-            <div class="row align-items-center justify-content-lg-between">
-                <div class="col-12 col-md-6 my-auto">
-                    <div class="copyright text-center text-sm text-white text-lg-start">
-                        ©
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                        ,
-                        made with <i class="fa fa-heart" aria-hidden="true"></i> by
-                        <a href="https://www.creative-tim.com" class="font-weight-bold text-white" target="_blank">Creative
-                            Tim</a>
-                        for a better web.
-                    </div>
-                </div>
-                <div class="col-12 col-md-6">
-                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com" class="nav-link text-white" target="_blank">Creative
-                                Tim</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/presentation" class="nav-link text-white"
-                               target="_blank">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/blog" class="nav-link text-white"
-                               target="_blank">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-white"
-                               target="_blank">License</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
-    <!-- -------- END FOOTER 5 w/ DARK BACKGROUND ------- -->
-</div>
-<!--   Core JS Files   -->
-<script src="${pageContext.request.contextPath}/js/core/popper.min.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/js/core/bootstrap.min.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/js/plugins/perfect-scrollbar.min.js"></script>
+    <!--   Core JS Files   -->
+    <script src="${pageContext.request.contextPath}/js/core/popper.min.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/js/core/bootstrap.min.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/js/plugins/perfect-scrollbar.min.js"></script>
 
-<script src="${pageContext.request.contextPath}/js/material-kit.min.js?v=3.0.4" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/js/material-kit.min.js?v=3.0.4" type="text/javascript"></script>
 </body>
 
 </html>
