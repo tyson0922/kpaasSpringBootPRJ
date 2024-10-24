@@ -67,11 +67,24 @@ public class MainController {
     @Value("${naver.api.client.secret}")
     private String naverClientSecret;
     @GetMapping(value="hikingMap")
-    public String hikingMap(Model model) {
-        log.info(this.getClass().getName()+ ".main/hikingMap");
+    public String hikingMap(HttpSession session, Model model) {
+        log.info(this.getClass().getName() + ".main/hikingMap");
 
-        model.addAttribute("naverApiClientKey", naverApiClientKey); // Inject the key into the model
-        return "main/hikingMap";
+        // Retrieve userId and userName from the session
+        String userId = (String) session.getAttribute("SS_USER_ID");
+        String userName = (String) session.getAttribute("SS_USER_NAME");
+
+        if (userId == null) {
+            // Redirect to login if user is not logged in
+            return "redirect:/login";
+        }
+
+        // Inject the naverApiClientKey, userId, and userName into the model
+        model.addAttribute("naverApiClientKey", naverApiClientKey);
+        model.addAttribute("userId", userId);
+        model.addAttribute("userName", userName);
+
+        return "main/hikingMap"; // Make sure this matches the correct JSP view
     }
 
     // New method to handle the hikingRouteTest.jsp

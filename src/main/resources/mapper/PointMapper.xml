@@ -14,10 +14,10 @@
     <insert id="insertPoints">
         INSERT INTO PolygonPoints (USER_ID, FirstPointLat, FirstPointLng, SecondPointLat, SecondPointLng,
                                    ThirdPointLat, ThirdPointLng, FourthPointLat, FourthPointLng,
-                                   CentroidLat, CentroidLng)
+                                   CentroidLat, CentroidLng, REG_ID, REG_DT, CHG_ID, CHG_DT)
         VALUES (#{userId}, #{firstPointLat}, #{firstPointLng}, #{secondPointLat}, #{secondPointLng},
                 #{thirdPointLat}, #{thirdPointLng}, #{fourthPointLat}, #{fourthPointLng},
-                #{centroidLat}, #{centroidLng})
+                #{centroidLat}, #{centroidLng}, #{userId}, NOW(), #{userId}, NOW())
     </insert>
 
     <!-- Delete points for a user before inserting new data -->
@@ -31,3 +31,4 @@
     </select>
 
 </mapper>
+

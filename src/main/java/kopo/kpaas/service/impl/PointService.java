@@ -9,23 +9,20 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PointService implements IPointService {
+
     private final IPointMapper pointMapper;
 
     @Override
     public void savePoints(PolygonPointsDTO points) {
-        int existingRowsCount = pointMapper.countRows();
+        // Delete existing points for the user
+        pointMapper.deleteByUserId(points.getUserId());
 
-        if (existingRowsCount == 0) {
-            // Insert new row if none exists
-            pointMapper.insertPoints(points);
-        } else {
-            // Update existing row with the latest points
-            pointMapper.updatePoints(points);
-        }
+        // Insert new points
+        pointMapper.insertPoints(points);
     }
 
     @Override
-    public PolygonPointsDTO getPoints() {
-        return pointMapper.selectPoints();
+    public PolygonPointsDTO getPoints(String userId) {
+        return pointMapper.selectPoints(userId);
     }
 }

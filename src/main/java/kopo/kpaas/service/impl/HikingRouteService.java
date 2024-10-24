@@ -82,6 +82,10 @@ public class HikingRouteService implements IHikingRouteService {
         JsonNode root = objectMapper.readTree(apiResponse);
         JsonNode features = root.path("response").path("result").path("featureCollection").path("features");
 
+        // Delete existing route data for the user before inserting new data
+        hikingRouteMapper.deleteRoutesByUserId(userId);
+
+        // Loop through each feature (hiking route) and save them
         for (JsonNode feature : features) {
             String routeId = feature.path("id").asText();
             String secLen = feature.path("properties").path("sec_len").asText();
@@ -98,14 +102,12 @@ public class HikingRouteService implements IHikingRouteService {
             log.info("Saving route: ROUTE_ID = {}, User ID = {}, sec_len = {}, up_min = {}, down_min = {}, cat_nam = {}, mntn_nm = {}, geometry = {}",
                     routeId, userId, secLen, upMin, downMin, catNam, mntnNm, geometry);
 
-            // Delete existing route data for the user before inserting new data
-            hikingRouteMapper.deleteRoutesByUserId(userId);
-
             // Create DTO and insert new route properties for the user
             RoutePropertiesDTO routeProperties = new RoutePropertiesDTO(userId, routeId, secLen, upMin, downMin, catNam, mntnNm, geometry);
             hikingRouteMapper.insertRouteProperties(routeProperties);
         }
     }
+
 
 
 

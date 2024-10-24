@@ -6,6 +6,7 @@ var infoWindow = null;
 var centroidMarker = null;
 var clickCount = 0;
 var points = [];
+const userId = "${userId}";
 
 // Function to initialize the map
 function initMap() {
@@ -106,6 +107,91 @@ function displayPolygonArea() {
     infoWindow.open(map);
 }
 
+function calculateCentroid() {
+    let sumLat = 0, sumLng = 0, numPoints = points.length - 1; // Exclude the repeated first point
+    console.log(`Number of unique points used for centroid calculation: ${numPoints}`);
+
+    // Calculate the centroid by averaging the latitude and longitude values
+    for (let i = 0; i < numPoints; i++) {
+        console.log(`Point ${i + 1}: Lat: ${points[i].lat()}, Lng: ${points[i].lng()}`);
+        sumLat += points[i].lat();
+        sumLng += points[i].lng();
+    }
+
+    const centroidLat = sumLat / numPoints;
+    const centroidLng = sumLng / numPoints;
+
+    // Debugging statements to verify the centroid calculation
+    console.log(`Sum of latitudes: ${sumLat}, Sum of longitudes: ${sumLng}`);
+    console.log(`Calculated centroid coordinates: Lat: ${centroidLat}, Lng: ${centroidLng}`);
+
+    // Check if centroid values are valid
+    if (isNaN(centroidLat) || isNaN(centroidLng)) {
+        console.error("Centroid calculation error: Invalid latitude or longitude values.");
+        return; // Exit if the centroid coordinates are invalid
+    }
+
+// Create a button element to be displayed as a marker
+    const buttonElement = `
+    <button type="button" class="btn btn-primary" onclick="fetchHikingRouteAndRedirect();"
+        style="padding: 5px 10px; font-size: 12px; white-space: normal; line-height: 1.2; width: auto; height: auto;">
+        등산로 <br/> 조회
+    </button>`;
+
+    // Remove the existing centroid marker (if any)
+    if (centroidMarker) {
+        centroidMarker.setMap(null);
+        centroidMarker = null;
+    }
+
+    // Display the button as a marker at the centroid location
+    centroidMarker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(centroidLat, centroidLng),
+        map: map,
+        icon: {
+            content: buttonElement,
+            anchor: new naver.maps.Point(12, 12)
+        }
+    });
+
+    console.log('Centroid button successfully added to the map.');
+}
+
+function savePointsToDatabase() {
+    const data = {
+        userId: userId,
+        firstPointLat: points[0].lat(),
+        firstPointLng: points[0].lng(),
+        secondPointLat: points[1].lat(),
+        secondPointLng: points[1].lng(),
+        thirdPointLat: points[2].lat(),
+        thirdPointLng: points[2].lng(),
+        fourthPointLat: points[3].lat(),
+        fourthPointLng: points[3].lng(),
+        centroidLat: centroidMarker.getPosition().lat(),
+        centroidLng: centroidMarker.getPosition().lng()
+    };
+    if (!userId) {
+        console.error("User is not logged in. Cannot save points.");
+        alert("You need to be logged in to save points.");
+        return;
+    }
+    fetch('/api/savePoints', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Data successfully saved:', result);
+        })
+        .catch(error => {
+            console.error('Error saving data:', error);
+        });
+}
+
 function resetMap() {
     // Reset all markers, polygon, and counters
     clickCount = 0;
@@ -135,8 +221,147 @@ function resetMap() {
 
     console.log('Markers and polygon reset. Click to start a new polygon.');
 }
+function fetchHikingRouteAndRedirect() {
+    const apiUrl = '/api/hiking-route';  // Your API endpoint
+
+    // Optionally show a loading message here
+    console.log('Fetching hiking routes...');
+
+    // Send the API request
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            userId: userId // Include userId in the request
+        })
+    })
+
+        .then(response => response.json())  // Parse the response as JSON
+        .then(data => {
+            // Log the API response for debugging
+            console.log("API Response:", data);
+
+            // After receiving and logging the response, redirect to hikingRouteTest.jsp
+            window.location.href = '/main/hikingRouteTest';
+        })
+        .catch(error => {
+            console.error('Error fetching hiking routes:', error);
+            alert('Failed to fetch hiking routes.');
+        });
+}
+
+// Function to handle mountain search
+function handleMountainSearch() {
+    const button = document.getElementById('searchButton');  // Get the search button
+
+    if (!button) {
+        console.error('Search button not found!');  // Check if the button exists
+        return;
+    }
+
+    // Add click event listener to the button
+    button.addEventListener('click', function () {
+        const mountainName = document.getElementById('mountainName').value;
+        console.log('Search button clicked, mountain name:', mountainName);  // Debugging log
+        fetchCoordinatesAndMoveMap(mountainName);  // Trigger the mountain search
+    });
+}
+
+// Function to fetch coordinates and move the map to the location
+function fetchCoordinatesAndMoveMap(mountainName) {
+    console.log('Starting fetch request for mountain:', mountainName);
+    fetch('/api/geocode', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ mountainName: mountainName })
+    })
+        .then(response => {
+            console.log('Fetch completed, response:', response);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Parsed data:', data);
+            if (data.items && data.items.length > 0) {
+                let utmX = data.items[0].mapx;  // UTM-K X coordinate
+                let utmY = data.items[0].mapy;  // UTM-K Y coordinate
+
+                console.log(`UTM-K coordinates (mapx, mapy): (${utmX}, ${utmY})`);
+
+                // Convert UTM-K to WGS84 using Naver reverse geocoding API
+                convertToWGS84(utmX, utmY);
+            } else {
+                console.log('No items found in API response.');
+                alert('산을 찾을 수 없습니다. 다른 이름을 입력하세요.');
+            }
+        })
+        .catch(error => {
+            console.error('Error occurred during fetch:', error);
+            alert('Error fetching data from Naver API.');
+        });
+}
+
+// Function to convert UTM-K to WGS84 using the backend API
+function convertToWGS84(utmX, utmY) {
+    // POST the UTM-K coordinates to your backend endpoint
+    fetch('/api/reverse-geocode', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            utmX: utmX / 10000000,  // Format the coords as required
+            utmY: utmY / 10000000
+        })
+    })
+        .then(response => response.json())
+        .then(reverseGeocodeData => {
+            if (reverseGeocodeData.longitude && reverseGeocodeData.latitude) {
+                console.log(`Converted WGS84 coordinates: (${reverseGeocodeData.latitude}, ${reverseGeocodeData.longitude})`);
+
+                // Move the map to the converted WGS84 coordinates
+                moveMapToLocation(reverseGeocodeData.latitude, reverseGeocodeData.longitude);
+            } else {
+                console.log('No results found for reverse geocoding.');
+                alert('Coordinates could not be converted. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error occurred during reverse geocoding:', error);
+            alert('Error converting coordinates.');
+        });
+}
+
+// Function to move the map to the specified coordinates
+function moveMapToLocation(lat, lng) {
+    console.log(`Attempting to move the map to coordinates: (${lat}, ${lng})`);
+
+    if (map) {
+        const newLocation = new naver.maps.LatLng(lat, lng);  // Use WGS84 coordinates for map center
+        console.log(`Setting map center to: (${lat}, ${lng})`);
+
+        map.setCenter(newLocation);  // Move the map to the new location
+        map.setZoom(12);  // Optionally, zoom in for a closer view
+
+        // Add a marker at the new location
+        var marker = new naver.maps.Marker({
+            position: newLocation,
+            map: map,
+            title: 'Mountain Location'
+        });
+        markers.push(marker);  // Store the new marker
+
+        console.log('Map successfully moved and marker added.');
+    } else {
+        console.error('Map object is not initialized!');
+    }
+}
 
 // Initialize the map and handle the mountain search logic
 document.addEventListener('DOMContentLoaded', function () {
     initMap();  // Initialize the map
+    handleMountainSearch();  // Handle mountain search on button click
 });

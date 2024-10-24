@@ -5,11 +5,16 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface IPointMapper {
-    PolygonPointsDTO selectPoints();
 
-    void insertPoints(PolygonPointsDTO points);
+    // Select points by user_id
+    PolygonPointsDTO selectPoints(String userId);
 
-    void updatePoints(PolygonPointsDTO points);
+    // Insert new polygon points for a user
+    void insertPoints(PolygonPointsDTO polygonPointsDTO);
 
-    int countRows();
+    // Delete points for a user before inserting new data
+    void deleteByUserId(String userId);
+
+    // Count rows for a specific user_id
+    int countRows(String userId);
 }

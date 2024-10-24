@@ -159,6 +159,7 @@ function calculateCentroid() {
 
 function savePointsToDatabase() {
     const data = {
+        userId: userId,
         firstPointLat: points[0].lat(),
         firstPointLng: points[0].lng(),
         secondPointLat: points[1].lat(),
@@ -170,7 +171,11 @@ function savePointsToDatabase() {
         centroidLat: centroidMarker.getPosition().lat(),
         centroidLng: centroidMarker.getPosition().lng()
     };
-
+    if (!userId) {
+        console.error("User is not logged in. Cannot save points.");
+        alert("You need to be logged in to save points.");
+        return;
+    }
     fetch('/api/savePoints', {
         method: 'POST',
         headers: {
@@ -227,8 +232,12 @@ function fetchHikingRouteAndRedirect() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+            userId: userId // Include userId in the request
+        })
     })
+
         .then(response => response.json())  // Parse the response as JSON
         .then(data => {
             // Log the API response for debugging
