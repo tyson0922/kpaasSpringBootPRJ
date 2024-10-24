@@ -8,6 +8,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface HikingRouteMapper {
 
+    // Fetch the polygon points
+    PolygonPointsDTO getPolygonPoints();
+
     // Check if the user has any saved route data
     int countRoutesByUserId(String userId);
 

@@ -76,14 +76,25 @@ public class MainController {
 
     // New method to handle the hikingRouteTest.jsp
     @GetMapping(value = "hikingRouteTest")
-    public String hikingRouteTest(Model model) {
+    public String hikingRouteTest(Model model, HttpSession session) {
         log.info(this.getClass().getName() + ".main/hikingRouteTest");
 
-        // Optionally, call the service to get data if needed
-        Map<String, Object> hikingRouteData = hikingRouteService.getAndSaveHikingRoutes();
-        model.addAttribute("hikingRouteData", hikingRouteData); // Pass data to the JSP
-        model.addAttribute("naverClientSecret", naverClientSecret);
-        return "hiking/hikingRouteResult";  // This loads hikingRouteTest.jsp
+        // Retrieve userId from session
+        String userId = (String) session.getAttribute("SS_USER_ID");
+
+        // If userId is not present in the session, redirect to the login page
+        if (userId == null) {
+            return "redirect:/user/sign-in";
+        }
+
+        // Call the service to get and save hiking route data, passing userId
+        Map<String, Object> hikingRouteData = hikingRouteService.getAndSaveHikingRoutes(userId);
+
+        // Add data to the model for rendering in the JSP
+        model.addAttribute("hikingRouteData", hikingRouteData);
+        model.addAttribute("naverClientSecret", naverClientSecret); // Assuming this value is already set elsewhere
+
+        return "hiking/hikingRouteResult";  // Load hikingRouteTest.jsp
     }
 
 }

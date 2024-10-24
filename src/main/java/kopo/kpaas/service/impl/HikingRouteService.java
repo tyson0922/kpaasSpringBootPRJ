@@ -35,7 +35,7 @@ public class HikingRouteService implements IHikingRouteService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public Map<String, Object> getAndSaveHikingRoutes() {
+    public Map<String, Object> getAndSaveHikingRoutes(String userId) {
         // Step 1: Retrieve the polygon points from the database
         PolygonPointsDTO polygonPoints = hikingRouteMapper.getPolygonPoints();
 
@@ -66,7 +66,7 @@ public class HikingRouteService implements IHikingRouteService {
             });
 
             // Step 4: Save the parsed data into the database
-            saveParsedData(jsonResponse);
+            saveParsedData(jsonResponse, userId);
 
             return responseMap;
 
@@ -77,59 +77,33 @@ public class HikingRouteService implements IHikingRouteService {
     }
 
     // Method to save parsed data
-    public void saveParsedData(String apiResponse) throws IOException {
+    public void saveParsedData(String apiResponse, String userId) throws IOException {
         // Parse the API response
         JsonNode root = objectMapper.readTree(apiResponse);
         JsonNode features = root.path("response").path("result").path("featureCollection").path("features");
 
         for (JsonNode feature : features) {
-            String id = feature.path("id").asText();
+            String routeId = feature.path("id").asText();
             String secLen = feature.path("properties").path("sec_len").asText();
             String upMin = feature.path("properties").path("up_min").asText();
             String downMin = feature.path("properties").path("down_min").asText();
             String catNam = feature.path("properties").path("cat_nam").asText();
             String mntnNm = feature.path("properties").path("mntn_nm").asText();
 
-            // Log the parsed route properties
-            log.info("Parsed Route Properties - ID: {}, sec_len: {}, up_min: {}, down_min: {}, cat_nam: {}, mntn_nm: {}",
-                    id, secLen, upMin, downMin, catNam, mntnNm);
-
-            RoutePropertiesDTO routeProperties = new RoutePropertiesDTO(id, secLen, upMin, downMin, catNam, mntnNm);
-
-            // Check if the route already exists
-            if (hikingRouteMapper.countRouteById(id) > 0) {
-                // If it exists, check if the data is the same before updating
-                RoutePropertiesDTO existingProperties = hikingRouteMapper.getRoutePropertiesById(id);
-
-                // Only update if the properties have changed
-                if (!routeProperties.equals(existingProperties)) {
-                    hikingRouteMapper.updateRouteProperties(routeProperties);
-                }
-            } else {
-                // Insert new route properties if the route does not exist
-                hikingRouteMapper.insertRouteProperties(routeProperties);
-            }
-
-            // Format the MultiLineString
+            // Format the MultiLineString for geometry
             JsonNode coordinates = feature.path("geometry").path("coordinates");
-            String multiLineString = formatMultiLineString(coordinates);
+            String geometry = formatMultiLineString(coordinates);
 
-            // Log the formatted MultiLineString
-            log.info("Parsed MultiLineString for ID {}: {}", id, multiLineString);
+            // Log the parsed route properties
+            log.info("Saving route: ROUTE_ID = {}, User ID = {}, sec_len = {}, up_min = {}, down_min = {}, cat_nam = {}, mntn_nm = {}, geometry = {}",
+                    routeId, userId, secLen, upMin, downMin, catNam, mntnNm, geometry);
 
-            RouteGeometryDTO routeGeometry = new RouteGeometryDTO(id, multiLineString);
+            // Delete existing route data for the user before inserting new data
+            hikingRouteMapper.deleteRoutesByUserId(userId);
 
-            // Check if the geometry already exists
-            RouteGeometryDTO existingGeometry = hikingRouteMapper.getRouteGeometryById(id);
-
-            // Only update if the geometry has changed
-            if (existingGeometry == null || !routeGeometry.equals(existingGeometry)) {
-                if (existingGeometry != null) {
-                    hikingRouteMapper.updateRouteGeometry(routeGeometry);
-                } else {
-                    hikingRouteMapper.insertRouteGeometry(routeGeometry);
-                }
-            }
+            // Create DTO and insert new route properties for the user
+            RoutePropertiesDTO routeProperties = new RoutePropertiesDTO(userId, routeId, secLen, upMin, downMin, catNam, mntnNm, geometry);
+            hikingRouteMapper.insertRouteProperties(routeProperties);
         }
     }
 

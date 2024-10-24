@@ -4,6 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kopo.kpaas.mapper.HikingRouteMapper">
 
+    <!-- Fetch the polygon points -->
+    <select id="getPolygonPoints" resultType="kopo.kpaas.dto.PolygonPointsDTO">
+        SELECT
+            FirstPointLat, FirstPointLng,
+            SecondPointLat, SecondPointLng,
+            ThirdPointLat, ThirdPointLng,
+            FourthPointLat, FourthPointLng,
+            CentroidLat, CentroidLng
+        FROM PolygonPoints
+                 LIMIT 1
+    </select>
+
     <!-- Check if the user has any saved route data -->
     <select id="countRoutesByUserId" resultType="int">
         SELECT COUNT(*)
@@ -27,4 +39,5 @@
     </insert>
 
 </mapper>
+
 
