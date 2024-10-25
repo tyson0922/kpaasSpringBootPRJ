@@ -1,7 +1,6 @@
 package kopo.kpaas.mapper;
 
 import kopo.kpaas.dto.PolygonPointsDTO;
-import kopo.kpaas.dto.RouteGeometryDTO;
 import kopo.kpaas.dto.RoutePropertiesDTO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,7 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface HikingRouteMapper {
 
     // Fetch the polygon points
-    PolygonPointsDTO getPolygonPoints();
+    PolygonPointsDTO getPolygonPoints(String userId);
 
     // Check if the user has any saved route data
     int countRoutesByUserId(String userId);

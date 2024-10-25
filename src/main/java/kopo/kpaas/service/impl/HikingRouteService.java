@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kopo.kpaas.dto.PolygonPointsDTO;
-import kopo.kpaas.dto.RouteGeometryDTO;
 import kopo.kpaas.dto.RoutePropertiesDTO;
 import kopo.kpaas.mapper.HikingRouteMapper;
 import kopo.kpaas.service.IHikingRouteService;
@@ -36,54 +35,74 @@ public class HikingRouteService implements IHikingRouteService {
 
     @Override
     public Map<String, Object> getAndSaveHikingRoutes(String userId) {
-        // Step 1: Retrieve the polygon points from the database
-        PolygonPointsDTO polygonPoints = hikingRouteMapper.getPolygonPoints();
-
-        // Step 2: Format the points into POLYGON format
-        String geomFilter = formatPointsAsPolygon(polygonPoints);  // Ensure geomFilter is created
+        PolygonPointsDTO polygonPoints = hikingRouteMapper.getPolygonPoints(userId);
+        String geomFilter = formatPointsAsPolygon(polygonPoints);
 
         log.info("Formatted POLYGON: {}", geomFilter);
 
-        // Step 3: Use the POLYGON string in the API call
-        String apiUrl = buildApiUrl(geomFilter);  // Pass geomFilter to the buildApiUrl method
+        int currentPage = 1;
+        Map<String, Object> lastResponseMap = null;
+        // Delete existing route data for the user before inserting new data
+        hikingRouteMapper.deleteRoutesByUserId(userId);
 
-        log.info("Full API URL: {}", apiUrl);
+        while (true) {
+            String apiUrl = buildApiUrl(geomFilter, currentPage);
+            log.info("API URL for page {}: {}", currentPage, apiUrl);
 
-        try {
-            // Fetch data from the API using the formatted POLYGON
-            String jsonResponse = NetworkUtil.get(apiUrl);
+            try {
+                String jsonResponse = NetworkUtil.get(apiUrl);
+//                log.info("Raw API Response for page {}: {}", currentPage, jsonResponse);
 
-            log.info("Raw API Response: {}", jsonResponse);
+                if (jsonResponse.startsWith("<html>")) {
+                    log.error("Received an error response from the API: {}", jsonResponse);
+                    throw new RuntimeException("Error from API: " + jsonResponse);
+                }
 
-            // Check if the response is HTML (error page) instead of JSON
-            if (jsonResponse.startsWith("<html>")) {
-                log.error("Received an error response from the API: {}", jsonResponse);
-                throw new RuntimeException("Error from API: " + jsonResponse);
+                // Parse the JSON response
+                Map<String, Object> responseMap = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
+                lastResponseMap = responseMap;
+
+                // Safely access nested "page" object
+                Map<String, Object> response = (Map<String, Object>) responseMap.get("response");
+                if (response == null) {
+                    throw new RuntimeException("Response object is missing in API response.");
+                }
+                Map<String, Object> pageInfo = (Map<String, Object>) response.get("page");
+
+                if (pageInfo == null) {
+                    log.error("No pagination information found in API response.");
+                    throw new RuntimeException("Pagination data is missing from API response.");
+                }
+
+                int totalPages = Integer.parseInt(pageInfo.getOrDefault("total", "1").toString());
+                int currentPageFromResponse = Integer.parseInt(pageInfo.getOrDefault("current", "1").toString());
+
+                // Save data for the current page
+                saveParsedData(jsonResponse, userId, currentPage);
+
+                // Break loop if last page is reached
+                if (currentPage >= totalPages) {
+                    break;
+                }
+                currentPage++; // Move to the next page
+
+            } catch (Exception e) {
+                log.error("Error fetching hiking routes for page {}: ", currentPage, e);
+                throw new RuntimeException("Failed to fetch hiking routes.");
             }
-
-            // Parse the JSON response using ObjectMapper
-            Map<String, Object> responseMap = objectMapper.readValue(jsonResponse, new TypeReference<>() {
-            });
-
-            // Step 4: Save the parsed data into the database
-            saveParsedData(jsonResponse, userId);
-
-            return responseMap;
-
-        } catch (Exception e) {
-            log.error("Error fetching hiking routes: ", e);
-            throw new RuntimeException("Failed to fetch hiking routes.");
         }
+        return lastResponseMap;
     }
 
+
     // Method to save parsed data
-    public void saveParsedData(String apiResponse, String userId) throws IOException {
+    public void saveParsedData(String apiResponse, String userId, int page) throws IOException {
         // Parse the API response
         JsonNode root = objectMapper.readTree(apiResponse);
         JsonNode features = root.path("response").path("result").path("featureCollection").path("features");
 
-        // Delete existing route data for the user before inserting new data
-        hikingRouteMapper.deleteRoutesByUserId(userId);
+//        // Delete existing route data for the user before inserting new data
+//        hikingRouteMapper.deleteRoutesByUserId(userId);
 
         // Loop through each feature (hiking route) and save them
         for (JsonNode feature : features) {
@@ -99,14 +118,16 @@ public class HikingRouteService implements IHikingRouteService {
             String geometry = formatMultiLineString(coordinates);
 
             // Log the parsed route properties
-            log.info("Saving route: ROUTE_ID = {}, User ID = {}, sec_len = {}, up_min = {}, down_min = {}, cat_nam = {}, mntn_nm = {}, geometry = {}",
-                    routeId, userId, secLen, upMin, downMin, catNam, mntnNm, geometry);
+            log.info("Saving route: ROUTE_ID = {}, User ID = {}, sec_len = {}, up_min = {}, down_min = {}, cat_nam = {}, mntn_nm = {}, page = {}",
+                    routeId, userId, secLen, upMin, downMin, catNam, mntnNm, page);
 
-            // Create DTO and insert new route properties for the user
+            // Create DTO and insert new route properties for the user, including page
             RoutePropertiesDTO routeProperties = new RoutePropertiesDTO(userId, routeId, secLen, upMin, downMin, catNam, mntnNm, geometry);
+            routeProperties.setPage(page);  // Set the current page number in the DTO
             hikingRouteMapper.insertRouteProperties(routeProperties);
         }
     }
+
 
 
 
@@ -123,7 +144,7 @@ public class HikingRouteService implements IHikingRouteService {
         );
     }
 
-    private String buildApiUrl(String geomFilter) {
+    private String buildApiUrl(String geomFilter, int page) {
         try {
             // Encode the dynamically generated polygon
             geomFilter = URLEncoder.encode(geomFilter, StandardCharsets.UTF_8.toString());
@@ -144,9 +165,9 @@ public class HikingRouteService implements IHikingRouteService {
                 + "&attribute=true"
                 + "&crs=EPSG:4326"
                 + "&domain=" + apiDomain
-                + "&key=" + apiKey;
+                + "&key=" + apiKey
+                + "&page=" + page;  // Add the page parameter
     }
-
     private String formatMultiLineString(JsonNode coordinates) {
         StringBuilder multiLineStringBuilder = new StringBuilder();
         multiLineStringBuilder.append("MULTILINESTRING(");

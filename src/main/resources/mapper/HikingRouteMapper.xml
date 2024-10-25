@@ -5,7 +5,7 @@
 <mapper namespace="kopo.kpaas.mapper.HikingRouteMapper">
 
     <!-- Fetch the polygon points -->
-    <select id="getPolygonPoints" resultType="kopo.kpaas.dto.PolygonPointsDTO">
+    <select id="getPolygonPoints" parameterType="String" resultType="kopo.kpaas.dto.PolygonPointsDTO">
         SELECT
             FirstPointLat, FirstPointLng,
             SecondPointLat, SecondPointLng,
@@ -13,6 +13,7 @@
             FourthPointLat, FourthPointLng,
             CentroidLat, CentroidLng
         FROM PolygonPoints
+        WHERE user_id = #{userId}
                  LIMIT 1
     </select>
 
@@ -32,9 +33,9 @@
     <!-- Insert new route data -->
     <insert id="insertRouteProperties">
         INSERT INTO RouteProperties
-        (USER_ID, ROUTE_ID, SEC_LEN, UP_MIN, DOWN_MIN, CAT_NAM, MNTN_NM, GEOMETRY, REG_ID, REG_DT, CHG_ID, CHG_DT)
+        (USER_ID, ROUTE_ID, PAGE, SEC_LEN, UP_MIN, DOWN_MIN, CAT_NAM, MNTN_NM, GEOMETRY, REG_ID, REG_DT, CHG_ID, CHG_DT)
         VALUES
-            (#{userId}, #{routeId}, #{secLen}, #{upMin}, #{downMin}, #{catNam}, #{mntnNm}, ST_GeomFromText(#{geometry}),
+            (#{userId}, #{routeId}, #{page}, #{secLen}, #{upMin}, #{downMin}, #{catNam}, #{mntnNm}, ST_GeomFromText(#{geometry}),
              #{userId}, NOW(), #{userId}, NOW())
     </insert>
 

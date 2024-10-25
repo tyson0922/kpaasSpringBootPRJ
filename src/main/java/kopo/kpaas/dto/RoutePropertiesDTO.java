@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class RoutePropertiesDTO {
     private final String userId;      // for USER_ID
     private final String routeId;     // for ROUTE_ID
+    private Integer page;             // for page
     private final String secLen;      // for SEC_LEN
     private final String upMin;       // for UP_MIN
     private final String downMin;     // for DOWN_MIN
