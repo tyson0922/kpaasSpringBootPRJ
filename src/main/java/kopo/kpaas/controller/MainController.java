@@ -3,6 +3,7 @@ package kopo.kpaas.controller;
 import jakarta.servlet.http.HttpSession;
 import kopo.kpaas.dto.PolygonPointsDTO;
 import kopo.kpaas.dto.UserInfoDTO;
+import kopo.kpaas.mapper.HikingRouteMapper;
 import kopo.kpaas.service.IHikingRouteService;
 import kopo.kpaas.service.IPointService;
 import kopo.kpaas.service.IUserInfoService;
@@ -86,7 +87,7 @@ public class MainController {
 
         return "main/hikingMap"; // Make sure this matches the correct JSP view
     }
-
+    private final HikingRouteMapper hikingRouteMapper;
     // New method to handle the hikingRouteTest.jsp
     @GetMapping(value = "hikingRouteTest")
     public String hikingRouteTest(Model model, HttpSession session) {
@@ -106,6 +107,9 @@ public class MainController {
         // Add data to the model for rendering in the JSP
         model.addAttribute("hikingRouteData", hikingRouteData);
         model.addAttribute("naverClientSecret", naverClientSecret); // Assuming this value is already set elsewhere
+
+        PolygonPointsDTO polygonPoints = hikingRouteMapper.getPolygonPoints(userId);
+        model.addAttribute("polygonPoints", polygonPoints);
 
         return "hiking/hikingRouteResult";  // Load hikingRouteTest.jsp
     }

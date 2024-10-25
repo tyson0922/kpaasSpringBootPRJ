@@ -1,6 +1,7 @@
 package kopo.kpaas.controller;
 
 import jakarta.servlet.http.HttpSession;
+import kopo.kpaas.mapper.HikingRouteMapper;
 import kopo.kpaas.service.impl.HikingRouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
