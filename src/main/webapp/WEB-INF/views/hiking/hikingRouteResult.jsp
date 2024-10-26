@@ -159,6 +159,40 @@
                 strokeColor: '#FF0000',
                 strokeWeight: 3
             });
+
+            naver.maps.Event.addListener(routeLine, 'click', () => {
+                showRouteInfo(routeInfo, path[0]); // Show info window at the first point of the polyline
+            });
+        }
+        // Function to show route information in an info window
+        function showRouteInfo(routeInfo, position) {
+            if (infoWindow) {
+                infoWindow.setMap(null); // Close the previous info window if open
+            }
+
+            // Create info window content with route details
+            const contentString = `
+            <div style="padding:10px;">
+                <strong>Route ID:</strong> ${routeInfo.routeId}<br>
+                <strong>Section Length:</strong> ${routeInfo.secLen}<br>
+                <strong>Uphill Time:</strong> ${routeInfo.upMin}<br>
+                <strong>Downhill Time:</strong> ${routeInfo.downMin}<br>
+                <strong>Category:</strong> ${routeInfo.catNam}<br>
+                <strong>Mountain Name:</strong> ${routeInfo.mntnNm}<br>
+            </div>
+        `;
+
+            // Initialize and open the info window at the specified position
+            infoWindow = new naver.maps.InfoWindow({
+                content: contentString,
+                position: position,
+                borderWidth: 1,
+                borderColor: "#333",
+                anchorSize: new naver.maps.Size(10, 10),
+                pixelOffset: new naver.maps.Point(0, -10)
+            });
+
+            infoWindow.open(map);
         }
     </script>
 
