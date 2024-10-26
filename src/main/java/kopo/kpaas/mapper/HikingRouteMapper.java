@@ -4,6 +4,8 @@ import kopo.kpaas.dto.PolygonPointsDTO;
 import kopo.kpaas.dto.RoutePropertiesDTO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface HikingRouteMapper {
 
@@ -18,4 +20,7 @@ public interface HikingRouteMapper {
 
     // Insert new route data using RoutePropertiesDTO
     void insertRouteProperties(RoutePropertiesDTO routeProperties);
+
+    // Retrieve hiking route data for a given user
+    List<RoutePropertiesDTO> findRoutesByUserId(String userId);
 }

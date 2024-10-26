@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -93,6 +94,8 @@ public class HikingRouteService implements IHikingRouteService {
         }
         return lastResponseMap;
     }
+
+
 
 
     // Method to save parsed data
@@ -189,5 +192,11 @@ public class HikingRouteService implements IHikingRouteService {
         multiLineStringBuilder.append(")");
 
         return multiLineStringBuilder.toString();
+    }
+
+    @Override
+    public List<RoutePropertiesDTO> getHikingRoutesByUserId(String userId) {
+        log.info("Retrieving hiking routes for userId: {}", userId);
+        return hikingRouteMapper.findRoutesByUserId(userId);
     }
 }

@@ -39,6 +39,21 @@
              #{userId}, NOW(), #{userId}, NOW())
     </insert>
 
+    <!-- Retrieve hiking route data for a user -->
+    <select id="findRoutesByUserId" parameterType="String" resultType="kopo.kpaas.dto.RoutePropertiesDTO">
+        SELECT
+            ROUTE_ID as routeId,
+            PAGE as page,
+            SEC_LEN as secLen,
+            UP_MIN as upMin,
+            DOWN_MIN as downMin,
+            CAT_NAM as catNam,
+            MNTN_NM as mntnNm,
+            ST_AsText(GEOMETRY) as geometry
+        FROM RouteProperties
+        WHERE USER_ID = #{userId}
+        ORDER BY PAGE ASC
+    </select>
 </mapper>
 
 

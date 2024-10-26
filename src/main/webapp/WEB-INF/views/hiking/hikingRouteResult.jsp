@@ -1,3 +1,4 @@
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=utf-8" %>
 
 <!--
@@ -44,14 +45,122 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
     <%--    naverMap API--%>
-    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}&submodules=geocoder&callback=initMap"></script>
+    <script type="text/javascript"
+            src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}"></script>
 
     <script type="text/javascript">
         const naverClientKey = '${naverClientKey}';
         const naverClientSecret = '${naverClientSecret}';
     </script>
-    <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapResult.js" defer></script>
+    <!-- Load hikingMapResult.js before inline scripts -->
+<%--    <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapResult.js"></script>--%>
 
+    <!-- Inline scripts -->
+    <script type="text/javascript">
+        // Define global variables for map, polygon, and routeLine
+        let map;
+        let polygon;       // For the initial polygon
+        let routeLine;     // For the route polyline
+        const hikingRouteData = ${hikingRouteDataJson};
+
+        console.log("Route Data:", hikingRouteData);
+
+        // Set up polygon points from server data
+        const polygonPoints = {
+            firstPointLat: ${polygonPoints.firstPointLat},
+            firstPointLng: ${polygonPoints.firstPointLng},
+            secondPointLat: ${polygonPoints.secondPointLat},
+            secondPointLng: ${polygonPoints.secondPointLng},
+            thirdPointLat: ${polygonPoints.thirdPointLat},
+            thirdPointLng: ${polygonPoints.thirdPointLng},
+            fourthPointLat: ${polygonPoints.fourthPointLat},
+            fourthPointLng: ${polygonPoints.fourthPointLng},
+            centroidLat: ${polygonPoints.centroidLat},
+            centroidLng: ${polygonPoints.centroidLng}
+        };
+        console.log("polygonPoints data:", polygonPoints);
+
+        // Initialize the map when the document is ready
+        window.addEventListener("DOMContentLoaded", function () {
+            console.log("DOMContentLoaded event fired. Initializing map if available...");
+            if (typeof initMapWithRetry === "function") {
+                initMapWithRetry();
+            } else {
+                console.error("initMapWithRetry is not defined. Please check if hikingMapResult.js is loaded.");
+            }
+        });
+
+        // Retry function to initialize the map if polygon data is not available immediately
+        function initMapWithRetry(retries = 5) {
+            if (polygonPoints) {
+                const points = [
+                    new naver.maps.LatLng(polygonPoints.firstPointLat, polygonPoints.firstPointLng),
+                    new naver.maps.LatLng(polygonPoints.secondPointLat, polygonPoints.secondPointLng),
+                    new naver.maps.LatLng(polygonPoints.thirdPointLat, polygonPoints.thirdPointLng),
+                    new naver.maps.LatLng(polygonPoints.fourthPointLat, polygonPoints.fourthPointLng)
+                ];
+                initMapWithPolygon(polygonPoints.centroidLat, polygonPoints.centroidLng, points);
+
+                // Loop through each route in hikingRouteData and display it on the map
+                hikingRouteData.forEach(route => {
+                    viewRouteOnMap(route.geometry, route.routeId);
+                });
+            } else if (retries > 0) {
+                setTimeout(() => initMapWithRetry(retries - 1), 500);
+            } else {
+                console.error("Polygon points data not available after retries.");
+            }
+        }
+
+        function initMapWithPolygon(centroidLat, centroidLng, points) {
+            if (!map) {
+                map = new naver.maps.Map('map', {
+                    center: new naver.maps.LatLng(centroidLat, centroidLng),
+                    zoom: 13,
+                    minZoom: 13
+                });
+            }
+            drawPolygonFromPoints(map, points);
+        }
+
+        function drawPolygonFromPoints(map, points) {
+            // Draw and keep the initial polygon on the map
+            polygon = new naver.maps.Polygon({
+                map: map,
+                paths: points,
+                fillOpacity: 0, // Remove fill for full transparency
+                strokeColor: '#00FF00',
+                strokeWeight: 2
+            });
+            console.log("Polygon drawn on the map with points:", points);
+        }
+
+        function clearPreviousRoute() {
+            if (routeLine) {
+                routeLine.setMap(null); // Only clear the polyline, not the polygon
+                routeLine = null;
+            }
+        }
+
+        // Function to parse WKT MULTILINESTRING format and display it on the map
+        function viewRouteOnMap(geometry, routeId) {
+            const coordinates = geometry.match(/[-+]?\d*\.\d+|\d+/g);
+            const path = [];
+
+            for (let i = 0; i < coordinates.length; i += 2) {
+                const lat = parseFloat(coordinates[i + 1]);
+                const lng = parseFloat(coordinates[i]);
+                path.push(new naver.maps.LatLng(lat, lng));
+            }
+
+            routeLine = new naver.maps.Polyline({
+                map: map,
+                path: path,
+                strokeColor: '#FF0000',
+                strokeWeight: 3
+            });
+        }
+    </script>
 
 </head>
 
@@ -555,13 +664,32 @@
 
         <!-- Map Container -->
         <div id="map" style="width: 75%; height: 100%;"></div>
+        <div id="route-list">
+            <h3>Available Hiking Routes:</h3>
+            <ul>
+                <c:forEach var="route" items="${hikingRouteData}">
+                    <li>
+                        <span>Route ID: ${route.routeId}</span><br>
+                        <span>Section Length: ${route.secLen}</span><br>
+                        <span>Uphill Time: ${route.upMin}</span><br>
+                        <span>Downhill Time: ${route.downMin}</span><br>
+                        <span>Category: ${route.catNam}</span><br>
+                        <span>Mountain Name: ${route.mntnNm}</span><br>
+                        <button onclick="viewRouteOnMap('${route.geometry}', '${route.routeId}')">View on Map</button>
+
+                    </li>
+                </c:forEach>
+            </ul>
+
+        </div>
 
         <!-- Button Container -->
         <div style="width: 25%; padding-left: 1rem; display: flex; flex-direction: column; align-items: flex-start;">
             <div style="padding-top: 1rem; width: 100%;">
                 <div class="form-group">
-                    <label for="mountainName">산 이름</label>
-                    <input type="text" id="mountainName" name="mountainName" class="form-control" placeholder="산 이름을 입력하세요">
+                    <label for="mountainName">hikingRouteResult</label>
+                    <input type="text" id="mountainName" name="mountainName" class="form-control"
+                           placeholder="산 이름을 입력하세요">
                 </div>
                 <button id="searchButton" class="btn btn-primary mt-3">산 위치로 이동하기</button>
             </div>

@@ -1,7 +1,11 @@
 package kopo.kpaas.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpSession;
 import kopo.kpaas.dto.PolygonPointsDTO;
+import kopo.kpaas.dto.RoutePropertiesDTO;
 import kopo.kpaas.dto.UserInfoDTO;
 import kopo.kpaas.mapper.HikingRouteMapper;
 import kopo.kpaas.service.IHikingRouteService;
@@ -16,6 +20,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -89,6 +94,7 @@ public class MainController {
     }
     private final HikingRouteMapper hikingRouteMapper;
     // New method to handle the hikingRouteTest.jsp
+
     @GetMapping(value = "hikingRouteTest")
     public String hikingRouteTest(Model model, HttpSession session) {
         log.info(this.getClass().getName() + ".main/hikingRouteTest");
@@ -96,54 +102,33 @@ public class MainController {
         // Retrieve userId from session
         String userId = (String) session.getAttribute("SS_USER_ID");
 
-        // If userId is not present in the session, redirect to the login page
+        // Redirect to login if user is not logged in
         if (userId == null) {
             return "redirect:/user/sign-in";
         }
 
-        // Call the service to get and save hiking route data, passing userId
-        Map<String, Object> hikingRouteData = hikingRouteService.getAndSaveHikingRoutes(userId);
+        // Retrieve saved hiking route data without re-fetching and saving
+        List<RoutePropertiesDTO> hikingRoutes = hikingRouteService.getHikingRoutesByUserId(userId);
 
-        // Add data to the model for rendering in the JSP
-        model.addAttribute("hikingRouteData", hikingRouteData);
-        model.addAttribute("naverClientSecret", naverClientSecret); // Assuming this value is already set elsewhere
+        // Try serializing hikingRoutes to JSON for the frontend
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
 
+            String hikingRouteDataJson = objectMapper.writeValueAsString(hikingRoutes);
+            model.addAttribute("hikingRouteDataJson", hikingRouteDataJson);
+        } catch (JsonProcessingException e) {
+            log.error("Error serializing hiking routes to JSON", e);
+            model.addAttribute("hikingRouteDataJson", "[]"); // Fallback to an empty JSON array
+        }
+
+        model.addAttribute("naverApiClientKey", naverApiClientKey);
+        model.addAttribute("naverClientSecret", naverClientSecret);
+
+        // Add polygon points data for use in the frontend
         PolygonPointsDTO polygonPoints = hikingRouteMapper.getPolygonPoints(userId);
         model.addAttribute("polygonPoints", polygonPoints);
 
-        return "hiking/hikingRouteResult";  // Load hikingRouteTest.jsp
+        return "hiking/hikingRouteResult";  // Load hikingRouteResult.jsp
     }
-
 }
-
-
-//@GetMapping("/main")
-//public String analyzeMain(HttpSession session, ModelMap model) throws Exception {
-//    log.info("{}.analyzeMain Start!", this.getClass().getName());
-//
-//    String userId = getUserIdFromSession(session);
-//    if (userId == null) {
-//        return "redirect:/user/login";
-//    }
-//
-//    UserInfoDTO userInfo = userInfoService.getUserInfoById(userId);
-//    model.addAttribute("userName", userInfo.getUserName());
-//    log.info("userName : {}", userInfo.getUserName());
-//
-//    return "/analyze/main";
-//}
-//  <header class="py-5">
-//        <div class="container px-5 pb-5">
-//            <div class="row gx-5 align-items-center">
-//                <div class="section">
-//                    <div class="packman"><img src="../assets/packman.png" style="width: 75px; height:auto"></div>
-//
-//                    <div class="intro">
-//안녕하세요.<br>
-//${userName}님의 발표 도우미 <span class="pitch-lab">Pitch Lab</span>입니다.<br><br>
-//발표 준비를 도와드릴게요!
-//                    </div>
-//                </div>
-//            </div>
-//        </div>
-
