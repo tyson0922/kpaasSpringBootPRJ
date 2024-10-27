@@ -113,5 +113,40 @@ public class InjuryController {
         return "injury/injuryResult";
     }
 
+    @GetMapping("/bruise")
+    public String showBruisePage() {
+        return "injury/bruise"; // JSP path under src/main/webapp/WEB-INF/views/injuries/bruise.jsp
+    }
+
+    @GetMapping("/cut")
+    public String showCutPage() {
+        return "injury/cut"; // JSP path under src/main/webapp/WEB-INF/views/injuries/cut.jsp
+    }
+
+    @GetMapping("/burn")
+    public String showBurnPage() {
+        return "injury/burn"; // JSP path under src/main/webapp/WEB-INF/views/injuries/burn.jsp
+    }
+
+    @GetMapping("/abrasion")
+    public String showAbrasionPage() {
+        return "injury/scratch"; // JSP path under src/main/webapp/WEB-INF/views/injuries/abrasion.jsp
+    }
+
+    @GetMapping("/laceration")
+    public String showLacerationPage() {
+        return "laceration"; // JSP path under src/main/webapp/WEB-INF/views/injuries/laceration.jsp
+    }
+
+    @GetMapping("/snakebite")
+    public String showSnakebitePage() {
+        return "injury/snakebite"; // JSP path under src/main/webapp/WEB-INF/views/injuries/snakebite.jsp
+    }
+
+    @GetMapping("/stabwound")
+    public String showStabWoundPage() {
+        return "stabwound"; // JSP path under src/main/webapp/WEB-INF/views/injuries/stabwound.jsp
+    }
+
 }
 
