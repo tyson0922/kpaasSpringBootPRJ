@@ -53,17 +53,16 @@
         const naverClientSecret = '${naverClientSecret}';
     </script>
     <!-- Load hikingMapResult.js before inline scripts -->
-<%--    <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapResult.js"></script>--%>
+    <%--    <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapResult.js"></script>--%>
 
     <!-- Inline scripts -->
     <script type="text/javascript">
-        // Define global variables for map, polygon, and routeLine
+        // Define global variables for map and parsed route data
         let map;
-        let polygon;       // For the initial polygon
-        let routeLine;     // For the route polyline
-        const hikingRouteData = ${hikingRouteDataJson};
+        let polygon;
+        const hikingRouteData = JSON.parse('${hikingRouteDataJson}'); // Ensure JSON is parsed correctly
 
-        console.log("Route Data:", hikingRouteData);
+        console.log("Parsed Route Data:", hikingRouteData);
 
         // Set up polygon points from server data
         const polygonPoints = {
@@ -78,19 +77,11 @@
             centroidLat: ${polygonPoints.centroidLat},
             centroidLng: ${polygonPoints.centroidLng}
         };
-        console.log("polygonPoints data:", polygonPoints);
 
-        // Initialize the map when the document is ready
         window.addEventListener("DOMContentLoaded", function () {
-            console.log("DOMContentLoaded event fired. Initializing map if available...");
-            if (typeof initMapWithRetry === "function") {
-                initMapWithRetry();
-            } else {
-                console.error("initMapWithRetry is not defined. Please check if hikingMapResult.js is loaded.");
-            }
+            initMapWithRetry();
         });
 
-        // Retry function to initialize the map if polygon data is not available immediately
         function initMapWithRetry(retries = 5) {
             if (polygonPoints) {
                 const points = [
@@ -101,9 +92,8 @@
                 ];
                 initMapWithPolygon(polygonPoints.centroidLat, polygonPoints.centroidLng, points);
 
-                // Loop through each route in hikingRouteData and display it on the map
                 hikingRouteData.forEach(route => {
-                    viewRouteOnMap(route.geometry, route.routeId);
+                    viewRouteOnMap(route.geometry, route);
                 });
             } else if (retries > 0) {
                 setTimeout(() => initMapWithRetry(retries - 1), 500);
@@ -124,26 +114,17 @@
         }
 
         function drawPolygonFromPoints(map, points) {
-            // Draw and keep the initial polygon on the map
             polygon = new naver.maps.Polygon({
                 map: map,
                 paths: points,
-                fillOpacity: 0, // Remove fill for full transparency
+                fillOpacity: 0,
                 strokeColor: '#00FF00',
                 strokeWeight: 2
             });
-            console.log("Polygon drawn on the map with points:", points);
         }
 
-        function clearPreviousRoute() {
-            if (routeLine) {
-                routeLine.setMap(null); // Only clear the polyline, not the polygon
-                routeLine = null;
-            }
-        }
-
-        // Function to parse WKT MULTILINESTRING format and display it on the map
-        function viewRouteOnMap(geometry, routeId) {
+        function viewRouteOnMap(geometry, routeInfo) {
+            console.log("Entering viewRouteOnMap with routeInfo:", routeInfo);
             const coordinates = geometry.match(/[-+]?\d*\.\d+|\d+/g);
             const path = [];
 
@@ -153,48 +134,44 @@
                 path.push(new naver.maps.LatLng(lat, lng));
             }
 
-            routeLine = new naver.maps.Polyline({
+            const routeLine = new naver.maps.Polyline({
                 map: map,
                 path: path,
                 strokeColor: '#FF0000',
-                strokeWeight: 3
+                strokeWeight: 5,
+                clickable: true
             });
 
+            // Set cursor to pointer on hover
+            naver.maps.Event.addListener(routeLine, 'mouseover', () => {
+                map.getElement().style.cursor = 'pointer';
+            });
+            naver.maps.Event.addListener(routeLine, 'mouseout', () => {
+                map.getElement().style.cursor = 'grab';
+            });
+
+            // Update card info on click without opening an info window
             naver.maps.Event.addListener(routeLine, 'click', () => {
-                showRouteInfo(routeInfo, path[0]); // Show info window at the first point of the polyline
+                console.log("Polyline clicked, passing routeInfo to updateCardInfo:", routeInfo);
+                updateCardInfo(routeInfo); // Update card info on click
             });
         }
-        // Function to show route information in an info window
-        function showRouteInfo(routeInfo, position) {
-            if (infoWindow) {
-                infoWindow.setMap(null); // Close the previous info window if open
-            }
 
-            // Create info window content with route details
-            const contentString = `
-            <div style="padding:10px;">
-                <strong>Route ID:</strong> ${routeInfo.routeId}<br>
-                <strong>Section Length:</strong> ${routeInfo.secLen}<br>
-                <strong>Uphill Time:</strong> ${routeInfo.upMin}<br>
-                <strong>Downhill Time:</strong> ${routeInfo.downMin}<br>
-                <strong>Category:</strong> ${routeInfo.catNam}<br>
-                <strong>Mountain Name:</strong> ${routeInfo.mntnNm}<br>
-            </div>
-        `;
+        // Function to update the HTML card with route information
+        function updateCardInfo(routeInfo) {
+            console.log("Updating card with routeInfo:", routeInfo);
 
-            // Initialize and open the info window at the specified position
-            infoWindow = new naver.maps.InfoWindow({
-                content: contentString,
-                position: position,
-                borderWidth: 1,
-                borderColor: "#333",
-                anchorSize: new naver.maps.Size(10, 10),
-                pixelOffset: new naver.maps.Point(0, -10)
-            });
-
-            infoWindow.open(map);
+            // Update each element in the HTML card with the routeInfo data
+            document.getElementById('route-id').innerText = routeInfo.routeId || "N/A";
+            document.getElementById('section-length').innerText = routeInfo.secLen || "N/A";
+            document.getElementById('uphill-time').innerText = routeInfo.upMin || "N/A";
+            document.getElementById('downhill-time').innerText = routeInfo.downMin || "N/A";
+            document.getElementById('category').innerText = routeInfo.catNam || "N/A";
+            document.getElementById('mountain-name').innerText = routeInfo.mntnNm || "N/A";
         }
     </script>
+
+
 
 </head>
 
@@ -698,23 +675,15 @@
 
         <!-- Map Container -->
         <div id="map" style="width: 75%; height: 100%;"></div>
-        <div id="route-list">
-            <h3>Available Hiking Routes:</h3>
-            <ul>
-                <c:forEach var="route" items="${hikingRouteData}">
-                    <li>
-                        <span>Route ID: ${route.routeId}</span><br>
-                        <span>Section Length: ${route.secLen}</span><br>
-                        <span>Uphill Time: ${route.upMin}</span><br>
-                        <span>Downhill Time: ${route.downMin}</span><br>
-                        <span>Category: ${route.catNam}</span><br>
-                        <span>Mountain Name: ${route.mntnNm}</span><br>
-                        <button onclick="viewRouteOnMap('${route.geometry}', '${route.routeId}')">View on Map</button>
-
-                    </li>
-                </c:forEach>
-            </ul>
-
+        <!-- Route Details Card -->
+        <div id="route-details" style="padding: 1rem; width: 25%;">
+            <h3>Route Details</h3>
+            <p><strong>Route ID:</strong> <span id="route-id">N/A</span></p>
+            <p><strong>Section Length:</strong> <span id="section-length">N/A</span></p>
+            <p><strong>Uphill Time:</strong> <span id="uphill-time">N/A</span></p>
+            <p><strong>Downhill Time:</strong> <span id="downhill-time">N/A</span></p>
+            <p><strong>Category:</strong> <span id="category">N/A</span></p>
+            <p><strong>Mountain Name:</strong> <span id="mountain-name">N/A</span></p>
         </div>
 
         <!-- Button Container -->
