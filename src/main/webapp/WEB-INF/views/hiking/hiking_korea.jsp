@@ -595,7 +595,7 @@
     <!--    </div>-->
     <!--</header>-->
     <!-- -------- END HEADER 4 w/ search book a ticket form ------- -->
-    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto" style="max-width: 80%;">
+    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto" style="max-width: 1000px; min-width: 40%;">
         <!-- START Testimonials w/ user image & text & info -->
 
         <!-- START Blogs w/ 4 cards w/ image & text & link -->

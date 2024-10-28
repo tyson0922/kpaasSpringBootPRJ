@@ -6,7 +6,7 @@
 * Material Kit 2 - v3.0.4
 =========================================================
 
-* Product Page:  https://www.creative-tim.com/product/material-kit
+* Product Page: https://www.creative-tim.com/product/material-kit
 * Copyright 2023 Creative Tim (https://www.creative-tim.com)
 * Coded by www.creative-tim.com
 
@@ -44,8 +44,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
-    <!--    js script for uploading picture-->
-    <script src="${pageContext.request.contextPath}/js/kpaasJs/uploadHandler.js"></script>
 
     <style>
         /* Constrain the carousel controls to their respective columns */
@@ -130,7 +128,8 @@
                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="material-icons opacity-6 me-2 text-md">dashboard</i>
                                     Pages
-                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg" alt="down-arrow"
+                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg"
+                                         alt="down-arrow"
                                          class="arrow ms-auto ms-md-2">
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-animation ms-n3 dropdown-md p-3 border-radius-xl mt-0 mt-lg-3"
@@ -182,7 +181,8 @@
                                    id="dropdownMenuBlocks" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="material-icons opacity-6 me-2 text-md">view_day</i>
                                     Sections
-                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg" alt="down-arrow"
+                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg"
+                                         alt="down-arrow"
                                          class="arrow ms-auto ms-md-2">
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-animation dropdown-md dropdown-md-responsive p-3 border-radius-lg mt-0 mt-lg-3"
@@ -197,7 +197,8 @@
                                                             Page Sections</h6>
                                                         <span class="text-sm">See all sections</span>
                                                     </div>
-                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg" alt="down-arrow"
+                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg"
+                                                         alt="down-arrow"
                                                          class="arrow">
                                                 </div>
                                             </a>
@@ -221,7 +222,8 @@
                                                             Navigation</h6>
                                                         <span class="text-sm">See all navigations</span>
                                                     </div>
-                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg" alt="down-arrow"
+                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg"
+                                                         alt="down-arrow"
                                                          class="arrow">
                                                 </div>
                                             </a>
@@ -249,7 +251,8 @@
                                                             Input Areas</h6>
                                                         <span class="text-sm">See all input areas</span>
                                                     </div>
-                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg" alt="down-arrow"
+                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg"
+                                                         alt="down-arrow"
                                                          class="arrow">
                                                 </div>
                                             </a>
@@ -273,7 +276,8 @@
                                                             Attention Catchers</h6>
                                                         <span class="text-sm">See all examples</span>
                                                     </div>
-                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg" alt="down-arrow"
+                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg"
+                                                         alt="down-arrow"
                                                          class="arrow">
                                                 </div>
                                             </a>
@@ -301,7 +305,8 @@
                                                             Elements</h6>
                                                         <span class="text-sm">See all elements</span>
                                                     </div>
-                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg" alt="down-arrow"
+                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg"
+                                                         alt="down-arrow"
                                                          class="arrow">
                                                 </div>
                                             </a>
@@ -479,7 +484,8 @@
                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="material-icons opacity-6 me-2 text-md">article</i>
                                     Docs
-                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg" alt="down-arrow"
+                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg"
+                                         alt="down-arrow"
                                          class="arrow ms-auto ms-md-2">
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-animation dropdown-md dropdown-md-responsive mt-0 mt-lg-3 p-3 border-radius-lg"
@@ -594,56 +600,14 @@
     <!--    </div>-->
     <!--</header>-->
     <!-- -------- END HEADER 4 w/ search book a ticket form ------- -->
-    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto" style="max-width: 80%;">
+    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto"
+         style="max-width: 1000px; min-width: 40%">
         <!-- START Testimonials w/ user image & text & info -->
 
         <!-- START Blogs w/ 4 cards w/ image & text & link -->
         <section class="py-3">
             <div class="container">
                 <div class="row">
-                    <!--                    &lt;!&ndash; Left Section: 1/3 of the screen &ndash;&gt;-->
-                    <!--                    <div class="col-lg-4 col-sm-4">-->
-                    <!--                        <div class="card card-plain" style="border: none; box-shadow: none;">-->
-                    <!--                            <div class="card-header p-0 position-relative" style="border: none;">-->
-                    <!--                                <a class="d-block blur-shadow-image" style="outline: none;">-->
-                    <!--                                    &lt;!&ndash; The existing image that will be replaced &ndash;&gt;-->
-                    <!--                                    <img id="imageToReplace" src="${pageContext.request.contextPath}/img/kpaas/hikingTrail.webp" alt="img-blur-shadow"-->
-                    <!--                                         class="img-fluid shadow border-radius-lg" loading="lazy">-->
-                    <!--                                </a>-->
-                    <!--                            </div>-->
-                    <!--                            &lt;!&ndash; Button below the image &ndash;&gt;-->
-                    <!--                            <div class="card-body text-center mt-3 p-0" style="border: none; box-shadow: none;">-->
-                    <!--                                &lt;!&ndash; Hidden file input &ndash;&gt;-->
-                    <!--                                <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileUpload(this)">-->
-
-                    <!--                                &lt;!&ndash; Button to trigger file input &ndash;&gt;-->
-                    <!--                                <button type="button" class="btn btn-outline-success" style="width: 100%;" onclick="document.getElementById('fileInput').click();">-->
-                    <!--                                    사진 업로드-->
-                    <!--                                </button>-->
-
-                    <!--                                &lt;!&ndash; "상처 분석 시작" Button (Initially hidden) &ndash;&gt;-->
-                    <!--                                <button type="button" id="analyzeButton" class="btn btn-outline-success" style="display: none; width: 100%;" onclick="startAnalysis()">-->
-                    <!--                                    상처 분석 시작-->
-                    <!--                                </button>-->
-
-                    <!--                                &lt;!&ndash; Progress Bar (Initially hidden) &ndash;&gt;-->
-                    <!--                                <div id="progressBar" class="progress" style="height: 30px; display: none; background-color: #e9ecef;">-->
-                    <!--                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success d-flex justify-content-center align-items-center" role="progressbar" style="width: 100%; height: 100%;">-->
-                    <!--                                        분석 중-->
-                    <!--                                    </div>-->
-                    <!--                                </div>-->
-
-                    <!--                                &lt;!&ndash; "분석 결과" Button (Initially hidden) &ndash;&gt;-->
-                    <!--                                <button type="button" id="resultButton" class="btn btn-outline-success" style="display: none; width: 100%; margin-bottom: 0 !important;" onclick="redirectToResult()">-->
-                    <!--                                    분석 결과-->
-                    <!--                                </button>-->
-                    <!--                            </div>-->
-
-
-
-                    <!--                        </div>-->
-                    <!--                    </div>-->
-
 
                     <!-- Right Section: 2/3 of the screen (contains the carousel) -->
                     <div class="col-lg-12 col-sm-8">
@@ -678,19 +642,19 @@
                                             <!-- Slide 1 -->
                                             <div class="carousel-item active">
                                                 <div class="card-body px-0 py-3"><br><br>
-                                                    <div class="card-header p-0 position-relative" style="border: none;">
-                                                        <a class="d-block blur-shadow-image" style="outline: none;">
-                                                            <!-- The existing image that will be replaced -->
-                                                            <img id="imageToReplace"
-                                                                 src="${pageContext.request.contextPath}/img/kpaas/handwash.webp"
-                                                                 alt="img-blur-shadow"
-                                                                 class="img-fluid shadow border-radius-lg"
-                                                                 style="width: 600px; height: 400px; object-fit: cover;"
-                                                                 loading="lazy">
-                                                        </a>
-                                                        <br>
 
-                                                    </div>
+                                                    <a class="d-block blur-shadow-image mx-auto"  style="outline: none;">
+                                                        <!-- The existing image that will be replaced -->
+                                                        <img class="mx-auto d-block" id="imageToReplace"
+                                                             src="${pageContext.request.contextPath}/img/kpaas/handwash.webp"
+                                                             alt="img-blur-shadow"
+                                                             class="img-fluid shadow border-radius-lg"
+                                                             style="width: 600px; height: 400px; object-fit: cover;"
+                                                             loading="lazy">
+                                                    </a>
+                                                    <br>
+
+
                                                     <br>
                                                     <h4 class="text-dark font-weight-bold">
                                                         긁힘 상처 세척하기
@@ -698,9 +662,13 @@
                                                     </h4>
                                                     <p class="text-dark fs-5">
                                                         <strong style="font-weight: bold;">감염 예방:</strong> <br>
-                                                        긁힌 부위에는 세균이나 이물질이 남아 있을 수 있습니다. 세척을 통해 이러한 오염물질을 제거함으로써 감염의 위험을 줄일 수 있습니다.<br><br>
-                                                        <strong style="font-weight: bold;">상처치유 촉진:</strong> <br> 깨끗한 환경에서 상처가 치유되기 때문에, 세척을 통해 상처를 청결하게 유지하면 치유 과정이 더 원활하게 진행됩니다.<br><br>
-                                                        <strong style="font-weight: bold;">통증 완화:</strong> <br>긁힘 부위에 있는 이물질이나 먼지를 제거하면 자극이 줄어들어 통증이 완화될 수 있습니다. 깨끗한 상태를 유지하는 것이 중요합니다.<br><br>
+                                                        긁힌 부위에는 세균이나 이물질이 남아 있을 수 있습니다. 세척을 통해 이러한 오염물질을 제거함으로써 감염의 위험을
+                                                        줄일 수 있습니다.<br><br>
+                                                        <strong style="font-weight: bold;">상처치유 촉진:</strong> <br> 깨끗한
+                                                        환경에서 상처가 치유되기 때문에, 세척을 통해 상처를 청결하게 유지하면 치유 과정이 더 원활하게 진행됩니다.<br><br>
+                                                        <strong style="font-weight: bold;">통증 완화:</strong> <br>긁힘 부위에 있는
+                                                        이물질이나 먼지를 제거하면 자극이 줄어들어 통증이 완화될 수 있습니다. 깨끗한 상태를 유지하는 것이
+                                                        중요합니다.<br><br>
                                                     </p>
                                                 </div>
                                             </div>
@@ -708,7 +676,7 @@
                                             <div class="carousel-item">
                                                 <div class="card-body px-0 py-3"><br>
                                                     <a class="d-block blur-shadow-image" style="outline: none;">
-                                                        <img id="imageToReplace2"
+                                                        <img class="d-block blur-shadow-image mx-auto" id="imageToReplace2"
                                                              src="${pageContext.request.contextPath}/img/kpaas/sodok.webp"
                                                              alt="img-blur-shadow"
                                                              class="img-fluid shadow border-radius-lg"
@@ -723,13 +691,14 @@
 
                                                     <p class="text-dark fs-5">
                                                         <strong style="font-weight:bold; ">감염예방:</strong><br>
-                                                        소독은 세균, 바이러스, 곰팡이 등 병원체를 제거하여 감염의 위험을 줄이는 데 도움을 줍니다. 특히 상처나 수술 부위에서 감염이 발생할 경우, 치유 과정이 지연되거나 심각한 합병증이 발생할 수 있습니다.<br><br>
+                                                        소독은 세균, 바이러스, 곰팡이 등 병원체를 제거하여 감염의 위험을 줄이는 데 도움을 줍니다. 특히 상처나 수술
+                                                        부위에서 감염이 발생할 경우, 치유 과정이 지연되거나 심각한 합병증이 발생할 수 있습니다.<br><br>
                                                         <strong style="font-weight: bold;">위생유지: </strong><br>
-                                                        소독은 환경이나 도구의 위생을 유지하는 데 필수적입니다. 병원, 클리닉, 식품 가공업체 등에서는 소독을 통해 질병의 전파를 방지하고, 안전한 환경을 조성합니다.<br><br>
+                                                        소독은 환경이나 도구의 위생을 유지하는 데 필수적입니다. 병원, 클리닉, 식품 가공업체 등에서는 소독을 통해 질병의
+                                                        전파를 방지하고, 안전한 환경을 조성합니다.<br><br>
                                                         <strong style="font-weight: bold;">면역 체계 보호: </strong><br>
-                                                        소독을 통해 병원체의 노출을 줄이면, 면역 체계가 과도하게 반응하지 않도록 도와줍니다. 이는 특히 면역력이 약한사람들(예: 노인, 어린이, 만성 질환자)에게 중요합니다.<br><br>
-
-
+                                                        소독을 통해 병원체의 노출을 줄이면, 면역 체계가 과도하게 반응하지 않도록 도와줍니다. 이는 특히 면역력이
+                                                        약한사람들(예: 노인, 어린이, 만성 질환자)에게 중요합니다.<br><br>
 
 
                                                     </p><br><br>
@@ -740,7 +709,7 @@
                                                 <div class="card-body py-3"><br>
                                                     <div class="card-body px-0 py-3"><br>
                                                         <a class="d-block blur-shadow-image" style="outline: none;">
-                                                            <img id="imageToReplace3"
+                                                            <img class="d-block blur-shadow-image mx-auto"  id="imageToReplace3"
                                                                  src="${pageContext.request.contextPath}/img/kpaas/dressing.png"
                                                                  alt="img-blur-shadow"
                                                                  class="img-fluid shadow border-radius-lg"
@@ -754,11 +723,14 @@
                                                         </h4>
                                                         <p class="text-dark fs-5">
                                                             <strong style="font-weight:bold; ">드레싱 하는이유:</strong><br>
-                                                            드레싱은 상처를 외부 환경으로부터 보호하여 세균이나 오염물질이 침투하는 것을 막고, 상처의 치유를 촉진합니다.<br><br>
+                                                            드레싱은 상처를 외부 환경으로부터 보호하여 세균이나 오염물질이 침투하는 것을 막고, 상처의 치유를
+                                                            촉진합니다.<br><br>
                                                             <strong style="font-weight:bold; ">상처 청소:</strong><br>
-                                                            드레싱을 하기 전에 상처 부위를 깨끗이 청소합니다. 소독제를 사용하여 상처 주변의 피부를 소독하고, 상처 자체도 부드러운 생리식염수 등으로 세척하여 이물질을 제거합니다.<br><br>
+                                                            드레싱을 하기 전에 상처 부위를 깨끗이 청소합니다. 소독제를 사용하여 상처 주변의 피부를 소독하고, 상처
+                                                            자체도 부드러운 생리식염수 등으로 세척하여 이물질을 제거합니다.<br><br>
                                                             <strong style="font-weight:bold; ">드레싱 부착:</strong><br>
-                                                            청소한 후, 드레싱 패드를 상처에 부착합니다. 이때 드레싱이 상처를 충분히 덮고, 너무 꽉 조이지 않도록 주의합니다. 드레싱이 잘 고정되도록 테이프나 밴드를 사용하여 고정합니다.<br><br>
+                                                            청소한 후, 드레싱 패드를 상처에 부착합니다. 이때 드레싱이 상처를 충분히 덮고, 너무 꽉 조이지 않도록
+                                                            주의합니다. 드레싱이 잘 고정되도록 테이프나 밴드를 사용하여 고정합니다.<br><br>
 
 
                                                         </p><br><br>
@@ -770,15 +742,17 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Right Control Column (10% width of available screen) -->
-                                <div class="col-1 d-flex align-items-center">
-                                    <a class="carousel-control-next custom-control text-success"
-                                       href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </a>
-                                </div>
+
                             </div>
+                            <!-- Right Control Column (10% width of available screen) -->
+                            <div class="col-1 d-flex align-items-center">
+                                <a class="carousel-control-next custom-control text-success"
+                                   href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </a>
+                            </div>
+
                         </div>
                     </div>
                 </div>

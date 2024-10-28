@@ -37,7 +37,12 @@ public class MainController {
 
         return "main/mainPage";
     }
+    @GetMapping(value = "hikingInfo")
+    public String hikingInfo() {
+        log.info(this.getClass().getName() + ".main/hikingInfo");
 
+        return "main/hikingInfo";
+    }
     @GetMapping(value = "injuryDetection")
     public String injuryDetection(HttpSession session, ModelMap model) throws Exception {
         log.info(this.getClass().getName() + ".main/injuryDetection Start!");
@@ -82,7 +87,7 @@ public class MainController {
 
         if (userId == null) {
             // Redirect to login if user is not logged in
-            return "redirect:/login";
+            return "redirect:/user/sign-in";
         }
 
         // Inject the naverApiClientKey, userId, and userName into the model

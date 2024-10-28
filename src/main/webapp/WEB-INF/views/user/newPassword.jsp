@@ -1,4 +1,27 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="kopo.kpaas.dto.UserInfoDTO" %>
+<%@ page import="kopo.kpaas.util.CmmUtil" %>
+<%
+    UserInfoDTO rDTO = (UserInfoDTO) request.getAttribute("rDTO");
+
+    // 비밀번호 재설정 접속 가능한지 체크
+    String newPassword = CmmUtil.nvl((String) session.getAttribute("NEW_PASSWORD"));
+
+    String msg = "";
+
+    if (CmmUtil.nvl(rDTO.getUserId()).length() > 0) { // 아이디 찾기 성공
+
+        if (newPassword.length() == 0) { // 비정상적인 접근
+            msg = "비정상적인 접근입니다. \n비밀번호 재설정 화면에 접근할 수 없습니다.";
+
+        }
+    } else {
+        msg = "회원정보가 존재하지 않습니다.";
+
+    }
+%>
+
+
 <!--
 =========================================================
 * Material Kit 2 - v3.0.4
@@ -39,8 +62,56 @@
 
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-    <!-- Include your userReg.js file -->
-    <script src="${pageContext.request.contextPath}/js/kpaasJs/userReg.js"></script>
+    <script type="text/javascript">
+
+        <%
+        // 비정상적인 접근 및 회원정보가 없는 경우 뒤로 가기
+        if (msg.length()>0){
+        %>
+        alert("<%=msg%>");
+        history.back();
+        <%
+        }
+        %>
+
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+
+            // 로그인 화면 이동
+            $("#btnLogin").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+                location.href = "/user/sign-in";
+            })
+
+            // 비밀번호  찾기
+            $("#btnSearchPassword").on("click", function () {
+                let f = document.getElementById("f"); // form 태그
+
+                if (f.password.value === "") {
+                    alert("새로운 비밀번호를 입력하세요.");
+                    f.password.focus();
+                    return;
+                }
+
+                if (f.password2.value === "") {
+                    alert("검증을 위한 새로운 비밀번호를 입력하세요.");
+                    f.password2.focus();
+                    return;
+                }
+
+
+                if (f.password.value !== f.password2.value) {
+                    alert("입력한 비밀번호가 일치하지 않습니다.");
+                    f.password.focus();
+                    return;
+                }
+
+                f.method = "post"; // 비밀번호 찾기 정보 전송 방식
+                f.action = "/user/newPasswordProc" // 비밀번호 찾기 URL
+
+                f.submit(); // 아이디 찾기 정보 전송하기
+            })
+        })
+    </script>
 </head>
 
 <body class="sign-in-basic">
@@ -524,77 +595,32 @@
                 <div class="card z-index-0 fadeIn3 fadeInBottom">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-success shadow-primary border-radius-lg py-3 pe-1">
-                            <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">회원가입</h4>
+                            <h4 class="text-white font-weight-bolder text-center mt-2 mb-0"><%=CmmUtil.nvl(rDTO.getUserName())%> 회원님의 비밀번호 재설정</h4>
 
                         </div>
                     </div>
                     <div class="card-body">
                         <form id="f" role="form" class="text-start">
-                            <div class="row g-0">
-                                <div class="col-8 pe-2">
-                                    <div class="input-group input-group-outline w-100">
-                                        <input type="text" name="userId" class="form-control" required placeholder="아이디">
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <button type="button" id="btnUserId" class="btn btn-outline-success w-100 mb-0">중복체크</button>
-                                </div>
-                            </div>
                             <div class="input-group input-group-outline my-3">
-                                <%--                                <label class="form-label">이메일</label>--%>
-                                <input type="text" name="userName" class="form-control" required placeholder="이름">
+                                <input type="password" id="password" name="password" class="form-control" required placeholder="새로운 비밀번호">
                             </div>
 
                             <div class="row g-0">
-                                <div class="col-8 pe-2">
+                                <div>
                                     <div class="input-group input-group-outline w-100">
-                                        <input type="text" name="email" class="form-control" required placeholder="이메일 주소">
+                                        <input type="password" id="password2" name="password2" class="form-control" required placeholder="검증을 위한 새로운 비밀번호">
                                     </div>
                                 </div>
-                                <div class="col-4">
-                                    <button type="button" id="btnEmail"  class="btn btn-outline-success w-100 mb-0">이메일 인증번호 발송</button>
-                                </div>
                             </div>
-                            <div class="input-group input-group-outline my-3">
-                                <%--                                <label class="form-label">이메일</label>--%>
-                                <input type="text" name="authNumber" class="form-control" required placeholder="메일로  발송된 인증번호">
-                            </div>
-                            <div class="input-group input-group-outline mb-3">
-                                <%--                                <label class="form-label">비밀번호</label>--%>
-                                <input type="password" name="password" class="form-control" required placeholder="비밀번호">
-                            </div>
-                            <div class="row">
-                                <div class="input-group input-group-outline mb-3">
-                                    <%--                                <label class="form-label">비밀번호 확인</label>--%>
-                                    <input type="password" name="password2" class="form-control" required placeholder="비밀번호 확인">
-                                </div>
-                            </div>
+                            <br>
 
-
-                            <div class="row g-0">
-                                <div class="col-8 pe-2">
-                                    <div class="input-group input-group-outline w-100 mb-0">
-                                        <label for="postcode"></label>
-                                        <input type="text" id="postcode" name="addr1" class="form-control" placeholder="주소" readonly required>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <button type="button" id="postcodeBtn" class="btn btn-outline-success w-100 mb-0">주소 검색
-                                    </button>
-                                </div>
-                                <div class="input-group input-group-outline my-3">
-
-                                    <input type="text" name="addr2" class="form-control" required placeholder="상세주소">
-                                </div>
-
-                            </div>
 
                             <div class="text-center">
-                                <button id="btnSend" type="button" class="btn bg-gradient-success" style="width: 250px;">가입하기</button>
+                                <button id="btnSearchPassword" type="button" class="btn bg-gradient-success" style="width: 250px;">비밀번호 재설정</button>
 
                             </div>
                             <div class="text-center">
-                                <p class="mt-4 text-sm text-center">이미 계정이 있나요? <a href="sign-in">로그인</a></p>
+                                <button id="btnLogin" type="button" class="btn bg-gradient-success" style="width: 250px;">로그인</button>
                             </div>
                         </form>
                     </div>

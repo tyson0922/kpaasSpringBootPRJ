@@ -1,12 +1,11 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 
-
 <!--
 =========================================================
 * Material Kit 2 - v3.0.4
 =========================================================
 
-* Product Page:  https://www.creative-tim.com/product/material-kit
+* Product Page: https://www.creative-tim.com/product/material-kit
 * Copyright 2023 Creative Tim (https://www.creative-tim.com)
 * Coded by www.creative-tim.com
 
@@ -130,7 +129,8 @@
                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="material-icons opacity-6 me-2 text-md">dashboard</i>
                                     Pages
-                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg" alt="down-arrow"
+                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg"
+                                         alt="down-arrow"
                                          class="arrow ms-auto ms-md-2">
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-animation ms-n3 dropdown-md p-3 border-radius-xl mt-0 mt-lg-3"
@@ -182,7 +182,8 @@
                                    id="dropdownMenuBlocks" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="material-icons opacity-6 me-2 text-md">view_day</i>
                                     Sections
-                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg" alt="down-arrow"
+                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg"
+                                         alt="down-arrow"
                                          class="arrow ms-auto ms-md-2">
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-animation dropdown-md dropdown-md-responsive p-3 border-radius-lg mt-0 mt-lg-3"
@@ -197,7 +198,8 @@
                                                             Page Sections</h6>
                                                         <span class="text-sm">See all sections</span>
                                                     </div>
-                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg" alt="down-arrow"
+                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg"
+                                                         alt="down-arrow"
                                                          class="arrow">
                                                 </div>
                                             </a>
@@ -221,7 +223,8 @@
                                                             Navigation</h6>
                                                         <span class="text-sm">See all navigations</span>
                                                     </div>
-                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg" alt="down-arrow"
+                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg"
+                                                         alt="down-arrow"
                                                          class="arrow">
                                                 </div>
                                             </a>
@@ -249,7 +252,8 @@
                                                             Input Areas</h6>
                                                         <span class="text-sm">See all input areas</span>
                                                     </div>
-                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg" alt="down-arrow"
+                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg"
+                                                         alt="down-arrow"
                                                          class="arrow">
                                                 </div>
                                             </a>
@@ -273,7 +277,8 @@
                                                             Attention Catchers</h6>
                                                         <span class="text-sm">See all examples</span>
                                                     </div>
-                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg" alt="down-arrow"
+                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg"
+                                                         alt="down-arrow"
                                                          class="arrow">
                                                 </div>
                                             </a>
@@ -301,7 +306,8 @@
                                                             Elements</h6>
                                                         <span class="text-sm">See all elements</span>
                                                     </div>
-                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg" alt="down-arrow"
+                                                    <img src="${pageContext.request.contextPath}/img/down-arrow.svg"
+                                                         alt="down-arrow"
                                                          class="arrow">
                                                 </div>
                                             </a>
@@ -479,7 +485,8 @@
                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="material-icons opacity-6 me-2 text-md">article</i>
                                     Docs
-                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg" alt="down-arrow"
+                                    <img src="${pageContext.request.contextPath}/img/down-arrow-dark.svg"
+                                         alt="down-arrow"
                                          class="arrow ms-auto ms-md-2">
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-animation dropdown-md dropdown-md-responsive mt-0 mt-lg-3 p-3 border-radius-lg"
@@ -594,56 +601,14 @@
     <!--    </div>-->
     <!--</header>-->
     <!-- -------- END HEADER 4 w/ search book a ticket form ------- -->
-    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto" style="max-width: 80%;">
+    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto"
+         style="max-width: 1000px; min-width: 40%;">
         <!-- START Testimonials w/ user image & text & info -->
 
         <!-- START Blogs w/ 4 cards w/ image & text & link -->
         <section class="py-3">
             <div class="container">
                 <div class="row">
-                    <!--                    &lt;!&ndash; Left Section: 1/3 of the screen &ndash;&gt;-->
-                    <!--                    <div class="col-lg-4 col-sm-4">-->
-                    <!--                        <div class="card card-plain" style="border: none; box-shadow: none;">-->
-                    <!--                            <div class="card-header p-0 position-relative" style="border: none;">-->
-                    <!--                                <a class="d-block blur-shadow-image" style="outline: none;">-->
-                    <!--                                    &lt;!&ndash; The existing image that will be replaced &ndash;&gt;-->
-                    <!--                                    <img id="imageToReplace" src="${pageContext.request.contextPath}/img/kpaas/hikingTrail.webp" alt="img-blur-shadow"-->
-                    <!--                                         class="img-fluid shadow border-radius-lg" loading="lazy">-->
-                    <!--                                </a>-->
-                    <!--                            </div>-->
-                    <!--                            &lt;!&ndash; Button below the image &ndash;&gt;-->
-                    <!--                            <div class="card-body text-center mt-3 p-0" style="border: none; box-shadow: none;">-->
-                    <!--                                &lt;!&ndash; Hidden file input &ndash;&gt;-->
-                    <!--                                <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileUpload(this)">-->
-
-                    <!--                                &lt;!&ndash; Button to trigger file input &ndash;&gt;-->
-                    <!--                                <button type="button" class="btn btn-outline-success" style="width: 100%;" onclick="document.getElementById('fileInput').click();">-->
-                    <!--                                    사진 업로드-->
-                    <!--                                </button>-->
-
-                    <!--                                &lt;!&ndash; "상처 분석 시작" Button (Initially hidden) &ndash;&gt;-->
-                    <!--                                <button type="button" id="analyzeButton" class="btn btn-outline-success" style="display: none; width: 100%;" onclick="startAnalysis()">-->
-                    <!--                                    상처 분석 시작-->
-                    <!--                                </button>-->
-
-                    <!--                                &lt;!&ndash; Progress Bar (Initially hidden) &ndash;&gt;-->
-                    <!--                                <div id="progressBar" class="progress" style="height: 30px; display: none; background-color: #e9ecef;">-->
-                    <!--                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success d-flex justify-content-center align-items-center" role="progressbar" style="width: 100%; height: 100%;">-->
-                    <!--                                        분석 중-->
-                    <!--                                    </div>-->
-                    <!--                                </div>-->
-
-                    <!--                                &lt;!&ndash; "분석 결과" Button (Initially hidden) &ndash;&gt;-->
-                    <!--                                <button type="button" id="resultButton" class="btn btn-outline-success" style="display: none; width: 100%; margin-bottom: 0 !important;" onclick="redirectToResult()">-->
-                    <!--                                    분석 결과-->
-                    <!--                                </button>-->
-                    <!--                            </div>-->
-
-
-
-                    <!--                        </div>-->
-                    <!--                    </div>-->
-
 
                     <!-- Right Section: 2/3 of the screen (contains the carousel) -->
                     <div class="col-lg-12 col-sm-8">
@@ -678,11 +643,12 @@
                                             <!-- Slide 1 -->
                                             <div class="carousel-item active">
                                                 <div class="card-body px-0 py-3"><br><br>
-                                                    <div class="card-header p-0 position-relative" style="border: none;">
+                                                    <div class="card-header p-0 position-relative"
+                                                         style="border: none;">
                                                         <a class="d-block blur-shadow-image" style="outline: none;">
                                                             <!-- The existing image that will be replaced -->
                                                             <img id="imageToReplace"
-                                                                 src="${pageContext.request.contextPath}/img/kpaas/bumok.webp"
+                                                                 src="${pageContext.request.contextPath}/img/kpaas/dressing.png"
                                                                  alt="img-blur-shadow"
                                                                  class="img-fluid shadow border-radius-lg"
                                                                  style="width: 600px; height: 400px; object-fit: cover;"
@@ -693,17 +659,23 @@
                                                     </div>
                                                     <br>
                                                     <h4 class="text-dark font-weight-bold">
-                                                        뼈가 부러졌을때 부목 고정하기
+                                                        즉각적인 응급처치:
+                                                        <br><br>출혈이 심할 경우, 압박 붕대를 사용하여 출혈을 멈추도록 하세요. 상처를 깨끗하게 유지하는 것이
+                                                        중요합니다.
 
                                                     </h4>
                                                     <p class="text-dark fs-5">
-                                                        <strong style="font-weight:bold; ">움직임 제한:</strong><br>
-                                                        부러진 부위를 고정하면 움직임을 제한하여 추가적인 손상이나 부상을 방지할 수 있습니다.<br><br>
-                                                        <strong style="font-weight: bold;">회복 촉진: </strong><br>
-                                                        뼈가 제자리에 고정되면 자연 치유 과정이 원활하게 진행되어 회복 속도를 높일 수 있습니다.<br><br>
-                                                        <strong style="font-weight: bold;">통증 경감: </strong><br>
-                                                        고정함으로써 부위에 가해지는 압력을 줄이고 통증을 완화하는 데 도움이 됩니다.<br><br>
-                                                        <strong style="font-weight: bold;">*이러한 이유로 부러진 뼈는 신속하고 적절하게 고정하는 것이 중요합니다.* </strong><br>
+                                                        <strong style="font-weight:bold; ">출혈 억제:</strong><br>
+                                                        신속한 응급처치는 출혈을 최소화하고 생명을 구하는 데 중요한 역할을 합니다. 적절한 압박을 통해 출혈을 멈출 수
+                                                        있습니다.<br><br>
+                                                        <strong style="font-weight: bold;">감염 예방: </strong><br>
+                                                        상처를 즉시 처리하면 감염의 위험을 줄일 수 있습니다. 깨끗한 환경에서 상처를 관리함으로써 병원균의 침입을 방지할
+                                                        수 있습니다.<br><br>
+                                                        <strong style="font-weight: bold;">심리적 안정: </strong><br>
+                                                        즉각적인 응급처치를 통해 피해자는 신속한 도움을 받는다는 안도감을 느끼게 되어 심리적으로 안정될 수 있습니다. 이는
+                                                        회복 과정에 긍정적인 영향을 미칠 수 있습니다.
+
+                                                        <br><br>
                                                     </p><br><br>
 
                                                 </div>
@@ -713,7 +685,7 @@
                                                 <div class="card-body px-0 py-3"><br>
                                                     <a class="d-block blur-shadow-image" style="outline: none;">
                                                         <img id="imageToReplace2"
-                                                             src="${pageContext.request.contextPath}/img/kpaas/nengjimjil.webp"
+                                                             src="${pageContext.request.contextPath}/img/kpaas/jinreo.webp"
                                                              alt="img-blur-shadow"
                                                              class="img-fluid shadow border-radius-lg"
                                                              style="width: 600px; height: 400px; object-fit: cover;"
@@ -722,20 +694,21 @@
                                                     </a>
                                                     <br>
                                                     <h4 class="text-dark font-weight-bold">
-                                                        뼈가 부러졌을때 냉찜질 하기
+                                                        전문 의료 도움 요청:
+                                                        <br><br>가능한 한 빨리 병원이나 응급실로 가서 전문적인 치료를 받아야 합니다. 관통상은 내부 장기나 혈관에
+                                                        손상을 줄 수 있습니다.
                                                     </h4>
 
                                                     <p class="text-dark fs-5">
-                                                        <strong style="font-weight:bold; ">부기 감소:</strong><br>
-                                                        냉찜질은 혈관을 수축시켜 부상 부위의 부기와 염증을 줄이는 데 효과적입니다. 부상이 발생한 직후에 냉찜질을 하면 빠르게 부기를 완화할 수 있습니다.<br><br>
-                                                        <strong style="font-weight: bold;">통증 완화: </strong><br>
-                                                        차가운 온도가 신경의 신호 전달을 늦춰 통증을 완화하는 데 도움을 줍니다. 부러진 부위의 통증을 줄이는 데 유용합니다.<br><br>
-                                                        <strong style="font-weight: bold;">회목 촉진: </strong><br>
-                                                        초기 염증 반응을 줄임으로써 회복 과정을 돕고, 부상 부위에 가해지는 추가적인 스트레스를 줄여줍니다. 이는 장기적으로 회복 속도를 높이는 데 기여할 수 있습니다.<br><br>
-                                                        <strong style="font-weight: bold;">*냉찜질은 부상 직후에 특히 중요한 조치입니다.* </strong><br>
-
-
-
+                                                        <strong style="font-weight:bold; ">정확한 진단:</strong><br>
+                                                        의료 전문가는 상처의 심각성을 평가하고 필요한 치료를 제공할 수 있습니다. 이를 통해 적절한 치료 계획을 세울 수
+                                                        있습니다.<br><br>
+                                                        <strong style="font-weight: bold;">전문적인 치료: </strong><br>
+                                                        의료진은 관통상에 대한 전문적인 지식과 경험을 가지고 있어, 감염 예방, 통증 관리, 재활 등을 효과적으로 수행할
+                                                        수 있습니다.<br><br>
+                                                        <strong style="font-weight: bold;">합병증 예방: </strong><br>
+                                                        신속한 의료 개입은 내부 장기 손상이나 출혈과 같은 합병증을 예방하는 데 도움이 됩니다. 조기에 치료를 받으면 회복
+                                                        속도가 빨라질 수 있습니다.<br><br>
 
 
                                                     </p><br><br>
@@ -747,7 +720,7 @@
                                                     <div class="card-body px-0 py-3"><br>
                                                         <a class="d-block blur-shadow-image" style="outline: none;">
                                                             <img id="imageToReplace3"
-                                                                 src="${pageContext.request.contextPath}/img/kpaas/jinreo.webp"
+                                                                 src="${pageContext.request.contextPath}/img/kpaas/yak.webp"
                                                                  alt="img-blur-shadow"
                                                                  class="img-fluid shadow border-radius-lg"
                                                                  style="width: 600px; height: 400px; object-fit: cover;"
@@ -756,15 +729,20 @@
                                                         </a>
                                                         <br>
                                                         <h4 class="text-dark font-weight-bold">
-                                                            즉시 의료기관 방문
+                                                            상처 관리: <br><br>
+                                                            의료진의 지시를 따르며 상처를 관리하고, 감염 예방을 위해 처방된 약물을 복용하세요. 정기적으로 상처 상태를
+                                                            점검해야 합니다.
                                                         </h4>
                                                         <p class="text-dark fs-5">
-                                                            <strong style="font-weight:bold; ">정확한 진단:</strong><br>
-                                                            전문의에 의해 정확한 진단을 받을 수 있어, 부상의 정도와 유형을 명확히 파악할 수 있습니다. 이는 적절한 치료 계획을 세우는 데 필수적입니다.<br><br>
-                                                            <strong style="font-weight:bold; ">전문치료 제공:</strong><br>
-                                                            부러진 뼈나 심각한 부상은 전문적인 치료가 필요합니다. 의료 기관에서는 필요한 경우 X-ray 촬영, 고정, 수술 등의 적절한 치료를 받을 수 있습니다.<br><br>
-                                                            <strong style="font-weight:bold; ">합병증 예방:</strong><br>
-                                                            즉시 치료를 받으면 장기적인 합병증이나 부상의 악화를 방지할 수 있습니다. 빠른 대처는 회복 속도를 높이고, 장기적인 건강을 지키는 데 중요합니다.<br><br>
+                                                            <strong style="font-weight:bold; ">감염 예방:</strong><br>
+                                                            철저한 상처 관리는 세균의 침입을 막아 감염 위험을 줄입니다. 깨끗하고 건조한 상태를 유지하는 것이
+                                                            중요합니다.<br><br>
+                                                            <strong style="font-weight:bold; ">회복 촉진: </strong><br>
+                                                            적절한 상처 관리는 치유 과정을 촉진하여 회복 시간을 단축시킵니다. 상처가 잘 치유되면 흉터 형성도 최소화할
+                                                            수 있습니다.<br><br>
+                                                            <strong style="font-weight:bold; ">통증 관리:</strong><br>
+                                                            상처를 잘 관리하면 통증이 줄어들 수 있습니다. 적절한 치료와 관리로 불필요한 자극을 줄이면 환자의 편안함을
+                                                            증진시킬 수 있습니다.<br><br>
 
 
                                                         </p><br><br>
@@ -777,14 +755,15 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Right Control Column (10% width of available screen) -->
-                                <div class="col-1 d-flex align-items-center">
-                                    <a class="carousel-control-next custom-control text-success"
-                                       href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </a>
-                                </div>
+
+                            </div>
+                            <!-- Right Control Column (10% width of available screen) -->
+                            <div class="col-1 d-flex align-items-center">
+                                <a class="carousel-control-next custom-control text-success"
+                                   href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </a>
                             </div>
                         </div>
                     </div>

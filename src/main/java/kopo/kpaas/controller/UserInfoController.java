@@ -350,7 +350,7 @@ public class UserInfoController {
     /**
      * 아아디 찾기 로직 수행
      */
-    @PostMapping(value = "searchUserIdProc")
+    @PostMapping(value = "/user/searchUserIdProc")
     public String searchUserIdProc(HttpServletRequest request, ModelMap model) throws Exception {
         log.info(this.getClass().getName() + ".user/searchUserIdProc Start!");
 
@@ -412,7 +412,7 @@ public class UserInfoController {
 
         log.info(this.getClass().getName() + ".user/searchPassword End!");
 
-        return "user/searchPassword";
+        return "/user/searchPassword";
 
     }
 

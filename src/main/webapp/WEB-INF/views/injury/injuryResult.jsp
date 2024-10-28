@@ -10,44 +10,44 @@
     if (rDTO != null) {
         switch (rDTO.getInjuryClass()) {
             case "Siyrik":
-                injuryClassTranslated = "찰과상";
-                link = "abrasion.jsp";
+                injuryClassTranslated = "긁힘";
+                link = "/injuries/abrasion";
                 break;
             case "Unlabeled":
-                injuryClassTranslated = "라벨이 없는";
-                link = "#"; // No link for unlabeled
+                injuryClassTranslated = "상처를 인식 못하거나 분석을 할수 없는 상처 입니다.";
+                link = "/main/injuryDetection"; // No link for unlabeled
                 break;
             case "bite":
                 injuryClassTranslated = "물림";
-                link = "bite.jsp";
+                link = "/injuries/bite";
                 break;
             case "bruises":
                 injuryClassTranslated = "멍";
-                link = "bruise.jsp";
+                link = "/injuries/bruise";
                 break;
             case "burns":
                 injuryClassTranslated = "화상";
-                link = "burn.jsp";
+                link = "/injuries/burn";
                 break;
             case "cut":
                 injuryClassTranslated = "베임";
-                link = "cut.jsp";
+                link = "/injuries/cut";
                 break;
             case "laceration":
                 injuryClassTranslated = "열상";
-                link = "laceration.jsp";
+                link = "/injuries/laceration";
                 break;
             case "snake-bite":
                 injuryClassTranslated = "뱀에 물림";
-                link = "snakebite.jsp";
+                link = "/injuries/snakebite";
                 break;
             case "Stab-wound":
-                injuryClassTranslated = "자창";
-                link = "stabwound.jsp";
+                injuryClassTranslated = "관통상";
+                link = "/injuries/puncture";
                 break;
             default:
-                injuryClassTranslated = "알 수 없는 부상";
-                link = "#"; // Default no link
+                injuryClassTranslated = "상처를 인식 못하거나 분석을 할수 없는 상처 입니다.";
+                link = "/main/injuryDetection"; // Default no link
                 break;
         }
     }
