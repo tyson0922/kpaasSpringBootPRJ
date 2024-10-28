@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!--
 =========================================================
 * Material Kit 2 - v3.0.4
