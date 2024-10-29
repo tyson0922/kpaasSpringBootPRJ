@@ -6,7 +6,7 @@
 * Material Kit 2 - v3.0.4
 =========================================================
 
-* Product Page:  https://www.creative-tim.com/product/material-kit
+* Product Page: https://www.creative-tim.com/product/material-kit
 * Copyright 2023 Creative Tim (https://www.creative-tim.com)
 * Coded by www.creative-tim.com
 
@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="${pageContext.request.contextPath}/img/apple-icon.png">
     <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/img/favicon.png">
     <title>
-        Material Kit 2 by Creative Tim
+        TrailAid
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
@@ -142,12 +142,15 @@
                                 <c:choose>
                                     <c:when test="${sessionScope.SS_USER_ID == null}">
                                         <!-- If not logged in, show "로그인" button -->
-                                        <a href="/user/sign-in" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">로그인</a>
+                                        <a href="/user/sign-in"
+                                           class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">로그인</a>
                                     </c:when>
                                     <c:otherwise>
                                         <!-- If logged in, show "프로필" and "로그아웃" buttons -->
-                                        <a href="myPage.jsp" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
-                                        <a href="/user/logout" class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
+                                        <a href="/user/profile"
+                                           class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
+                                        <a href="/user/logout"
+                                           class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
                                     </c:otherwise>
                                 </c:choose>
                             </li>
@@ -170,55 +173,14 @@
     <!--    </div>-->
     <!--</header>-->
     <!-- -------- END HEADER 4 w/ search book a ticket form ------- -->
-    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto" style="max-width: 1000px; min-width: 40%;">
+    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto"
+         style="max-width: 1000px; min-width: 40%;">
         <!-- START Testimonials w/ user image & text & info -->
 
         <!-- START Blogs w/ 4 cards w/ image & text & link -->
         <section class="py-3">
             <div class="container">
                 <div class="row">
-                    <!--                    &lt;!&ndash; Left Section: 1/3 of the screen &ndash;&gt;-->
-                    <!--                    <div class="col-lg-4 col-sm-4">-->
-                    <!--                        <div class="card card-plain" style="border: none; box-shadow: none;">-->
-                    <!--                            <div class="card-header p-0 position-relative" style="border: none;">-->
-                    <!--                                <a class="d-block blur-shadow-image" style="outline: none;">-->
-                    <!--                                    &lt;!&ndash; The existing image that will be replaced &ndash;&gt;-->
-                    <!--                                    <img id="imageToReplace" src="${pageContext.request.contextPath}/img/kpaas/hikingTrail.webp" alt="img-blur-shadow"-->
-                    <!--                                         class="img-fluid shadow border-radius-lg" loading="lazy">-->
-                    <!--                                </a>-->
-                    <!--                            </div>-->
-                    <!--                            &lt;!&ndash; Button below the image &ndash;&gt;-->
-                    <!--                            <div class="card-body text-center mt-3 p-0" style="border: none; box-shadow: none;">-->
-                    <!--                                &lt;!&ndash; Hidden file input &ndash;&gt;-->
-                    <!--                                <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileUpload(this)">-->
-
-                    <!--                                &lt;!&ndash; Button to trigger file input &ndash;&gt;-->
-                    <!--                                <button type="button" class="btn btn-outline-success" style="width: 100%;" onclick="document.getElementById('fileInput').click();">-->
-                    <!--                                    사진 업로드-->
-                    <!--                                </button>-->
-
-                    <!--                                &lt;!&ndash; "상처 분석 시작" Button (Initially hidden) &ndash;&gt;-->
-                    <!--                                <button type="button" id="analyzeButton" class="btn btn-outline-success" style="display: none; width: 100%;" onclick="startAnalysis()">-->
-                    <!--                                    상처 분석 시작-->
-                    <!--                                </button>-->
-
-                    <!--                                &lt;!&ndash; Progress Bar (Initially hidden) &ndash;&gt;-->
-                    <!--                                <div id="progressBar" class="progress" style="height: 30px; display: none; background-color: #e9ecef;">-->
-                    <!--                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success d-flex justify-content-center align-items-center" role="progressbar" style="width: 100%; height: 100%;">-->
-                    <!--                                        분석 중-->
-                    <!--                                    </div>-->
-                    <!--                                </div>-->
-
-                    <!--                                &lt;!&ndash; "분석 결과" Button (Initially hidden) &ndash;&gt;-->
-                    <!--                                <button type="button" id="resultButton" class="btn btn-outline-success" style="display: none; width: 100%; margin-bottom: 0 !important;" onclick="redirectToResult()">-->
-                    <!--                                    분석 결과-->
-                    <!--                                </button>-->
-                    <!--                            </div>-->
-
-
-
-                    <!--                        </div>-->
-                    <!--                    </div>-->
 
 
                     <!-- Right Section: 2/3 of the screen (contains the carousel) -->
@@ -254,10 +216,11 @@
                                             <!-- Slide 1 -->
                                             <div class="carousel-item active">
                                                 <div class="card-body px-0 py-3"><br><br>
-                                                    <div class="card-header p-0 position-relative" style="border: none;">
-                                                        <a class="d-block blur-shadow-image" style="outline: none;">
+                                                    <div class="card-header p-0 position-relative"
+                                                         style="border: none;">
+                                                        <a class="d-block mx-auto blur-shadow-image" style="outline: none;">
                                                             <!-- The existing image that will be replaced -->
-                                                            <img id="imageToReplace"
+                                                            <img class="mx-auto d-block" id="imageToReplace"
                                                                  src="${pageContext.request.contextPath}/img/kpaas/jojul.webp"
                                                                  class="img-fluid shadow border-radius-lg"
                                                                  style="width: 600px; height: 400px; object-fit: cover;"
@@ -269,16 +232,19 @@
                                                     <br>
                                                     <h4 class="text-dark font-weight-bold">
                                                         출혈 조절:
-                                                        <br><br> 상처 부위를 깨끗한 천이나 붕대로 압박하여 출혈을 멈추도록 합니다. 필요한 경우 상처를 심장보다 높이 들어올려 출혈을 줄입니다.
+                                                        <br><br> 상처 부위를 깨끗한 천이나 붕대로 압박하여 출혈을 멈추도록 합니다. 필요한 경우 상처를 심장보다
+                                                        높이 들어올려 출혈을 줄입니다.
 
                                                     </h4>
                                                     <p class="text-dark fs-5">
                                                         <strong style="font-weight:bold; ">생명 유지:</strong><br>
                                                         심한 출혈은 생명에 위협이 될 수 있습니다. 출혈을 조절하여 혈액 손실을 최소화함으로써 생명을 보호할 수 있습니다.<br><br>
-                                                        <strong style="font-weight: bold;">감염 예방:  </strong><br>
-                                                        출혈이 계속되면 상처가 더 쉽게 감염될 수 있습니다. 출혈을 조절하면 상처를 깨끗하게 유지하고 감염 위험을 줄일 수 있습니다.<br><br>
-                                                        <strong style="font-weight: bold;">염증 감소:  </strong><br>
-                                                        출혈이 적절히 조절되면 혈액이 상처 부위로 집중되어 치유에 필요한 영양소와 산소가 공급됩니다. 이는 회복 과정을 빠르게 합니다.
+                                                        <strong style="font-weight: bold;">감염 예방: </strong><br>
+                                                        출혈이 계속되면 상처가 더 쉽게 감염될 수 있습니다. 출혈을 조절하면 상처를 깨끗하게 유지하고 감염 위험을 줄일 수
+                                                        있습니다.<br><br>
+                                                        <strong style="font-weight: bold;">염증 감소: </strong><br>
+                                                        출혈이 적절히 조절되면 혈액이 상처 부위로 집중되어 치유에 필요한 영양소와 산소가 공급됩니다. 이는 회복 과정을
+                                                        빠르게 합니다.
 
                                                         <br><br>
                                                     </p><br><br>
@@ -288,8 +254,8 @@
                                             <!-- Slide 2 -->
                                             <div class="carousel-item">
                                                 <div class="card-body px-0 py-3"><br>
-                                                    <a class="d-block blur-shadow-image" style="outline: none;">
-                                                        <img id="imageToReplace2"
+                                                    <a class="d-block mx-auto blur-shadow-image" style="outline: none;">
+                                                        <img class="d-block mx-auto" id="imageToReplace2"
                                                              src="${pageContext.request.contextPath}/img/kpaas/sodok.webp"
                                                              alt="img-blur-shadow"
                                                              class="img-fluid shadow border-radius-lg"
@@ -300,16 +266,20 @@
                                                     <br>
                                                     <h4 class="text-dark font-weight-bold">
                                                         상처 세척 및 소독:
-                                                        <br><br> 출혈이 멈춘 후, 상처를 깨끗한 물로 세척하고 소독제를 사용하여 감염을 예방합니다. 이때 손은 항상 깨끗하게 유지해야 합니다.
+                                                        <br><br> 출혈이 멈춘 후, 상처를 깨끗한 물로 세척하고 소독제를 사용하여 감염을 예방합니다. 이때 손은 항상
+                                                        깨끗하게 유지해야 합니다.
                                                     </h4>
 
                                                     <p class="text-dark fs-5">
                                                         <strong style="font-weight:bold; ">감염 예방: </strong><br>
-                                                        상처에 외부 세균이나 오염물이 들어가면 감염이 발생할 수 있습니다. 세척과 소독을 통해 이러한 위험을 줄이고, 상처가 깨끗하게 치유될 수 있도록 합니다.<br><br>
+                                                        상처에 외부 세균이나 오염물이 들어가면 감염이 발생할 수 있습니다. 세척과 소독을 통해 이러한 위험을 줄이고,
+                                                        상처가 깨끗하게 치유될 수 있도록 합니다.<br><br>
                                                         <strong style="font-weight: bold;">치유 과정 촉진: </strong><br>
-                                                        깨끗한 상처는 치유가 더 빨리 이루어집니다. 세척과 소독을 통해 상처의 상태를 개선하면, 신체의 자연 치유 과정이 원활하게 진행됩니다.<br><br>
+                                                        깨끗한 상처는 치유가 더 빨리 이루어집니다. 세척과 소독을 통해 상처의 상태를 개선하면, 신체의 자연 치유 과정이
+                                                        원활하게 진행됩니다.<br><br>
                                                         <strong style="font-weight: bold;">상처 상태 평가:</strong><br>
-                                                        상처를 세척하면서 그 상태를 확인할 수 있습니다. 출혈, 깊이, 주변 조직의 손상 여부 등을 파악하여 적절한 치료를 결정하는 데 도움이 됩니다.
+                                                        상처를 세척하면서 그 상태를 확인할 수 있습니다. 출혈, 깊이, 주변 조직의 손상 여부 등을 파악하여 적절한 치료를
+                                                        결정하는 데 도움이 됩니다.
 
                                                     </p><br><br>
                                                 </div>
@@ -318,8 +288,8 @@
                                             <div class="carousel-item">
                                                 <div class="card-body py-3"><br>
                                                     <div class="card-body px-0 py-3"><br>
-                                                        <a class="d-block blur-shadow-image" style="outline: none;">
-                                                            <img id="imageToReplace3"
+                                                        <a class="d-block mx-auto blur-shadow-image" style="outline: none;">
+                                                            <img class="d-block mx-auto" id="imageToReplace3"
                                                                  src="${pageContext.request.contextPath}/img/kpaas/dressing.png"
                                                                  alt="img-blur-shadow"
                                                                  class="img-fluid shadow border-radius-lg"
@@ -330,33 +300,36 @@
                                                         <br>
                                                         <h4 class="text-dark font-weight-bold">
                                                             상처 보호: <br><br>
-                                                            상처를 깨끗한 드레싱이나 밴드로 덮어 감염을 예방하고 외부의 자극으로부터 보호합니다. 상처가 보호되면 치유 과정이 더 원활해집니다.
+                                                            상처를 깨끗한 드레싱이나 밴드로 덮어 감염을 예방하고 외부의 자극으로부터 보호합니다. 상처가 보호되면 치유
+                                                            과정이 더 원활해집니다.
                                                         </h4>
                                                         <p class="text-dark fs-5">
                                                             <strong style="font-weight:bold; ">감염 방지:</strong><br>
-                                                            상처가 노출되면 세균이나 먼지 등 외부 오염물에 의해 감염될 위험이 높아집니다. 보호를 통해 이러한 위험을 줄일 수 있습니다.<br><br>
+                                                            상처가 노출되면 세균이나 먼지 등 외부 오염물에 의해 감염될 위험이 높아집니다. 보호를 통해 이러한 위험을
+                                                            줄일 수 있습니다.<br><br>
                                                             <strong style="font-weight:bold; ">치유 촉진: </strong><br>
-                                                            상처가 외부 자극으로부터 보호받으면 치유 과정이 더 원활하게 진행됩니다. 보호된 상태에서 상처는 안정성을 유지하며 회복에 집중할 수 있습니다<br><br>
+                                                            상처가 외부 자극으로부터 보호받으면 치유 과정이 더 원활하게 진행됩니다. 보호된 상태에서 상처는 안정성을
+                                                            유지하며 회복에 집중할 수 있습니다<br><br>
                                                             <strong style="font-weight:bold; ">통증 완화:</strong><br>
-                                                            상처 부위가 외부 자극에 노출되면 통증이 증가할 수 있습니다. 적절한 보호가 이루어지면 통증을 줄이고 불편함을 최소화할 수 있습니다.
+                                                            상처 부위가 외부 자극에 노출되면 통증이 증가할 수 있습니다. 적절한 보호가 이루어지면 통증을 줄이고
+                                                            불편함을 최소화할 수 있습니다.
                                                         </p><br><br>
                                                     </div>
                                                 </div>
-                                                <!-- Slide 4 -->
-
 
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Right Control Column (10% width of available screen) -->
-                                <div class="col-1 d-flex align-items-center">
-                                    <a class="carousel-control-next custom-control text-success"
-                                       href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </a>
-                                </div>
+
+                            </div>
+                            <!-- Right Control Column (10% width of available screen) -->
+                            <div class="col-1 d-flex align-items-center">
+                                <a class="carousel-control-next custom-control text-success"
+                                   href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -369,42 +342,10 @@
     </div>
 
     <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
-    <footer class="footer position-absolute bottom-2 py-2 w-100">
+    <footer class="footer position-absolute bottom-2 py-2 w-100" style="min-height: 50px;">
         <div class="container">
             <div class="row align-items-center justify-content-lg-between">
-                <div class="col-12 col-md-6 my-auto">
-                    <div class="copyright text-center text-sm text-white text-lg-start">
-                        ©
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                        ,
-                        made with <i class="fa fa-heart" aria-hidden="true"></i> by
-                        <a href="https://www.creative-tim.com" class="font-weight-bold text-white" target="_blank">Creative
-                            Tim</a>
-                        for a better web.
-                    </div>
-                </div>
-                <div class="col-12 col-md-6">
-                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com" class="nav-link text-white" target="_blank">Creative
-                                Tim</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/presentation" class="nav-link text-white"
-                               target="_blank">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/blog" class="nav-link text-white"
-                               target="_blank">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-white"
-                               target="_blank">License</a>
-                        </li>
-                    </ul>
-                </div>
+
             </div>
         </div>
     </footer>

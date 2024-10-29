@@ -30,4 +30,15 @@ public interface IUserInfoMapper {
     int updatePassword(UserInfoDTO pDTO) throws Exception;
 
 //    UserInfoDTO getUserInfoById(@Param("userId") String userId);
+
+    // Method to select user info by userId
+    UserInfoDTO selectUserInfoById(String userId);
+
+    // Method to update user info by userId
+    int updateUserInfoById(UserInfoDTO userInfo);
+
+    int updateEmail(UserInfoDTO pDTO);
+
+    int deleteUserById(String userId);
+
 }

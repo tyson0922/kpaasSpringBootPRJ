@@ -21,7 +21,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="${pageContext.request.contextPath}/img/apple-icon.png">
     <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/img/favicon.png">
     <title>
-        Material Kit 2 by Creative Tim
+        TrailAid
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
@@ -145,7 +145,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <!-- If logged in, show "프로필" and "로그아웃" buttons -->
-                                        <a href="myPage.jsp" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
+                                        <a href="/user/profile" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
                                         <a href="/user/logout" class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
                                     </c:otherwise>
                                 </c:choose>
@@ -182,7 +182,7 @@
                     <!--                            <div class="card-header p-0 position-relative" style="border: none;">-->
                     <!--                                <a class="d-block blur-shadow-image" style="outline: none;">-->
                     <!--                                    &lt;!&ndash; The existing image that will be replaced &ndash;&gt;-->
-                    <!--                                    <img id="imageToReplace" src="${pageContext.request.contextPath}/img/kpaas/hikingTrail.webp" alt="img-blur-shadow"-->
+                    <!--                                    <img class="mx-auto d-block" id="imageToReplace" src="${pageContext.request.contextPath}/img/kpaas/hikingTrail.webp" alt="img-blur-shadow"-->
                     <!--                                         class="img-fluid shadow border-radius-lg" loading="lazy">-->
                     <!--                                </a>-->
                     <!--                            </div>-->
@@ -256,7 +256,7 @@
                                                     <div class="card-header p-0 position-relative" style="border: none;">
                                                         <a class="d-block blur-shadow-image" style="outline: none;">
                                                             <!-- The existing image that will be replaced -->
-                                                            <img id="imageToReplace"
+                                                            <img class="mx-auto d-block" id="imageToReplace"
                                                                  src="${pageContext.request.contextPath}/img/kpaas/nengjimjil.webp"
                                                                  class="img-fluid shadow border-radius-lg"
                                                                  style="width: 600px; height: 400px; object-fit: cover;"
@@ -286,9 +286,9 @@
                                             </div>
                                             <!-- Slide 2 -->
                                             <div class="carousel-item">
-                                                <div class="card-body px-0 py-3"><br>
-                                                    <a class="d-block blur-shadow-image" style="outline: none;">
-                                                        <img id="imageToReplace2"
+                                                <div class="card-body px-0 py-3 mx-auto"><br>
+                                                    <a class="d-block blur-shadow-image mx-auto" style="outline: none;">
+                                                        <img class="d-block mx-auto" id="imageToReplace2"
                                                              src="${pageContext.request.contextPath}/img/kpaas/dressing.png"
                                                              alt="img-blur-shadow"
                                                              class="img-fluid shadow border-radius-lg"
@@ -318,7 +318,7 @@
                                                 <div class="card-body py-3"><br>
                                                     <div class="card-body px-0 py-3"><br>
                                                         <a class="d-block blur-shadow-image" style="outline: none;">
-                                                            <img id="imageToReplace3"
+                                                            <img class="d-block mx-auto" id="imageToReplace3"
                                                                  src="${pageContext.request.contextPath}/img/kpaas/jinreo.webp"
                                                                  alt="img-blur-shadow"
                                                                  class="img-fluid shadow border-radius-lg"
@@ -369,42 +369,10 @@
     </div>
 
     <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
-    <footer class="footer position-absolute bottom-2 py-2 w-100">
+    <footer class="footer position-absolute bottom-2 py-2 w-100" style="min-height: 50px;">
         <div class="container">
             <div class="row align-items-center justify-content-lg-between">
-                <div class="col-12 col-md-6 my-auto">
-                    <div class="copyright text-center text-sm text-white text-lg-start">
-                        ©
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                        ,
-                        made with <i class="fa fa-heart" aria-hidden="true"></i> by
-                        <a href="https://www.creative-tim.com" class="font-weight-bold text-white" target="_blank">Creative
-                            Tim</a>
-                        for a better web.
-                    </div>
-                </div>
-                <div class="col-12 col-md-6">
-                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com" class="nav-link text-white" target="_blank">Creative
-                                Tim</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/presentation" class="nav-link text-white"
-                               target="_blank">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/blog" class="nav-link text-white"
-                               target="_blank">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-white"
-                               target="_blank">License</a>
-                        </li>
-                    </ul>
-                </div>
+
             </div>
         </div>
     </footer>

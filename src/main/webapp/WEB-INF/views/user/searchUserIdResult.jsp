@@ -37,7 +37,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="${pageContext.request.contextPath}/img/apple-icon.png">
     <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/img/favicon.png">
     <title>
-        Material Kit 2 by Creative Tim
+        TrailAid
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
@@ -113,7 +113,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <!-- If logged in, show "프로필" and "로그아웃" buttons -->
-                                        <a href="myPage.jsp" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
+                                        <a href="profile.jsp" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
                                         <a href="/user/logout" class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
                                     </c:otherwise>
                                 </c:choose>
@@ -172,7 +172,7 @@
     </div>
 </div>
 
-<footer class="footer position-absolute bottom-2 py-2 w-100">
+<footer class="footer position-absolute bottom-2 py-2 w-100" style="min-height: 50px;">
     <div class="container">
         <div class="row align-items-center justify-content-lg-between">
             <div class="col-12 col-md-6 my-auto">

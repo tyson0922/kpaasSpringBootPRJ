@@ -2,6 +2,7 @@ package kopo.kpaas.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import kopo.kpaas.dto.MailDTO;
 import kopo.kpaas.dto.MsgDTO;
 import kopo.kpaas.dto.UserInfoDTO;
 import kopo.kpaas.service.IUserInfoService;
@@ -10,13 +11,14 @@ import kopo.kpaas.util.EncryptUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @RequestMapping(value = "/user")
@@ -102,6 +104,50 @@ public class UserInfoController {
 
         return rDTO;
     }
+
+    @ResponseBody
+    @PostMapping("/sendVerificationCode")
+    public Map<String, Object> sendVerificationCode(HttpServletRequest request, HttpSession session) throws Exception {
+        log.info("UserInfoController.sendVerificationCode Start!");
+
+        // Retrieve email from the request
+        String email = CmmUtil.nvl(request.getParameter("email"));
+
+        // Retrieve userId from the session
+        String userId = (String) session.getAttribute("SS_USER_ID");
+        if (userId == null) {
+            log.warn("User ID not found in session. Please ensure the user is logged in.");
+
+            // Return an error response if userId is missing
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "User ID not found. Please log in.");
+            return response;
+        }
+
+        // Create a UserInfoDTO with the email and userId
+        UserInfoDTO pDTO = new UserInfoDTO();
+        pDTO.setEmail(email);
+        pDTO.setUserId(userId); // Set userId in pDTO
+
+        log.info("Sending verification code for userId: {}", userId);
+
+        // Call the service to send the verification code
+        UserInfoDTO rDTO = userInfoService.sendVerificationCode(pDTO);
+
+        // Prepare the response based on the result of sending the verification code
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", rDTO.getAuthNumber() > 0);
+        response.put("authNumber", rDTO.getAuthNumber());
+
+        log.info("UserInfoController.sendVerificationCode End!");
+        return response;
+    }
+
+
+
+
+
 
     /**
      * 회원가입 로직 처리
@@ -555,13 +601,62 @@ public class UserInfoController {
         return "redirect:/main/mainPage";
     }
 
-//    @RequestMapping("logout")
-//    public String logout(HttpServletRequest request) {
-//        request.getSession().invalidate();  // 세션 무효화
-//
-//        log.info("logout Start!");
-//
-//        return "redirect:index";  // 로그아웃 후 메인 페이지로 리다이렉트
-//    }
+    @GetMapping("profile")
+    public String getUserProfile(HttpSession session, Model model) {
+        String userId = (String) session.getAttribute("SS_USER_ID");
+        if (userId == null) {
+            return "redirect:/main/mainPage";
+        }
+        UserInfoDTO userInfo = userInfoService.getUserInfoById(userId);
+        model.addAttribute("userInfo", userInfo);
+        return "user/profile";
+    }
 
+    @ResponseBody
+    @PostMapping("/updateUserInfo")
+    public Map<String, Object> updateUserInfo(@ModelAttribute UserInfoDTO pDTO, HttpServletRequest request) throws Exception {
+        log.info("updateUserInfo Start!");
+
+        // Set userId from session or request if necessary
+        String userId = (String) request.getSession().getAttribute("SS_USER_ID");
+        pDTO.setUserId(userId);
+
+        // Call the service to perform the update
+        int result = userInfoService.updateUserInfo(pDTO);
+
+        // Prepare the response
+        Map<String, Object> response = new HashMap<>();
+        response.put("result", result); // 1 if update successful, 0 otherwise
+        log.info("updateUserInfo End!");
+
+        return response;
+    }
+    @ResponseBody
+    @PostMapping("/deleteAccount")
+    public Map<String, Object> deleteAccount(HttpSession session) {
+        log.info("UserInfoController.deleteAccount Start!");
+
+        // Retrieve userId from the session
+        String userId = (String) session.getAttribute("SS_USER_ID");
+        Map<String, Object> response = new HashMap<>();
+
+        if (userId == null) {
+            response.put("success", false);
+            response.put("message", "User not logged in.");
+            log.warn("User ID not found in session. Deletion aborted.");
+            return response;
+        }
+
+        // Call the service to delete user data
+        int result = userInfoService.deleteUserById(userId);
+        if (result > 0) {
+            response.put("success", true);
+            session.invalidate(); // Log out user after successful deletion
+        } else {
+            response.put("success", false);
+        }
+
+        log.info("UserInfoController.deleteAccount End!");
+        return response;
+    }
 }

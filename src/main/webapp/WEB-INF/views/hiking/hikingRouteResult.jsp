@@ -23,7 +23,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="${pageContext.request.contextPath}/img/apple-icon.png">
     <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/img/favicon.png">
     <title>
-        Material Kit 2 by Creative Tim
+        TrailAid
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
@@ -179,10 +179,6 @@
 
         function updateCardInfo(routeInfo) {
             console.log("Updating card with routeInfo:", routeInfo);
-            // document.getElementById('route-id').innerText = routeInfo.routeId || "N/A";
-            <%--document.getElementById('section-length').innerText = routeInfo.secLen ? `${routeInfo.secLen}m` : "등산로를 선택하세요";--%>
-            <%--document.getElementById('uphill-time').innerText = routeInfo.upMin ? `${routeInfo.upMin}분` : "등산로를 선택하세요";--%>
-            <%--document.getElementById('downhill-time').innerText = routeInfo.downMin ? `${routeInfo.downMin}분` : "등산로를 선택하세요";--%>
             document.getElementById('section-length').innerText = routeInfo.secLen || "등산로를 선택하세요";
             document.getElementById('uphill-time').innerText = routeInfo.upMin || "등산로를 선택하세요";
             document.getElementById('downhill-time').innerText = routeInfo.downMin || "등산로를 선택하세요";
@@ -288,7 +284,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <!-- If logged in, show "프로필" and "로그아웃" buttons -->
-                                        <a href="myPage.jsp" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
+                                        <a href="/user/profile" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
                                         <a href="/user/logout" class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
                                     </c:otherwise>
                                 </c:choose>
@@ -314,29 +310,19 @@
         <div id="map" style="width: 75%; height: 100%;"></div>
         <!-- Route Details Card -->
         <div id="route-details" style="padding: 1rem; width: 25%;">
-            <h3>Route Details</h3>
+            <h3>등산로 상세정보</h3>
             <p><strong>산 이름:</strong> <span id="mountain-name">등산로를 선택하세요</span></p>
 <%--            <p><strong>Route ID:</strong> <span id="route-id">N/A</span></p>--%>
             <p><strong>거리(m):</strong> <span id="section-length">등산로를 선택하세요</span></p>
             <p><strong>상행 시간(분):</strong> <span id="uphill-time">등산로를 선택하세요</span></p>
             <p><strong>하행 시간(분):</strong> <span id="downhill-time">등산로를 선택하세요</span></p>
             <p><strong>난이도:</strong> <span id="category">등산로를 선택하세요</span></p>
-
+            <br>
+            <br>
+            <button class="btn btn-outline-success mt-3" onclick="centerOnUserLocation()">현재 위치</button>
+            <button class="btn btn-outline-success mt-3" onclick="centerOnCentroid()">등산로 보기</button>
         </div>
 
-        <!-- Button Container -->
-        <div style="width: 25%; padding-left: 1rem; display: flex; flex-direction: column; align-items: flex-start;">
-            <div style="padding-top: 1rem; width: 100%;">
-                <div class="form-group">
-                    <label for="mountainName">hikingRouteResult</label>
-                    <input type="text" id="mountainName" name="mountainName" class="form-control"
-                           placeholder="산 이름을 입력하세요">
-                </div>
-                <button id="searchButton" class="btn btn-primary mt-3">산 위치로 이동하기</button>
-            </div>
-            <button onclick="centerOnUserLocation()">현재 위치</button>
-            <button onclick="centerOnCentroid()">등산로 보기</button>
-        </div>
     </div>
 
     <!--   Core JS Files   -->

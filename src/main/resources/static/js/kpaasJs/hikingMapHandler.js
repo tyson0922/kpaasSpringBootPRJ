@@ -91,10 +91,10 @@ function displayPolygonArea() {
 
     // Alert the user if the area exceeds 30 square kilometers
     if (areaInSquareKilometers > 30) {
-        alert(`Warning: The polygon area is too large! The area is approximately ${areaInSquareKilometers.toFixed(2)} square kilometers, which exceeds the 30 square kilometer limit.`);
+        alert(`선택된 영역이 넓어서 부정확한 결과가 나올 수 있습니다. 면적이 ${areaInSquareKilometers.toFixed(2)}km²로, 30km² 제한을 초과합니다`);
     }
 
-    console.log(`Area calculated: 면적: ${areaInSquareKilometers.toFixed(2)} km^2`);
+    console.log(`면적: ${areaInSquareKilometers.toFixed(2)}km²`);
 
     // Display the area on the map as an overlay or info window with the new label format
     infoWindow = new naver.maps.InfoWindow({
@@ -300,7 +300,7 @@ function fetchCoordinatesAndMoveMap(mountainName) {
         })
         .catch(error => {
             console.error('Error occurred during fetch:', error);
-            alert('Error fetching data from Naver API.');
+            alert('네이버 API에서 데이터를 가져오는 중 오류가 발생했습니다.');
         });
 }
 

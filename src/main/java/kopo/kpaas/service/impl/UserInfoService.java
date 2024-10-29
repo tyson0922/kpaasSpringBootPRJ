@@ -61,6 +61,7 @@ public class UserInfoService implements IUserInfoService {
 
             dto.setTitle("이메일 중복 확인 인증번호 발송 메일");
             dto.setContents("인증번호는 " + authNumber + " 입니다.");
+
             dto.setToMail(EncryptUtil.decAES128CBC(CmmUtil.nvl(pDTO.getEmail())));
 
             mailService.doSendMail(dto); // 이메일 발송
@@ -75,6 +76,56 @@ public class UserInfoService implements IUserInfoService {
 
         return rDTO;
     }
+
+
+    @Override
+    public UserInfoDTO sendVerificationCode(UserInfoDTO pDTO) throws Exception {
+
+
+        log.info(this.getClass().getName() + ".sendVerificationCode Start!");
+
+        // Generate a 6-digit random verification code
+        int authNumber = ThreadLocalRandom.current().nextInt(100000, 1000000);
+        log.info("Generated authNumber: " + authNumber);
+
+        // Prepare the email message with the verification code (use plain email for sending)
+        MailDTO dto = new MailDTO();
+        dto.setTitle("인증번호 발송 메일");
+        dto.setContents("인증번호는 " + authNumber + " 입니다.");
+        dto.setToMail(CmmUtil.nvl(pDTO.getEmail()));  // Use plain email for sending
+
+        // Send the email
+        int emailSent = mailService.doSendMail(dto);
+        log.info("Email sending result: {}", emailSent == 1 ? "Success" : "Failure");
+
+        // Encrypt the email after sending it successfully
+        if (emailSent == 1) {
+            String encryptedEmail = EncryptUtil.encAES128CBC(CmmUtil.nvl(pDTO.getEmail()));
+            log.info("Encrypted email to save to database: {}", encryptedEmail);
+            pDTO.setEmail(encryptedEmail);  // Update pDTO with the encrypted email
+            log.info("이메일 암호화 코드"+pDTO.getEmail());
+            log.info("User Id"+pDTO.getUserId());
+            // Save the encrypted email in the database
+            int updateResult = userInfoMapper.updateEmail(pDTO);
+            log.info("Database update result: {}", updateResult > 0 ? "Success" : "Failure");
+        } else {
+            log.warn("Email not sent. Skipping database update.");
+        }
+
+        // Create response DTO with authNumber
+        UserInfoDTO rDTO = new UserInfoDTO();
+        rDTO.setAuthNumber(emailSent == 1 ? authNumber : 0);
+
+        log.info(this.getClass().getName() + ".sendVerificationCode End!");
+        return rDTO;
+    }
+
+
+
+
+
+
+
 
     @Override
     public int insertUserInfo(UserInfoDTO pDTO) throws Exception {
@@ -197,8 +248,21 @@ public class UserInfoService implements IUserInfoService {
         return success;
     }
 
-//    @Override
-//    public UserInfoDTO getUserInfoById(String userId) throws Exception {
-//        return userInfoMapper.getUserInfoById(userId);
-//    }
+    @Override
+    public UserInfoDTO getUserInfoById(String userId) {
+        return userInfoMapper.selectUserInfoById(userId);
+    }
+
+    @Override
+    public int updateUserInfo(UserInfoDTO userInfo) {
+        return userInfoMapper.updateUserInfoById(userInfo);
+    }
+
+    @Override
+    public int deleteUserById(String userId) {
+        log.info("UserInfoService.deleteUserById Start!");
+        int result = userInfoMapper.deleteUserById(userId);
+        log.info("UserInfoService.deleteUserById End!");
+        return result;
+    }
 }

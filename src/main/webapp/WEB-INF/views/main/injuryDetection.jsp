@@ -48,8 +48,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
-    <%--    <!--    js script for uploading picture-->--%>
-    <%--    <script src="${pageContext.request.contextPath}/js/kpaasJs/uploadHandler.js"></script>--%>
 
     <style>
         /* Constrain the carousel controls to their respective columns */
@@ -216,24 +214,24 @@
                                     분석 결과
                                 </button>
 
-<%--                                <!-- Injury Detection Display (Not inside the button) -->--%>
-<%--                                <div id="latestInjuryResult" style="margin-top: 20px;">--%>
-<%--                                    <h3>Latest Injury Detection</h3>--%>
+                                <%--                                <!-- Injury Detection Display (Not inside the button) -->--%>
+                                <%--                                <div id="latestInjuryResult" style="margin-top: 20px;">--%>
+                                <%--                                    <h3>Latest Injury Detection</h3>--%>
 
-<%--                                    <%--%>
-<%--                                        if (rDTO != null) {--%>
-<%--                                    %>--%>
-<%--                                    <p>Injury Class: <%= rDTO.getInjuryClass() %></p>--%>
-<%--                                    <p>Confidence Level: <%= rDTO.getConfidenceLevel() %>%</p>--%>
-<%--                                    <p>Detected At: <%= rDTO.getDetectedAt() %></p>--%>
-<%--                                    <%--%>
-<%--                                    } else {--%>
-<%--                                    %>--%>
-<%--                                    <p><%= request.getAttribute("errorMessage") %></p>--%>
-<%--                                    <%--%>
-<%--                                        }--%>
-<%--                                    %>--%>
-<%--                                </div>--%>
+                                <%--                                    <%--%>
+                                <%--                                        if (rDTO != null) {--%>
+                                <%--                                    %>--%>
+                                <%--                                    <p>Injury Class: <%= rDTO.getInjuryClass() %></p>--%>
+                                <%--                                    <p>Confidence Level: <%= rDTO.getConfidenceLevel() %>%</p>--%>
+                                <%--                                    <p>Detected At: <%= rDTO.getDetectedAt() %></p>--%>
+                                <%--                                    <%--%>
+                                <%--                                    } else {--%>
+                                <%--                                    %>--%>
+                                <%--                                    <p><%= request.getAttribute("errorMessage") %></p>--%>
+                                <%--                                    <%--%>
+                                <%--                                        }--%>
+                                <%--                                    %>--%>
+                                <%--                                </div>--%>
 
                             </div>
                         </div>

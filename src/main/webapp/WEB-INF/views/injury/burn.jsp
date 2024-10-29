@@ -7,7 +7,7 @@
 * Material Kit 2 - v3.0.4
 =========================================================
 
-* Product Page:  https://www.creative-tim.com/product/material-kit
+* Product Page: https://www.creative-tim.com/product/material-kit
 * Copyright 2023 Creative Tim (https://www.creative-tim.com)
 * Coded by www.creative-tim.com
 
@@ -23,7 +23,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="${pageContext.request.contextPath}/img/apple-icon.png">
     <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/img/favicon.png">
     <title>
-        Material Kit 2 by Creative Tim
+        TrailAid
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
@@ -45,8 +45,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
-    <!--    js script for uploading picture-->
-    <script src="${pageContext.request.contextPath}/js/kpaasJs/uploadHandler.js"></script>
 
     <style>
         /* Constrain the carousel controls to their respective columns */
@@ -143,12 +141,15 @@
                                 <c:choose>
                                     <c:when test="${sessionScope.SS_USER_ID == null}">
                                         <!-- If not logged in, show "로그인" button -->
-                                        <a href="/user/sign-in" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">로그인</a>
+                                        <a href="/user/sign-in"
+                                           class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">로그인</a>
                                     </c:when>
                                     <c:otherwise>
                                         <!-- If logged in, show "프로필" and "로그아웃" buttons -->
-                                        <a href="myPage.jsp" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
-                                        <a href="/user/logout" class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
+                                        <a href="/user/profile"
+                                           class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
+                                        <a href="/user/logout"
+                                           class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
                                     </c:otherwise>
                                 </c:choose>
                             </li>
@@ -164,63 +165,15 @@
 <!-- End Navbar -->
 <div class="page-header align-items-start min-vh-100"
      style="background-image: url('${pageContext.request.contextPath}/img/kpaas/kpaasBackground.webp');">
-    <!-- -------- START HEADER 4 w/ search book a ticket form ------- -->
-    <!--<header>-->
-    <!--    <div class="page-header min-height-400" loading="lazy">-->
-    <!--        <span class="mask bg-gradient-dark opacity-8"></span>-->
-    <!--    </div>-->
-    <!--</header>-->
-    <!-- -------- END HEADER 4 w/ search book a ticket form ------- -->
-    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto" style="max-width: 1000px; min-width: 40%;">
+
+    <div class="card card-body blur shadow-blur mx-5 mx-md-7 mx-lg-9 mx-xl-10 mx-xxl-12 my-9 mx-auto"
+         style="max-width: 1000px; min-width: 40%;">
         <!-- START Testimonials w/ user image & text & info -->
 
         <!-- START Blogs w/ 4 cards w/ image & text & link -->
         <section class="py-3">
             <div class="container">
                 <div class="row">
-                    <!--                    &lt;!&ndash; Left Section: 1/3 of the screen &ndash;&gt;-->
-                    <!--                    <div class="col-lg-4 col-sm-4">-->
-                    <!--                        <div class="card card-plain" style="border: none; box-shadow: none;">-->
-                    <!--                            <div class="card-header p-0 position-relative" style="border: none;">-->
-                    <!--                                <a class="d-block blur-shadow-image" style="outline: none;">-->
-                    <!--                                    &lt;!&ndash; The existing image that will be replaced &ndash;&gt;-->
-                    <!--                                    <img id="imageToReplace" src="${pageContext.request.contextPath}/img/kpaas/hikingTrail.webp" alt="img-blur-shadow"-->
-                    <!--                                         class="img-fluid shadow border-radius-lg" loading="lazy">-->
-                    <!--                                </a>-->
-                    <!--                            </div>-->
-                    <!--                            &lt;!&ndash; Button below the image &ndash;&gt;-->
-                    <!--                            <div class="card-body text-center mt-3 p-0" style="border: none; box-shadow: none;">-->
-                    <!--                                &lt;!&ndash; Hidden file input &ndash;&gt;-->
-                    <!--                                <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileUpload(this)">-->
-
-                    <!--                                &lt;!&ndash; Button to trigger file input &ndash;&gt;-->
-                    <!--                                <button type="button" class="btn btn-outline-success" style="width: 100%;" onclick="document.getElementById('fileInput').click();">-->
-                    <!--                                    사진 업로드-->
-                    <!--                                </button>-->
-
-                    <!--                                &lt;!&ndash; "상처 분석 시작" Button (Initially hidden) &ndash;&gt;-->
-                    <!--                                <button type="button" id="analyzeButton" class="btn btn-outline-success" style="display: none; width: 100%;" onclick="startAnalysis()">-->
-                    <!--                                    상처 분석 시작-->
-                    <!--                                </button>-->
-
-                    <!--                                &lt;!&ndash; Progress Bar (Initially hidden) &ndash;&gt;-->
-                    <!--                                <div id="progressBar" class="progress" style="height: 30px; display: none; background-color: #e9ecef;">-->
-                    <!--                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success d-flex justify-content-center align-items-center" role="progressbar" style="width: 100%; height: 100%;">-->
-                    <!--                                        분석 중-->
-                    <!--                                    </div>-->
-                    <!--                                </div>-->
-
-                    <!--                                &lt;!&ndash; "분석 결과" Button (Initially hidden) &ndash;&gt;-->
-                    <!--                                <button type="button" id="resultButton" class="btn btn-outline-success" style="display: none; width: 100%; margin-bottom: 0 !important;" onclick="redirectToResult()">-->
-                    <!--                                    분석 결과-->
-                    <!--                                </button>-->
-                    <!--                            </div>-->
-
-
-
-                    <!--                        </div>-->
-                    <!--                    </div>-->
-
 
                     <!-- Right Section: 2/3 of the screen (contains the carousel) -->
                     <div class="col-lg-12 col-sm-8">
@@ -255,10 +208,11 @@
                                             <!-- Slide 1 -->
                                             <div class="carousel-item active">
                                                 <div class="card-body px-0 py-3"><br><br>
-                                                    <div class="card-header p-0 position-relative" style="border: none;">
+                                                    <div class="card-header p-0 position-relative"
+                                                         style="border: none;">
                                                         <a class="d-block blur-shadow-image" style="outline: none;">
                                                             <!-- The existing image that will be replaced -->
-                                                            <img id="imageToReplace"
+                                                            <img class="mx-auto d-block" id="imageToReplace"
                                                                  src="${pageContext.request.contextPath}/img/kpaas/water.webp"
                                                                  class="img-fluid shadow border-radius-lg"
                                                                  style="width: 600px; height: 400px; object-fit: cover;"
@@ -270,16 +224,20 @@
                                                     <br>
                                                     <h4 class="text-dark font-weight-bold">
                                                         차가운 물로 식히기:
-                                                        <br><br> 화상 부위를 즉시 흐르는 차가운 물에 10-20분 동안 식혀주세요. 이는 통증을 줄이고 피부 손상을 최소화하는 데 도움이 됩니다.
+                                                        <br><br> 화상 부위를 즉시 흐르는 차가운 물에 10-20분 동안 식혀주세요. 이는 통증을 줄이고 피부 손상을
+                                                        최소화하는 데 도움이 됩니다.
 
                                                     </h4>
                                                     <p class="text-dark fs-5">
                                                         <strong style="font-weight:bold; ">통증 완화:</strong><br>
-                                                        차가운 물은 피부의 온도를 낮추어 통증을 줄이는 데 효과적입니다. 이는 신경 수용체의 활동을 감소시켜 불편함을 완화합니다.<br><br>
-                                                        <strong style="font-weight: bold;">피부 손상 최소화:  </strong><br>
-                                                        화상 부위를 즉시 차가운 물로 식히면 피부가 더 깊게 손상되는 것을 방지할 수 있습니다. 이는 화상이 더 심해지는 것을 예방합니다.<br><br>
-                                                        <strong style="font-weight: bold;">염증 감소:  </strong><br>
-                                                        차가운 물로 식히면 혈관이 수축되어 염증과 부종을 줄이는 데 도움이 됩니다. 염증이 줄어들면 회복 과정이 빨라질 수 있습니다.
+                                                        차가운 물은 피부의 온도를 낮추어 통증을 줄이는 데 효과적입니다. 이는 신경 수용체의 활동을 감소시켜 불편함을
+                                                        완화합니다.<br><br>
+                                                        <strong style="font-weight: bold;">피부 손상 최소화: </strong><br>
+                                                        화상 부위를 즉시 차가운 물로 식히면 피부가 더 깊게 손상되는 것을 방지할 수 있습니다. 이는 화상이 더 심해지는
+                                                        것을 예방합니다.<br><br>
+                                                        <strong style="font-weight: bold;">염증 감소: </strong><br>
+                                                        차가운 물로 식히면 혈관이 수축되어 염증과 부종을 줄이는 데 도움이 됩니다. 염증이 줄어들면 회복 과정이 빨라질 수
+                                                        있습니다.
 
                                                         <br><br>
                                                     </p><br><br>
@@ -288,9 +246,9 @@
                                             </div>
                                             <!-- Slide 2 -->
                                             <div class="carousel-item">
-                                                <div class="card-body px-0 py-3"><br>
-                                                    <a class="d-block blur-shadow-image" style="outline: none;">
-                                                        <img id="imageToReplace2"
+                                                <div class="card-body px-0 py-3 mx-auto"><br>
+                                                    <a class="d-block blur-shadow-image mx-auto" style="outline: none;">
+                                                        <img class="d-block mx-auto" id="imageToReplace2"
                                                              src="${pageContext.request.contextPath}/img/kpaas/dressing.png"
                                                              alt="img-blur-shadow"
                                                              class="img-fluid shadow border-radius-lg"
@@ -301,16 +259,20 @@
                                                     <br>
                                                     <h4 class="text-dark font-weight-bold">
                                                         상처 보호:
-                                                        <br><br> 화상 부위를 깨끗한 천이나 드레싱으로 덮어 감염을 예방하고 상처를 보호하세요. 절대 터치하거나 문지르지 않도록 합니다.
+                                                        <br><br> 화상 부위를 깨끗한 천이나 드레싱으로 덮어 감염을 예방하고 상처를 보호하세요. 절대 터치하거나
+                                                        문지르지 않도록 합니다.
                                                     </h4>
 
                                                     <p class="text-dark fs-5">
                                                         <strong style="font-weight:bold; ">감염 예방: </strong><br>
-                                                        상처를 적절히 보호하면 외부 세균이나 이물질의 침입을 막아 감염 위험을 줄일 수 있습니다. 이는 치유 과정에서 매우 중요합니다.<br><br>
+                                                        상처를 적절히 보호하면 외부 세균이나 이물질의 침입을 막아 감염 위험을 줄일 수 있습니다. 이는 치유 과정에서 매우
+                                                        중요합니다.<br><br>
                                                         <strong style="font-weight: bold;">치유 촉진: </strong><br>
-                                                        상처를 보호하면 외부 자극으로부터 안전하게 유지되어 치유가 원활하게 진행됩니다. 상처가 안전한 환경에서 회복될 수 있도록 도와줍니다.<br><br>
+                                                        상처를 보호하면 외부 자극으로부터 안전하게 유지되어 치유가 원활하게 진행됩니다. 상처가 안전한 환경에서 회복될 수
+                                                        있도록 도와줍니다.<br><br>
                                                         <strong style="font-weight: bold;">통증 감소:</strong><br>
-                                                        상처를 보호하는 것은 통증을 줄이는 데 도움이 됩니다. 외부 자극이나 마찰로부터 상처를 방지하여 불필요한 통증을 완화할 수 있습니다.<br><br>
+                                                        상처를 보호하는 것은 통증을 줄이는 데 도움이 됩니다. 외부 자극이나 마찰로부터 상처를 방지하여 불필요한 통증을
+                                                        완화할 수 있습니다.<br><br>
 
 
                                                     </p><br><br>
@@ -321,7 +283,7 @@
                                                 <div class="card-body py-3"><br>
                                                     <div class="card-body px-0 py-3"><br>
                                                         <a class="d-block blur-shadow-image" style="outline: none;">
-                                                            <img id="imageToReplace3"
+                                                            <img class="d-block mx-auto" id="imageToReplace3"
                                                                  src="${pageContext.request.contextPath}/img/kpaas/jinreo.webp"
                                                                  alt="img-blur-shadow"
                                                                  class="img-fluid shadow border-radius-lg"
@@ -331,16 +293,20 @@
                                                         </a>
                                                         <br>
                                                         <h4 class="text-dark font-weight-bold">
-                                                            전문 의료 도움 요청:  <br><br>
-                                                            화상의 정도가 심하거나 넓은 면적에 발생한 경우, 즉시 병원이나 응급실로 가서 전문적인 치료를 받는 것이 중요합니다.
+                                                            전문 의료 도움 요청: <br><br>
+                                                            화상의 정도가 심하거나 넓은 면적에 발생한 경우, 즉시 병원이나 응급실로 가서 전문적인 치료를 받는 것이
+                                                            중요합니다.
                                                         </h4>
                                                         <p class="text-dark fs-5">
                                                             <strong style="font-weight:bold; ">정확한 진단과 치료:</strong><br>
-                                                            의료 전문가는 상처의 심각성을 평가하고 적절한 치료를 제공할 수 있습니다. 이를 통해 효과적인 치료 계획을 세울 수 있습니다.<br><br>
+                                                            의료 전문가는 상처의 심각성을 평가하고 적절한 치료를 제공할 수 있습니다. 이를 통해 효과적인 치료 계획을
+                                                            세울 수 있습니다.<br><br>
                                                             <strong style="font-weight:bold; ">합병증 예방: </strong><br>
-                                                            신속한 의료 개입은 출혈, 감염, 또는 내부 장기 손상과 같은 합병증을 예방하는 데 도움이 됩니다. 조기에 치료를 받으면 회복 속도가 빨라질 수 있습니다.<br><br>
+                                                            신속한 의료 개입은 출혈, 감염, 또는 내부 장기 손상과 같은 합병증을 예방하는 데 도움이 됩니다. 조기에
+                                                            치료를 받으면 회복 속도가 빨라질 수 있습니다.<br><br>
                                                             <strong style="font-weight:bold; ">전문적인 관리:</strong><br>
-                                                            의료진은 상처 관리, 통증 조절 및 재활에 대한 전문 지식을 가지고 있습니다. 이를 통해 환자는 보다 효과적이고 안전한 치료를 받을 수 있습니다<br><br>
+                                                            의료진은 상처 관리, 통증 조절 및 재활에 대한 전문 지식을 가지고 있습니다. 이를 통해 환자는 보다
+                                                            효과적이고 안전한 치료를 받을 수 있습니다<br><br>
 
 
                                                         </p><br><br>
@@ -353,14 +319,15 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Right Control Column (10% width of available screen) -->
-                                <div class="col-1 d-flex align-items-center">
-                                    <a class="carousel-control-next custom-control text-success"
-                                       href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </a>
-                                </div>
+
+                            </div>
+                            <!-- Right Control Column (10% width of available screen) -->
+                            <div class="col-1 d-flex align-items-center">
+                                <a class="carousel-control-next custom-control text-success"
+                                   href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -373,42 +340,10 @@
     </div>
 
     <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
-    <footer class="footer position-absolute bottom-2 py-2 w-100">
+    <footer class="footer position-absolute bottom-2 py-2 w-100" style="min-height: 50px;">
         <div class="container">
             <div class="row align-items-center justify-content-lg-between">
-                <div class="col-12 col-md-6 my-auto">
-                    <div class="copyright text-center text-sm text-white text-lg-start">
-                        ©
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                        ,
-                        made with <i class="fa fa-heart" aria-hidden="true"></i> by
-                        <a href="https://www.creative-tim.com" class="font-weight-bold text-white" target="_blank">Creative
-                            Tim</a>
-                        for a better web.
-                    </div>
-                </div>
-                <div class="col-12 col-md-6">
-                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com" class="nav-link text-white" target="_blank">Creative
-                                Tim</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/presentation" class="nav-link text-white"
-                               target="_blank">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/blog" class="nav-link text-white"
-                               target="_blank">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-white"
-                               target="_blank">License</a>
-                        </li>
-                    </ul>
-                </div>
+
             </div>
         </div>
     </footer>
