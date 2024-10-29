@@ -214,25 +214,6 @@
                                     분석 결과
                                 </button>
 
-                                <%--                                <!-- Injury Detection Display (Not inside the button) -->--%>
-                                <%--                                <div id="latestInjuryResult" style="margin-top: 20px;">--%>
-                                <%--                                    <h3>Latest Injury Detection</h3>--%>
-
-                                <%--                                    <%--%>
-                                <%--                                        if (rDTO != null) {--%>
-                                <%--                                    %>--%>
-                                <%--                                    <p>Injury Class: <%= rDTO.getInjuryClass() %></p>--%>
-                                <%--                                    <p>Confidence Level: <%= rDTO.getConfidenceLevel() %>%</p>--%>
-                                <%--                                    <p>Detected At: <%= rDTO.getDetectedAt() %></p>--%>
-                                <%--                                    <%--%>
-                                <%--                                    } else {--%>
-                                <%--                                    %>--%>
-                                <%--                                    <p><%= request.getAttribute("errorMessage") %></p>--%>
-                                <%--                                    <%--%>
-                                <%--                                        }--%>
-                                <%--                                    %>--%>
-                                <%--                                </div>--%>
-
                             </div>
                         </div>
                     </div>
@@ -387,21 +368,6 @@
 <script src="${pageContext.request.contextPath}/js/plugins/perfect-scrollbar.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/material-kit.min.js?v=3.0.4" type="text/javascript"></script>
 
-<%--scripts commented above--%>
-
-<%--<!-- Script to hide buttons -->--%>
-<%--<script>--%>
-<%--    document.addEventListener('DOMContentLoaded', function () {--%>
-<%--        // Hide both buttons when the page first loads--%>
-<%--        document.getElementById('analyzeButton').style.display = 'none';--%>
-<%--    });--%>
-<%--</script>--%>
-
-
-<!-- Control Center for Material UI Kit: parallax effects, scripts for the example pages etc -->
-<!--  Google Maps Plugin    -->
-
-
 <%--<script src="${pageContext.request.contextPath}/js/kpaasJs/uploadHandler.js"></script>--%>
 <script>
     // File upload handler
@@ -537,6 +503,7 @@
         } else {
             console.log('No predicted classes found.');
             displayResult("No predicted classes found.");
+
         }
     }
 
@@ -604,6 +571,12 @@
         // Hide the progress bar once the analysis is done
         if (progressBar) {
             progressBar.style.display = 'none'; // Hide the progress bar
+        }
+
+        // Check if the result is "No predicted classes found" to display an alert in Korean
+        if (resultText === "No predicted classes found.") {
+            alert("상처 분석 중 오류가 발생했습니다. 다른 상처 이미지를 입력해주세요.");
+            window.location.href = "/main/injuryDetection";
         }
 
         if (resultButton) {

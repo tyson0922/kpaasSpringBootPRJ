@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const file = document.getElementById('fileInput').files[0];
         if (!file) {
-            alert("Please select a file.");
+            alert("파일 선택하세요.");
             return;
         }
 

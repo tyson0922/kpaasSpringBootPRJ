@@ -98,7 +98,7 @@ function displayPolygonArea() {
 
     // Display the area on the map as an overlay or info window with the new label format
     infoWindow = new naver.maps.InfoWindow({
-        content: `<div style="padding:5px;">면적: ${areaInSquareKilometers.toFixed(2)} km^2</div>`,
+        content: `<div style="padding:5px;">면적: ${areaInSquareKilometers.toFixed(2)}km²</div>`,
         position: points[points.length - 1], // Position the info window at the last point
         borderWidth: 2,
         borderColor: '#00FF00'
