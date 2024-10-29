@@ -20,7 +20,7 @@
                 break;
             case "bite":
                 injuryClassTranslated = "물림";
-                link = "/injuries/bite";
+                link = "/injuries/snakebite";
                 break;
             case "bruises":
                 injuryClassTranslated = "멍";
