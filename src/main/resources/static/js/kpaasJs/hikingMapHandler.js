@@ -266,6 +266,7 @@ function handleMountainSearch() {
         const mountainName = document.getElementById('mountainName').value;
         console.log('Search button clicked, mountain name:', mountainName);  // Debugging log
         fetchCoordinatesAndMoveMap(mountainName);  // Trigger the mountain search
+        fetchMountainData(mountainName);
     });
 }
 
@@ -359,9 +360,62 @@ function moveMapToLocation(lat, lng) {
         console.error('Map object is not initialized!');
     }
 }
+function fetchMountainData(mountainName) {
+    console.log('Fetching data for mountain:', mountainName);
+
+    fetch('/api/forestInfo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ mountainName: mountainName })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Received data:', data);
+
+            // Display the received data in the UI
+            displayMountainData(data);
+
+            // Move the map to the mountain's coordinates, if provided
+            if (data.latitude && data.longitude) {
+                moveMapToLocation(data.latitude, data.longitude);
+            } else {
+                console.log('Coordinates not available in response data.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching mountain data:', error);
+            alert('Mountain data could not be retrieved. Please try again.');
+        });
+}
+function decodeHtml(html) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+}
+function displayMountainData(data) {
+    const infoSection = document.getElementById('mountainInfo');
+    infoSection.innerHTML = `
+         <h3>${decodeHtml(data.mountainName)}</h3>
+        <p><strong>위치:</strong> ${decodeHtml(data.location)}</p>
+        <p><strong>높이:</strong> ${decodeHtml(data.height)} m</p>
+        <p><strong>상세설명:</strong> ${decodeHtml(data.description)}</p>
+        <p><strong>관광정보:</strong> ${decodeHtml(data.touristInfo)}</p>
+        <p><strong>추천등산로:</strong> ${decodeHtml(data.hikingCourses)}</p>
+        <p><strong>교통:</strong> ${decodeHtml(data.transportation)}</p>
+        <img src="${data.image}" alt="Image of ${decodeHtml(data.mountainName)}" width="300">
+    `;
+}
 
 // Initialize the map and handle the mountain search logic
 document.addEventListener('DOMContentLoaded', function () {
     initMap();  // Initialize the map
     handleMountainSearch();  // Handle mountain search on button click
+
 });

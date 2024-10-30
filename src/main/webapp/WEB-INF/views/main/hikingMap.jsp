@@ -123,26 +123,31 @@
      style="background-image: url('${pageContext.request.contextPath}/img/kpaas/kpaasBackground.webp');">
 
     <%--    산 지도 및 파라미터 시작--%>
-        <div class="card card-body blur shadow-blur mx-auto my-9" style="width: 90%; height: 100vh; overflow-y: scroll;">
-            <div class="row h-100">
-                <!-- Map Container Wrapper -->
-                <div class="col-md-9 col-12 d-flex flex-column" style="height: 100%;">
-                    <div id="map-wrapper" class="overflow-auto" style="flex-grow: 1;">
-                        <div id="map" style="min-height: 600px; height: 100%;"></div>
-                    </div>
-                </div>
-
-                <!-- Button Container -->
-                <div class="col-md-3 col-12 d-flex flex-column align-items-start mt-3 mt-md-0 overflow-auto" style="max-height: 100vh; padding: 1rem;">
-                    <p>지도에서 네 지점을 눌러주세요</p>
-                    <div class="form-group">
-                        <label for="mountainName">산 이름</label>
-                        <input type="text" id="mountainName" name="mountainName" class="form-control" placeholder="산 이름을 입력하세요">
-                    </div>
-                    <button id="searchButton" class="btn btn-outline-success mt-3">산 위치로 이동하기</button>
+    <div class="card card-body blur shadow-blur mx-auto my-9" style="width: 90%; height: 100vh; overflow-y: scroll;">
+        <div class="row h-100">
+            <!-- Map Container Wrapper -->
+            <div class="col-md-9 col-12 d-flex flex-column" style="height: 100%;">
+                <div id="map-wrapper" class="overflow-auto" style="flex-grow: 1;">
+                    <div id="map" style="min-height: 600px; height: 100%;"></div>
                 </div>
             </div>
+
+            <!-- Button Container -->
+            <div class="col-md-3 col-12 d-flex flex-column align-items-start mt-3 mt-md-0 overflow-auto"
+                 style="max-height: 100vh; padding: 1rem;">
+                <p>지도에서 네 지점을 눌러주세요</p>
+                <div class="form-group">
+                    <label for="mountainName">산 이름</label>
+                    <input type="text" id="mountainName" name="mountainName" class="form-control"
+                           placeholder="산 이름을 입력하세요">
+                </div>
+                <button id="searchButton" class="btn btn-outline-success mt-3">산 위치로 이동하기</button>
+            </div>
+            <div class="col-12 d-flex flex-column align-items-start overflow-auto" style="padding: 1rem;">
+                <div id="mountainInfo"></div>
+            </div>
         </div>
+    </div>
 
 
     <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
