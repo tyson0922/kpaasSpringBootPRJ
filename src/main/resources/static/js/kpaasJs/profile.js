@@ -25,7 +25,7 @@ $(document).ready(function () {
                 success: function(response) {
                     if (response.success) {
                         alert("회원 탈퇴가 완료되었습니다.");
-                        window.location.href = "/sign-in"; // Redirect to sign-in or homepage after deletion
+                        window.location.href = "/user/sign-in"; // Redirect to sign-in or homepage after deletion
                     } else {
                         alert("회원 탈퇴에 실패하였습니다. 다시 시도해주세요.");
                     }

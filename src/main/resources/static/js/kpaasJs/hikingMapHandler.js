@@ -244,7 +244,7 @@ function fetchHikingRouteAndRedirect() {
             console.log("API Response:", data);
 
             // After receiving and logging the response, redirect to hikingRouteTest.jsp
-            window.location.href = '/main/hikingRouteTest';
+            window.location.href = '/main/hikingRouteResult';
         })
         .catch(error => {
             console.error('Error fetching hiking routes:', error);

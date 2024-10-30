@@ -100,9 +100,9 @@ public class MainController {
     private final HikingRouteMapper hikingRouteMapper;
     // New method to handle the hikingRouteTest.jsp
 
-    @GetMapping(value = "hikingRouteTest")
-    public String hikingRouteTest(Model model, HttpSession session) {
-        log.info(this.getClass().getName() + ".main/hikingRouteTest");
+    @GetMapping(value = "hikingRouteResult")
+    public String hikingRouteResult(Model model, HttpSession session) {
+        log.info(this.getClass().getName() + ".main/hikingRouteResult");
 
         // Retrieve userId from session
         String userId = (String) session.getAttribute("SS_USER_ID");

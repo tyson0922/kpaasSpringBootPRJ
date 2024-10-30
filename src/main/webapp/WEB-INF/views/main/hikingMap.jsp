@@ -45,7 +45,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
     <%--    naverMap API--%>
-    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}&submodules=geocoder&callback=initMap"></script>
+    <script type="text/javascript"
+            src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverApiClientKey}&submodules=geocoder&callback=initMap"></script>
 
     <script type="text/javascript">
         const naverClientKey = '${naverClientKey}';
@@ -96,12 +97,15 @@
                                 <c:choose>
                                     <c:when test="${sessionScope.SS_USER_ID == null}">
                                         <!-- If not logged in, show "로그인" button -->
-                                        <a href="/user/sign-in" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">로그인</a>
+                                        <a href="/user/sign-in"
+                                           class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">로그인</a>
                                     </c:when>
                                     <c:otherwise>
                                         <!-- If logged in, show "프로필" and "로그아웃" buttons -->
-                                        <a href="/user/profile" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
-                                        <a href="/user/logout" class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
+                                        <a href="/user/profile"
+                                           class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
+                                        <a href="/user/logout"
+                                           class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
                                     </c:otherwise>
                                 </c:choose>
                             </li>
@@ -118,26 +122,40 @@
 <div class="page-header align-items-start min-vh-100"
      style="background-image: url('${pageContext.request.contextPath}/img/kpaas/kpaasBackground.webp');">
 
-<%--    산 지도 및 파라미터 시작--%>
-    <div class="card card-body blur shadow-blur mx-auto my-9"
-         style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem; display: flex; flex-direction: row;">
-
-        <!-- Map Container -->
-        <div id="map" style="width: 75%; height: 100%;"></div>
-
-        <!-- Button Container -->
-        <div style="width: 25%; padding-left: 1rem; display: flex; flex-direction: column; align-items: flex-start;">
-            <div style="padding-top: 1rem; width: 100%;">
-                <div class="form-group">
-                    <label for="mountainName">산 이름</label>
-                    <input type="text" id="mountainName" name="mountainName" class="form-control" placeholder="산 이름을 입력하세요">
+    <%--    산 지도 및 파라미터 시작--%>
+        <div class="card card-body blur shadow-blur mx-auto my-9" style="width: 90%; height: 100vh; overflow-y: scroll;">
+            <div class="row h-100">
+                <!-- Map Container Wrapper -->
+                <div class="col-md-9 col-12 d-flex flex-column" style="height: 100%;">
+                    <div id="map-wrapper" class="overflow-auto" style="flex-grow: 1;">
+                        <div id="map" style="min-height: 600px; height: 100%;"></div>
+                    </div>
                 </div>
-                <button id="searchButton" class="btn btn-outline-success mt-3">산 위치로 이동하기</button>
+
+                <!-- Button Container -->
+                <div class="col-md-3 col-12 d-flex flex-column align-items-start mt-3 mt-md-0 overflow-auto" style="max-height: 100vh; padding: 1rem;">
+                    <p>지도에서 네 지점을 눌러주세요</p>
+                    <div class="form-group">
+                        <label for="mountainName">산 이름</label>
+                        <input type="text" id="mountainName" name="mountainName" class="form-control" placeholder="산 이름을 입력하세요">
+                    </div>
+                    <button id="searchButton" class="btn btn-outline-success mt-3">산 위치로 이동하기</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!--   Core JS Files   -->
+
+    <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
+    <footer class="footer position-absolute bottom-2 py-2 w-100">
+        <div class="container">
+            <div class="row align-items-center justify-content-lg-between">
+
+            </div>
+        </div>
+    </footer>
+    <!-- -------- END FOOTER 5 w/ DARK BACKGROUND ------- -->
+</div>
+<!--   Core JS Files   -->
 <script src="${pageContext.request.contextPath}/js/core/popper.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/core/bootstrap.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/plugins/perfect-scrollbar.min.js"></script>

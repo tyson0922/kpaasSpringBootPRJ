@@ -63,6 +63,7 @@
         let polygon;
         let userMarker;
         let selectedRouteLine = null;
+        let alertShown = false;
         const hikingRouteData = JSON.parse('${hikingRouteDataJson}'); // Ensure JSON is parsed correctly
 
         console.log("Parsed Route Data:", hikingRouteData);
@@ -83,7 +84,7 @@
 
         window.addEventListener("DOMContentLoaded", function () {
             initMapWithRetry();
-            showCurrentLocation();
+            setTimeout(showCurrentLocation, 3000);
         });
 
         function initMapWithRetry(retries = 5) {
@@ -190,6 +191,7 @@
             if (navigator.geolocation) {
                 navigator.geolocation.watchPosition(
                     (position) => {
+                        const accuracy = position.coords.accuracy;
                         const userLat = position.coords.latitude;
                         const userLng = position.coords.longitude;
                         const userLocation = new naver.maps.LatLng(userLat, userLng);
@@ -206,6 +208,12 @@
                         } else {
                             userMarker.setPosition(userLocation);
                         }
+
+                        // Alert if accuracy is low (example: 100 meters threshold)
+                        if (accuracy > 100  && !alertShown) {
+                            alert("현재 위치가 GPS를 사용하지 않으므로 부정확할 수 있습니다.");
+                            alertShown = true;
+                        }
                     },
                     (error) => {
                         console.error("Error fetching user location:", error);
@@ -221,6 +229,7 @@
             }
         }
 
+
         function centerOnUserLocation() {
             if (userMarker) {
                 map.setCenter(userMarker.getPosition());
@@ -234,8 +243,6 @@
             map.setCenter(centroidLocation);
         }
     </script>
-
-
 
 
 </head>
@@ -280,12 +287,15 @@
                                 <c:choose>
                                     <c:when test="${sessionScope.SS_USER_ID == null}">
                                         <!-- If not logged in, show "로그인" button -->
-                                        <a href="/user/sign-in" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">로그인</a>
+                                        <a href="/user/sign-in"
+                                           class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">로그인</a>
                                     </c:when>
                                     <c:otherwise>
                                         <!-- If logged in, show "프로필" and "로그아웃" buttons -->
-                                        <a href="/user/profile" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
-                                        <a href="/user/logout" class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
+                                        <a href="/user/profile"
+                                           class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
+                                        <a href="/user/logout"
+                                           class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
                                     </c:otherwise>
                                 </c:choose>
                             </li>
@@ -304,33 +314,47 @@
 
     <%--    산 지도 및 파라미터 시작--%>
     <div class="card card-body blur shadow-blur mx-auto my-9"
-         style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem; display: flex; flex-direction: row;">
-
-        <!-- Map Container -->
-        <div id="map" style="width: 75%; height: 100%;"></div>
-        <!-- Route Details Card -->
-        <div id="route-details" style="padding: 1rem; width: 25%;">
-            <h3>등산로 상세정보</h3>
-            <p><strong>산 이름:</strong> <span id="mountain-name">등산로를 선택하세요</span></p>
-<%--            <p><strong>Route ID:</strong> <span id="route-id">N/A</span></p>--%>
-            <p><strong>거리(m):</strong> <span id="section-length">등산로를 선택하세요</span></p>
-            <p><strong>상행 시간(분):</strong> <span id="uphill-time">등산로를 선택하세요</span></p>
-            <p><strong>하행 시간(분):</strong> <span id="downhill-time">등산로를 선택하세요</span></p>
-            <p><strong>난이도:</strong> <span id="category">등산로를 선택하세요</span></p>
-            <br>
-            <br>
-            <button class="btn btn-outline-success mt-3" onclick="centerOnUserLocation()">현재 위치</button>
-            <button class="btn btn-outline-success mt-3" onclick="centerOnCentroid()">등산로 보기</button>
+         style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem; overflow-y: scroll;">
+        <div class="row h-100 overflow-auto">
+            <!-- Map Container -->
+            <div id="map-wrapper" class="overflow-auto" style="flex-grow: 1;">
+                <div id="map" class="col-md-9 col-12" style="height: 100%; min-height: 600px;"></div>
+            </div>
+            <!-- Route Details Card -->
+            <div id="route-details"
+                 class="col-md-3 col-12 d-flex flex-column align-items-start mt-3 mt-md-0 overflow-auto"
+                 style="padding: 1rem;">
+                <h3>등산로 상세정보</h3>
+                <p><strong>산 이름:</strong> <span id="mountain-name">등산로를 선택하세요</span></p>
+                <p><strong>거리(m):</strong> <span id="section-length">등산로를 선택하세요</span></p>
+                <p><strong>상행 시간(분):</strong> <span id="uphill-time">등산로를 선택하세요</span></p>
+                <p><strong>하행 시간(분):</strong> <span id="downhill-time">등산로를 선택하세요</span></p>
+                <p><strong>난이도:</strong> <span id="category">등산로를 선택하세요</span></p>
+                <br>
+                <button class="btn btn-outline-success mt-3" onclick="centerOnUserLocation()">현재 위치</button>
+                <button class="btn btn-outline-success mt-3" onclick="centerOnCentroid()">등산로 보기</button>
+            </div>
         </div>
-
     </div>
 
-    <!--   Core JS Files   -->
-    <script src="${pageContext.request.contextPath}/js/core/popper.min.js" type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/js/core/bootstrap.min.js" type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/js/plugins/perfect-scrollbar.min.js"></script>
 
-    <script src="${pageContext.request.contextPath}/js/material-kit.min.js?v=3.0.4" type="text/javascript"></script>
+    <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
+    <footer class="footer position-absolute bottom-2 py-2 w-100">
+        <div class="container">
+            <div class="row align-items-center justify-content-lg-between">
+
+            </div>
+        </div>
+    </footer>
+    <!-- -------- END FOOTER 5 w/ DARK BACKGROUND ------- -->
+</div>
+
+<!--   Core JS Files   -->
+<script src="${pageContext.request.contextPath}/js/core/popper.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/js/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/js/plugins/perfect-scrollbar.min.js"></script>
+
+<script src="${pageContext.request.contextPath}/js/material-kit.min.js?v=3.0.4" type="text/javascript"></script>
 </body>
 
 </html>
