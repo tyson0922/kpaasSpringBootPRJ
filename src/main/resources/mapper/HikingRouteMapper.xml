@@ -54,6 +54,24 @@
         WHERE USER_ID = #{userId}
         ORDER BY PAGE ASC
     </select>
+
+    <select id="findRoutesByUserIdAndRouteIds" parameterType="map" resultType="kopo.kpaas.dto.RoutePropertiesDTO">
+        SELECT
+        ROUTE_ID as routeId,
+        PAGE as page,
+        SEC_LEN as secLen,
+        UP_MIN as upMin,
+        DOWN_MIN as downMin,
+        CAT_NAM as catNam,
+        MNTN_NM as mntnNm,
+        ST_AsText(GEOMETRY) as geometry
+        FROM RouteProperties
+        WHERE USER_ID = #{userId}
+        AND ROUTE_ID IN
+        <foreach collection="routeIds" item="routeId" open="(" separator="," close=")">
+            #{routeId}
+        </foreach>
+    </select>
 </mapper>
 
 

@@ -112,6 +112,9 @@ public class MainController {
             return "redirect:/user/sign-in";
         }
 
+        // Pass the userId to the JSP
+        model.addAttribute("userId", userId);
+
         // Retrieve saved hiking route data without re-fetching and saving
         List<RoutePropertiesDTO> hikingRoutes = hikingRouteService.getHikingRoutesByUserId(userId);
 

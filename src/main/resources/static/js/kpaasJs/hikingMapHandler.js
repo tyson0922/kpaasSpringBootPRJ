@@ -73,39 +73,74 @@ function drawPolygonOrLines() {
     }
 }
 
-function displayPolygonArea() {
-    if (points.length < 4) return; // Ensure we have a complete polygon
+// function displayPolygonArea() {
+//     if (points.length < 4) return; // Ensure we have a complete polygon
+//
+//     // Calculate the area of the polygon using the Shoelace formula
+//     let area = 0;
+//     for (let i = 0; i < points.length - 1; i++) {
+//         area += points[i].lng() * points[i + 1].lat() - points[i + 1].lng() * points[i].lat();
+//     }
+//     area += points[points.length - 1].lng() * points[0].lat() - points[0].lng() * points[points.length - 1].lat(); // Close the polygon
+//     area = Math.abs(area / 2);
+//
+//     // Convert area from degrees to square meters (approximate conversion)
+//     const conversionFactor = 111000 * 111000; // Approximate meters per degree squared at the equator
+//     const areaInSquareMeters = area * conversionFactor;
+//     const areaInSquareKilometers = areaInSquareMeters / 1_000_000; // Convert to square kilometers
+//
+//     // Alert the user if the area exceeds 30 square kilometers
+//     if (areaInSquareKilometers > 30) {
+//         alert(`선택된 영역이 넓어서 부정확한 결과가 나올 수 있습니다. 면적이 ${areaInSquareKilometers.toFixed(2)}km²로, 30km² 제한을 초과합니다`);
+//     }
+//
+//     console.log(`면적: ${areaInSquareKilometers.toFixed(2)}km²`);
+//
+//     // Display the area on the map as an overlay or info window with the new label format
+//     infoWindow = new naver.maps.InfoWindow({
+//         content: `<div style="padding:5px;">면적: ${areaInSquareKilometers.toFixed(2)}km²</div>`,
+//         position: points[points.length - 1], // Position the info window at the last point
+//         borderWidth: 2,
+//         borderColor: '#00FF00'
+//     });
+//
+//     infoWindow.open(map);
+// }
 
-    // Calculate the area of the polygon using the Shoelace formula
+function displayPolygonArea() {
+    if (points.length < 4) return; // 다각형이 완성되었는지 확인 (4개 이상의 점 필요)
+
+    // Shoelace 공식을 사용하여 다각형의 면적 계산
     let area = 0;
     for (let i = 0; i < points.length - 1; i++) {
         area += points[i].lng() * points[i + 1].lat() - points[i + 1].lng() * points[i].lat();
     }
-    area += points[points.length - 1].lng() * points[0].lat() - points[0].lng() * points[points.length - 1].lat(); // Close the polygon
+    area += points[points.length - 1].lng() * points[0].lat() - points[0].lng() * points[points.length - 1].lat(); // 다각형을 닫기 위한 마지막 계산
     area = Math.abs(area / 2);
 
-    // Convert area from degrees to square meters (approximate conversion)
-    const conversionFactor = 111000 * 111000; // Approximate meters per degree squared at the equator
+    // 면적을 도 단위에서 제곱미터로 변환 (근사 변환)
+    const conversionFactor = 111000 * 111000; // 적도에서의 도당 미터 제곱 변환 계수
     const areaInSquareMeters = area * conversionFactor;
-    const areaInSquareKilometers = areaInSquareMeters / 1_000_000; // Convert to square kilometers
+    const areaInSquareKilometers = areaInSquareMeters / 1_000_000; // 제곱킬로미터로 변환
 
-    // Alert the user if the area exceeds 30 square kilometers
+    // 면적이 30 제곱킬로미터를 초과할 경우 사용자에게 알림
     if (areaInSquareKilometers > 30) {
         alert(`선택된 영역이 넓어서 부정확한 결과가 나올 수 있습니다. 면적이 ${areaInSquareKilometers.toFixed(2)}km²로, 30km² 제한을 초과합니다`);
     }
 
     console.log(`면적: ${areaInSquareKilometers.toFixed(2)}km²`);
 
-    // Display the area on the map as an overlay or info window with the new label format
+    // 지도에 면적을 정보 창으로 표시
     infoWindow = new naver.maps.InfoWindow({
-        content: `<div style="padding:5px;">면적: ${areaInSquareKilometers.toFixed(2)}km²</div>`,
-        position: points[points.length - 1], // Position the info window at the last point
+        content: `<div style="padding:5px;">면적: ${areaInSquareKilometers.toFixed(2)}km²</div>`, // 면적 정보 표시
+        position: points[points.length - 1], // 마지막 점에 정보 창 위치 설정
         borderWidth: 2,
-        borderColor: '#00FF00'
+        borderColor: '#00FF00' // 정보 창 테두리 색상 설정
     });
 
-    infoWindow.open(map);
+    infoWindow.open(map); // 지도에 정보 창 열기
 }
+
 
 function calculateCentroid() {
     let sumLat = 0, sumLng = 0, numPoints = points.length - 1; // Exclude the repeated first point

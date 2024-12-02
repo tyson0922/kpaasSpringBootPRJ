@@ -89,7 +89,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <!-- If logged in, show "프로필" and "로그아웃" buttons -->
-                                        <a href="profile.jsp" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
+                                        <a href="/user/profile" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
                                         <a href="/user/logout" class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
                                     </c:otherwise>
                                 </c:choose>

@@ -23,4 +23,7 @@ public interface HikingRouteMapper {
 
     // Retrieve hiking route data for a given user
     List<RoutePropertiesDTO> findRoutesByUserId(String userId);
+
+    // Retrieve hiking route data for a given userId and list of routeIds
+    List<RoutePropertiesDTO> findRoutesByUserIdAndRouteIds(String userId, List<String> routeIds);
 }

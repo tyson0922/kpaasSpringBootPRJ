@@ -394,50 +394,93 @@
         });
     }
 
-    // Resize the image to 640x640 before sending to the API
+    // // Resize the image to 640x640 before sending to the API
+    // function resizeImage(base64Str) {
+    //     return new Promise(function (resolve, reject) {
+    //         const img = new Image();
+    //         img.src = base64Str;
+    //         img.onload = function () {
+    //             const canvas = document.createElement("canvas");
+    //             const WIDTH = 640;  // Set width to 640px
+    //             const HEIGHT = 640; // Set height to 640px
+    //
+    //             // Set canvas to the required size
+    //             canvas.width = WIDTH;
+    //             canvas.height = HEIGHT;
+    //
+    //             const ctx = canvas.getContext("2d");
+    //
+    //             // Stretch the image to fit 640x640
+    //             ctx.drawImage(img, 0, 0, WIDTH, HEIGHT);
+    //
+    //             // Return resized image as Base64
+    //             resolve(canvas.toDataURL("image/jpeg", 1.0));
+    //         };
+    //         img.onerror = reject;
+    //     });
+    // }
+    //
+    // // Send the resized image to the API
+    // function sendToAPI(base64image) {
+    //     const settings = {
+    //         url: "https://classify.roboflow.com/yaralanmalar/1?api_key=C5dYf8a6t6Xgy8BsI3Ml",
+    //         method: "POST",
+    //         data: base64image,
+    //         success: function (response) {
+    //             console.log('API request successful:', response);
+    //             handleAPIResponse(response);
+    //         },
+    //         error: function (error) {
+    //             console.error('API request failed:', error);
+    //             document.getElementById('output').innerHTML = 'API request failed: ' + error.message;
+    //         }
+    //     };
+    //
+    //     $.ajax(settings);
+    // }
+
+    // 이미지 크기를 640x640으로 조정한 후 API로 전송
     function resizeImage(base64Str) {
         return new Promise(function (resolve, reject) {
             const img = new Image();
-            img.src = base64Str;
+            img.src = base64Str; // base64로 인코딩된 이미지 소스 설정
             img.onload = function () {
                 const canvas = document.createElement("canvas");
-                const WIDTH = 640;  // Set width to 640px
-                const HEIGHT = 640; // Set height to 640px
+                const WIDTH = 640;  // 가로 크기를 640px로 설정
+                const HEIGHT = 640; // 세로 크기를 640px로 설정
 
-                // Set canvas to the required size
+                // 캔버스 크기를 640x640으로 설정
                 canvas.width = WIDTH;
                 canvas.height = HEIGHT;
 
                 const ctx = canvas.getContext("2d");
 
-                // Stretch the image to fit 640x640
-                ctx.drawImage(img, 0, 0, WIDTH, HEIGHT);
+                ctx.drawImage(img, 0, 0, WIDTH, HEIGHT);// 이미지를 640x640으로 스트레칭하여 캔버스에 그리기
 
-                // Return resized image as Base64
-                resolve(canvas.toDataURL("image/jpeg", 1.0));
+                resolve(canvas.toDataURL("image/jpeg", 1.0));// 리사이즈된 이미지를 Base64 형식으로 반환
             };
-            img.onerror = reject;
+            img.onerror = reject; // 이미지 로딩 오류 시 Promise를 reject
         });
     }
 
-    // Send the resized image to the API
+    // 리사이즈된 이미지를 API로 전송
     function sendToAPI(base64image) {
         const settings = {
-            url: "https://classify.roboflow.com/yaralanmalar/1?api_key=C5dYf8a6t6Xgy8BsI3Ml",
-            method: "POST",
-            data: base64image,
+            url: "https://classify.roboflow.com/yaralanmalar/1?api_key=C5dYf8a6t6Xgy8BsI3Ml", // API 엔드포인트
+            method: "POST", // 요청 방식 설정 (POST)
+            data: base64image, // Base64 인코딩된 이미지 데이터 전송
             success: function (response) {
-                console.log('API request successful:', response);
-                handleAPIResponse(response);
+                console.log('API request successful:', response); // 성공 시 API 응답 로깅
+                handleAPIResponse(response); // 응답 처리 함수 호출
             },
             error: function (error) {
-                console.error('API request failed:', error);
-                document.getElementById('output').innerHTML = 'API request failed: ' + error.message;
+                console.error('API request failed:', error); // 요청 실패 시 오류 로깅
+                document.getElementById('output').innerHTML = 'API request failed: ' + error.message; // 사용자에게 오류 메시지 표시
             }
         };
-
-        $.ajax(settings);
+        $.ajax(settings); // jQuery로 AJAX 요청 보내기
     }
+
 
     function handleAPIResponse(response) {
         console.log('Full API response:', response);  // Log the full API response for debugging

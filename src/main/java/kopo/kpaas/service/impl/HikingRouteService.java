@@ -3,6 +3,7 @@ package kopo.kpaas.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kopo.kpaas.dto.AggregatedHikingRouteDTO;
 import kopo.kpaas.dto.PolygonPointsDTO;
 import kopo.kpaas.dto.RoutePropertiesDTO;
 import kopo.kpaas.mapper.HikingRouteMapper;
@@ -17,8 +18,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +76,51 @@ public class HikingRouteService implements IHikingRouteService {
                     throw new RuntimeException("Pagination data is missing from API response.");
                 }
 
+//    @Override
+//    public Map<String, Object> getAndSaveHikingRoutes(String userId) {
+//        // 사용자 ID로 다각형 포인트 정보 가져오기
+//        PolygonPointsDTO polygonPoints = hikingRouteMapper.getPolygonPoints(userId);
+//        String geomFilter = formatPointsAsPolygon(polygonPoints); // 포인트를 POLYGON 형식으로 변환
+//
+//        log.info("Formatted POLYGON: {}", geomFilter);
+//
+//        int currentPage = 1;
+//        Map<String, Object> lastResponseMap = null;
+//        // 새로운 데이터 삽입 전에 사용자의 기존 경로 데이터 삭제
+//        hikingRouteMapper.deleteRoutesByUserId(userId);
+//
+//        while (true) {
+//            String apiUrl = buildApiUrl(geomFilter, currentPage); // API URL을 생성하여 호출할 페이지 지정
+//            log.info("API URL for page {}: {}", currentPage, apiUrl);
+//
+//            try {
+//                String jsonResponse = NetworkUtil.get(apiUrl); // API로부터 JSON 응답 가져오기
+////            log.info("Raw API Response for page {}: {}", currentPage, jsonResponse);
+//
+//                // 오류 응답이 있는 경우 예외 처리
+//                if (jsonResponse.startsWith("<html>")) {
+//                    log.error("Received an error response from the API: {}", jsonResponse);
+//                    throw new RuntimeException("Error from API: " + jsonResponse);
+//                }
+//
+//                // JSON 응답 파싱
+//                Map<String, Object> responseMap = objectMapper.readValue(jsonResponse, new TypeReference<>() {
+//                });
+//                lastResponseMap = responseMap; // 마지막 응답 데이터를 저장
+//
+//                // "page" 객체 안전하게 접근
+//                Map<String, Object> response = (Map<String, Object>) responseMap.get("response");
+//                if (response == null) {
+//                    throw new RuntimeException("Response object is missing in API response."); // 응답 객체가 없는 경우 예외 처리
+//                }
+//                Map<String, Object> pageInfo = (Map<String, Object>) response.get("page");
+//
+//                // 페이지네이션 정보가 없는 경우 예외 처리
+//                if (pageInfo == null) {
+//                    log.error("No pagination information found in API response.");
+//                    throw new RuntimeException("Pagination data is missing from API response.");
+//                }
+
                 int totalPages = Integer.parseInt(pageInfo.getOrDefault("total", "1").toString());
                 int currentPageFromResponse = Integer.parseInt(pageInfo.getOrDefault("current", "1").toString());
 
@@ -94,8 +140,6 @@ public class HikingRouteService implements IHikingRouteService {
         }
         return lastResponseMap;
     }
-
-
 
 
     // Method to save parsed data
@@ -130,10 +174,6 @@ public class HikingRouteService implements IHikingRouteService {
             hikingRouteMapper.insertRouteProperties(routeProperties);
         }
     }
-
-
-
-
 
 
     // Method to format points into POLYGON format
@@ -171,6 +211,7 @@ public class HikingRouteService implements IHikingRouteService {
                 + "&key=" + apiKey
                 + "&page=" + page;  // Add the page parameter
     }
+
     private String formatMultiLineString(JsonNode coordinates) {
         StringBuilder multiLineStringBuilder = new StringBuilder();
         multiLineStringBuilder.append("MULTILINESTRING(");
@@ -194,9 +235,112 @@ public class HikingRouteService implements IHikingRouteService {
         return multiLineStringBuilder.toString();
     }
 
+
+
     @Override
     public List<RoutePropertiesDTO> getHikingRoutesByUserId(String userId) {
         log.info("Retrieving hiking routes for userId: {}", userId);
         return hikingRouteMapper.findRoutesByUserId(userId);
     }
+
+
+    @Override
+    public AggregatedHikingRouteDTO aggregateHikingRoutes(String userId, List<String> routeIds) {
+        // Retrieve the matching routes from the database
+        List<RoutePropertiesDTO> routes = hikingRouteMapper.findRoutesByUserIdAndRouteIds(userId, routeIds);
+
+        if (routes.isEmpty()) {
+            log.info("No routes found for userId: {} with routeIds: {}", userId, routeIds);
+            return new AggregatedHikingRouteDTO(userId, "", Collections.emptyList(), "0", "0", "0", Collections.emptyList());
+        }
+
+        // 1. Combine all geometries into one big multilinestring
+        StringBuilder aggregatedGeometryBuilder = new StringBuilder("MULTILINESTRING(");
+        List<String> geometries = new ArrayList<>();
+        for (RoutePropertiesDTO route : routes) {
+            if (route.getGeometry() != null && route.getGeometry().startsWith("MULTILINESTRING")) {
+                String cleanedGeometry = route.getGeometry()
+                        .replace("MULTILINESTRING(", "")
+                        .replace(")", "");
+                geometries.add(cleanedGeometry);
+            } else {
+                log.warn("Invalid or null geometry for routeId: {}", route.getRouteId());
+            }
+        }
+        aggregatedGeometryBuilder.append(String.join(", ", geometries)).append(")");
+        String aggregatedGeometry = aggregatedGeometryBuilder.toString();
+
+        // 2. Get unique difficulty levels
+        Set<String> catNamSet = routes.stream()
+                .map(RoutePropertiesDTO::getCatNam)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        List<String> uniqueCatNam = new ArrayList<>(catNamSet);
+        Collections.sort(uniqueCatNam);
+
+        // 3. Calculate total section length
+        int totalSecLenInMeters = 0;
+        for (RoutePropertiesDTO route : routes) {
+            if (route.getSecLen() != null) {
+                try {
+                    String cleanedSecLen = route.getSecLen().replaceAll("[^\\d]", ""); // Remove non-numeric chars
+                    totalSecLenInMeters += Integer.parseInt(cleanedSecLen); // Parse and add
+                } catch (NumberFormatException e) {
+                    log.warn("Invalid secLen value: {} for routeId: {}", route.getSecLen(), route.getRouteId(), e);
+                }
+            }
+        }
+        String totalSecLen = String.format("%.2fkm", totalSecLenInMeters / 1000.0); // Convert to km
+
+        // 4. Calculate total uphill and downhill times
+        int totalUpMin = routes.stream()
+                .map(RoutePropertiesDTO::getUpMin)
+                .filter(Objects::nonNull)
+                .mapToInt(upMin -> {
+                    try {
+                        return Integer.parseInt(upMin);
+                    } catch (NumberFormatException e) {
+                        log.warn("Invalid upMin value: {}", upMin, e);
+                        return 0;
+                    }
+                }).sum();
+
+        int totalDownMin = routes.stream()
+                .map(RoutePropertiesDTO::getDownMin)
+                .filter(Objects::nonNull)
+                .mapToInt(downMin -> {
+                    try {
+                        return Integer.parseInt(downMin);
+                    } catch (NumberFormatException e) {
+                        log.warn("Invalid downMin value: {}", downMin, e);
+                        return 0;
+                    }
+                }).sum();
+
+        // 5. Get distinct mountain names
+        Set<String> mountainNameSet = routes.stream()
+                .map(RoutePropertiesDTO::getMntnNm)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        List<String> distinctMountainName = new ArrayList<>(mountainNameSet);
+        Collections.sort(distinctMountainName);
+
+        // 6. Build and return the aggregated DTO
+        AggregatedHikingRouteDTO aggregatedDTO = new AggregatedHikingRouteDTO(
+                userId,
+                aggregatedGeometry,
+                uniqueCatNam,
+                totalSecLen,
+                String.valueOf(totalUpMin),   // Convert to String for DTO
+                String.valueOf(totalDownMin), // Convert to String for DTO
+                distinctMountainName
+        );
+
+        // Log the aggregated DTO for debugging
+        log.info("Aggregated DTO for userId: {} with routeIds: {}: {}", userId, routeIds, aggregatedDTO);
+
+        return aggregatedDTO;
+    }
+
+
 }

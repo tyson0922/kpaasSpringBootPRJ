@@ -1,6 +1,8 @@
 package kopo.kpaas.controller;
 
 import jakarta.servlet.http.HttpSession;
+import kopo.kpaas.dto.AggregatedHikingRouteDTO;
+import kopo.kpaas.dto.RoutePropertiesDTO;
 import kopo.kpaas.mapper.HikingRouteMapper;
 import kopo.kpaas.service.impl.HikingRouteService;
 import lombok.RequiredArgsConstructor;
@@ -8,8 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -45,6 +50,24 @@ public class HikingRouteController {
             // Handle any errors
             log.error("Error occurred in getHikingRoutes: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @PostMapping("/api/hiking-route/aggregate")
+    public ResponseEntity<AggregatedHikingRouteDTO> aggregateHikingRoutes(
+            @RequestBody List<String> routeIds, HttpSession session) {
+        String userId = (String) session.getAttribute("SS_USER_ID");
+
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            AggregatedHikingRouteDTO aggregatedDTO = hikingRouteService.aggregateHikingRoutes(userId, routeIds);
+            return ResponseEntity.ok(aggregatedDTO);
+        } catch (Exception e) {
+            log.error("Error aggregating hiking routes: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

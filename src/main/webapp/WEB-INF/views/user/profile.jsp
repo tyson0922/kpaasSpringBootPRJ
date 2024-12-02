@@ -89,7 +89,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <!-- If logged in, show "프로필" and "로그아웃" buttons -->
-                                        <a href="profile.jsp" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
+                                        <a href="/user/profile" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">마이페이지</a>
                                         <a href="/user/logout" class="btn btn-sm bg-gradient-danger mb-0 me-1 mt-2 mt-md-0">로그아웃</a>
                                     </c:otherwise>
                                 </c:choose>
@@ -109,8 +109,8 @@
      style="background-image: url('${pageContext.request.contextPath}/img/kpaas/kpaasBackground.webp');">
     <span class="mask bg-gradient-dark opacity-1"></span>
     <div class="container my-auto">
-        <div class="row m-0">
-            <div class="col-lg-4 col-md-8 col-12 mx-auto p-0" style="width: 40%; min-width: 550px;">
+        <div class="row m-0 justify-content-center">
+            <div class="col-lg-4 col-md-6 col-10 p-0">
                 <div class="card z-index-0 fadeIn3 fadeInBottom">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-success shadow-primary border-radius-lg py-3 pe-1">
@@ -141,7 +141,8 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <button type="button" id="btnEmail" class="btn btn-outline-success w-100"  style="margin-bottom: 0;">이메일 인증번호 발송</button>
+                                    <button type="button" id="btnEmail" class="btn btn-outline-success w-100"
+                                            style="margin-bottom: 0; height: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">이메일 인증번호 발송</button>
                                 </div>
                             </div>
                             <div class="input-group input-group-outline mb-3">
@@ -158,7 +159,11 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <button type="button" id="btnAddr" class="btn btn-outline-success w-100" style="margin-bottom: 0;">주소 검색</button>
+                                    <button type="button" id="btnAddr" class="btn btn-outline-success w-100"
+                                            style="margin-bottom: 0; height: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        주소 검색
+                                    </button>
+
                                 </div>
                             </div>
                             <div class="input-group input-group-outline mb-3">

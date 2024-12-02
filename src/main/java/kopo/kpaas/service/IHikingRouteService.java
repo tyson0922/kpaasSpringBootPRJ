@@ -1,6 +1,7 @@
 package kopo.kpaas.service;
 
 
+import kopo.kpaas.dto.AggregatedHikingRouteDTO;
 import kopo.kpaas.dto.RoutePropertiesDTO;
 
 import java.util.List;
@@ -13,4 +14,9 @@ public interface IHikingRouteService {
 
     // Method to retrieve hiking routes for display without saving
     List<RoutePropertiesDTO> getHikingRoutesByUserId(String userId);
+
+    // Method to aggregate hiking route data based on userId and routeIds
+    AggregatedHikingRouteDTO aggregateHikingRoutes(String userId, List<String> routeIds);
+
+
 }

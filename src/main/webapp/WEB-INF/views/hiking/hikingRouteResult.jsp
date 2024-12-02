@@ -52,6 +52,8 @@
     <script type="text/javascript">
         const naverClientKey = '${naverClientKey}';
         const naverClientSecret = '${naverClientSecret}';
+        const userId = '${userId}';
+        console.log("User ID:", userId);
     </script>
     <!-- Load hikingMapResult.js before inline scripts -->
     <%--    <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapResult.js"></script>--%>
@@ -64,6 +66,7 @@
         let userMarker;
         let selectedRouteLine = null;
         let alertShown = false;
+        let savedRoutes = [];
         const hikingRouteData = JSON.parse('${hikingRouteDataJson}'); // Ensure JSON is parsed correctly
 
         console.log("Parsed Route Data:", hikingRouteData);
@@ -147,6 +150,8 @@
                 clickable: true
             });
 
+            routeLine.routeInfo = routeInfo;
+
             naver.maps.Event.addListener(routeLine, 'mouseover', () => {
                 map.getElement().style.cursor = 'pointer';
             });
@@ -180,12 +185,146 @@
 
         function updateCardInfo(routeInfo) {
             console.log("Updating card with routeInfo:", routeInfo);
+            console.log("routeInfo : ", routeInfo)
             document.getElementById('section-length').innerText = routeInfo.secLen || "등산로를 선택하세요";
             document.getElementById('uphill-time').innerText = routeInfo.upMin || "등산로를 선택하세요";
             document.getElementById('downhill-time').innerText = routeInfo.downMin || "등산로를 선택하세요";
             document.getElementById('category').innerText = routeInfo.catNam || "등산로를 선택하세요";
             document.getElementById('mountain-name').innerText = routeInfo.mntnNm || "등산로를 선택하세요";
         }
+
+        function saveSelectedRoute() {
+            // Ensure a line is selected
+            if (!selectedRouteLine || !selectedRouteLine.routeInfo) {
+                alert("저장할 등산로를 선택하세요.");
+                return;
+            }
+
+            const routeId = selectedRouteLine.routeInfo.routeId;
+
+            // Prevent duplicate saves
+            if (savedRoutes.includes(routeId)) {
+                alert("이미 저장된 등산로입니다.");
+            } else {
+                savedRoutes.push(routeId);
+                alert("등산로가 저장되었습니다.");
+            }
+            console.log("Saved Routes:", savedRoutes);
+        }
+
+        function fetchSavedRoutes() {
+            if (savedRoutes.length === 0) {
+                alert("저장된 등산로가 없습니다.");
+                return;
+            }
+
+            fetch('/api/hiking-route/aggregate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(savedRoutes), // Send saved route IDs
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Aggregated Route Data:", data);
+
+                    if (data) {
+                        updateAggregatedInfo(data); // Update aggregated info in the UI
+                    } else {
+                        console.error("No data received from backend.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching saved routes:", error);
+                });
+        }
+
+
+        function updateAggregatedInfo(aggregatedInfo) {
+            if (!aggregatedInfo) {
+                console.error("No aggregated info available.");
+
+                return;
+            }
+
+            console.log("Aggregated Info:", aggregatedInfo);
+            console.log("Total Up Min:", aggregatedInfo.totalUpMin);
+            console.log("Total Down Min:", aggregatedInfo.totalDownMin);
+
+            const totalLengthElem = document.getElementById('total-length');
+            const difficultySummaryElem = document.getElementById('difficulty-summary');
+            const uphillTimeElem = document.getElementById('totalUphill-time');
+            const downhillTimeElem = document.getElementById('totalDownhill-time');
+            const mountainsElem = document.getElementById('mountains');
+
+            if (totalLengthElem) totalLengthElem.innerText = aggregatedInfo.totalSecLen || "정보 없음";
+            if (difficultySummaryElem) difficultySummaryElem.innerText = aggregatedInfo.uniqueCatNam.join(", ") || "정보 없음";
+            if (uphillTimeElem) uphillTimeElem.innerText = aggregatedInfo.totalUpMin || "정보 없음";
+            if (downhillTimeElem) downhillTimeElem.innerText = aggregatedInfo.totalDownMin || "정보 없음";
+            if (mountainsElem) mountainsElem.innerText = aggregatedInfo.distinctMountainName.join(", ") || "정보 없음";
+
+            if (aggregatedInfo.aggregatedGeometry) {
+                displayAggregatedGeometry(aggregatedInfo.aggregatedGeometry);
+            } else {
+                console.warn("No aggregated geometry found.");
+            }
+        }
+
+        function displayAggregatedGeometry(geometry) {
+            if (!geometry || typeof geometry !== 'string') {
+                console.error("Invalid geometry data:", geometry);
+                return;
+            }
+
+            console.log("Displaying Aggregated Geometry:", geometry);
+
+            // Remove outer MULTILINESTRING if necessary
+            if (geometry.startsWith("MULTILINESTRING(MULTILINESTRING(")) {
+                geometry = geometry.replace("MULTILINESTRING(MULTILINESTRING(", "MULTILINESTRING(").slice(0, -2);
+            }
+
+            const coordinates = geometry.match(/[-+]?\d*\.\d+|\d+/g);
+
+            if (!coordinates || coordinates.length % 2 !== 0) {
+                console.error("Invalid coordinates extracted from geometry:", coordinates);
+                return;
+            }
+
+            const path = [];
+            for (let i = 0; i < coordinates.length; i += 2) {
+                const lat = parseFloat(coordinates[i + 1]);
+                const lng = parseFloat(coordinates[i]);
+                path.push(new naver.maps.LatLng(lat, lng));
+            }
+
+            new naver.maps.Polyline({
+                map: map,
+                path: path,
+                strokeColor: '#FF0000', // Red for aggregated routes
+                strokeWeight: 5
+            });
+        }
+
+        // function displayRoutesOnMap(routes) {
+        //     routes.forEach(route => {
+        //         const coordinates = route.geometry.match(/[-+]?\d*\.\d+|\d+/g);
+        //         const path = [];
+        //         for (let i = 0; i < coordinates.length; i += 2) {
+        //             const lat = parseFloat(coordinates[i + 1]);
+        //             const lng = parseFloat(coordinates[i]);
+        //             path.push(new naver.maps.LatLng(lat, lng));
+        //         }
+        //         new naver.maps.Polyline({
+        //             map: map,
+        //             path: path,
+        //             strokeColor: '#FF0000',
+        //             strokeWeight: 5
+        //         });
+        //     });
+        // }
+
+
 
         function showCurrentLocation() {
             if (navigator.geolocation) {
@@ -242,6 +381,8 @@
             const centroidLocation = new naver.maps.LatLng(polygonPoints.centroidLat, polygonPoints.centroidLng);
             map.setCenter(centroidLocation);
         }
+
+
     </script>
 
 
@@ -313,29 +454,39 @@
      style="background-image: url('${pageContext.request.contextPath}/img/kpaas/kpaasBackground.webp');">
 
     <%--    산 지도 및 파라미터 시작--%>
-    <div class="card card-body blur shadow-blur mx-auto my-9"
-         style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem; overflow-y: scroll;">
-        <div class="row h-100 overflow-auto">
-            <!-- Map Container -->
-            <div id="map-wrapper" class="overflow-auto" style="flex-grow: 1;">
-                <div id="map" class="col-md-9 col-12" style="height: 100%; min-height: 600px;"></div>
-            </div>
-            <!-- Route Details Card -->
-            <div id="route-details"
-                 class="col-md-3 col-12 d-flex flex-column align-items-start mt-3 mt-md-0 overflow-auto"
-                 style="padding: 1rem;">
-                <h3>등산로 상세정보</h3>
-                <p><strong>산 이름:</strong> <span id="mountain-name">등산로를 선택하세요</span></p>
-                <p><strong>거리(m):</strong> <span id="section-length">등산로를 선택하세요</span></p>
-                <p><strong>상행 시간(분):</strong> <span id="uphill-time">등산로를 선택하세요</span></p>
-                <p><strong>하행 시간(분):</strong> <span id="downhill-time">등산로를 선택하세요</span></p>
-                <p><strong>난이도:</strong> <span id="category">등산로를 선택하세요</span></p>
-                <br>
-                <button class="btn btn-outline-success mt-3" onclick="centerOnUserLocation()">현재 위치</button>
-                <button class="btn btn-outline-success mt-3" onclick="centerOnCentroid()">등산로 보기</button>
+        <div class="card card-body blur shadow-blur mx-auto my-9"
+             style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem; overflow-y: scroll;">
+            <div class="row h-100">
+                <!-- Map Container -->
+                <div id="map-wrapper" class="col-md-9 col-12 overflow-auto" style="flex-grow: 1;">
+                    <div id="map" style="height: 100%; min-height: 600px;"></div>
+                </div>
+                <!-- Route Details Card -->
+                <div id="route-details"
+                     class="col-md-3 col-12 d-flex flex-column align-items-start overflow-auto"
+                     style="padding: 1rem;">
+                    <h3>선택한 등산로 상세정보</h3>
+                    <p><strong>산 이름:</strong> <span id="mountain-name">등산로를 선택하세요</span></p>
+                    <p><strong>거리(m):</strong> <span id="section-length">등산로를 선택하세요</span></p>
+                    <p><strong>상행 시간(분):</strong> <span id="uphill-time">등산로를 선택하세요</span></p>
+                    <p><strong>하행 시간(분):</strong> <span id="downhill-time">등산로를 선택하세요</span></p>
+                    <p><strong>난이도:</strong> <span id="category">등산로를 선택하세요</span></p>
+                    <button class="btn btn-outline-success mt-2" id="save-route-btn" onclick="saveSelectedRoute()">등산로 저장하기</button>
+                    <button class="btn btn-outline-success mt-2" id="fetch-saved-routes-btn" onclick="fetchSavedRoutes()">저장된 등산로 조회하기</button>
+
+                    <div>
+                        <p>총 거리: <span id="total-length">정보 없음</span></p>
+                        <p>난이도: <span id="difficulty-summary">정보 없음</span></p>
+                        <p>오르막 시간: <span id="totalUphill-time">정보 없음</span></p>
+                        <p>내리막 시간: <span id="totalDownhill-time">정보 없음</span></p>
+                        <p>산 이름: <span id="mountains">정보 없음</span></p>
+                    </div>
+                    <br>
+                    <button class="btn btn-outline-success mt-2" onclick="centerOnUserLocation()">현재 위치</button>
+                    <button class="btn btn-outline-success mt-2" onclick="centerOnCentroid()">등산로 보기</button>
+                </div>
             </div>
         </div>
-    </div>
 
 
     <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
