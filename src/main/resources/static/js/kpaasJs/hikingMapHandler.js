@@ -7,6 +7,9 @@ var centroidMarker = null;
 var clickCount = 0;
 var points = [];
 const userId = "${userId}";
+const tabLinks = document.querySelectorAll('.tabnav a');
+const tabContents = document.querySelectorAll('.tabcontent > div');
+
 
 // Function to initialize the map
 function initMap() {
@@ -72,40 +75,6 @@ function drawPolygonOrLines() {
         polygon.setPaths(points); // Update the polygon with the closed path
     }
 }
-
-// function displayPolygonArea() {
-//     if (points.length < 4) return; // Ensure we have a complete polygon
-//
-//     // Calculate the area of the polygon using the Shoelace formula
-//     let area = 0;
-//     for (let i = 0; i < points.length - 1; i++) {
-//         area += points[i].lng() * points[i + 1].lat() - points[i + 1].lng() * points[i].lat();
-//     }
-//     area += points[points.length - 1].lng() * points[0].lat() - points[0].lng() * points[points.length - 1].lat(); // Close the polygon
-//     area = Math.abs(area / 2);
-//
-//     // Convert area from degrees to square meters (approximate conversion)
-//     const conversionFactor = 111000 * 111000; // Approximate meters per degree squared at the equator
-//     const areaInSquareMeters = area * conversionFactor;
-//     const areaInSquareKilometers = areaInSquareMeters / 1_000_000; // Convert to square kilometers
-//
-//     // Alert the user if the area exceeds 30 square kilometers
-//     if (areaInSquareKilometers > 30) {
-//         alert(`선택된 영역이 넓어서 부정확한 결과가 나올 수 있습니다. 면적이 ${areaInSquareKilometers.toFixed(2)}km²로, 30km² 제한을 초과합니다`);
-//     }
-//
-//     console.log(`면적: ${areaInSquareKilometers.toFixed(2)}km²`);
-//
-//     // Display the area on the map as an overlay or info window with the new label format
-//     infoWindow = new naver.maps.InfoWindow({
-//         content: `<div style="padding:5px;">면적: ${areaInSquareKilometers.toFixed(2)}km²</div>`,
-//         position: points[points.length - 1], // Position the info window at the last point
-//         borderWidth: 2,
-//         borderColor: '#00FF00'
-//     });
-//
-//     infoWindow.open(map);
-// }
 
 function displayPolygonArea() {
     if (points.length < 4) return; // 다각형이 완성되었는지 확인 (4개 이상의 점 필요)
@@ -436,21 +405,75 @@ function decodeHtml(html) {
 }
 function displayMountainData(data) {
     const infoSection = document.getElementById('mountainInfo');
+
+
     infoSection.innerHTML = `
          <h3>${decodeHtml(data.mountainName)}</h3>
         <p><strong>위치:</strong> ${decodeHtml(data.location)}</p>
         <p><strong>높이:</strong> ${decodeHtml(data.height)} m</p>
-        <p><strong>상세설명:</strong> ${decodeHtml(data.description)}</p>
-        <p><strong>관광정보:</strong> ${decodeHtml(data.touristInfo)}</p>
-        <p><strong>추천등산로:</strong> ${decodeHtml(data.hikingCourses)}</p>
-        <p><strong>교통:</strong> ${decodeHtml(data.transportation)}</p>
-        <img src="${data.image}" alt="Image of ${decodeHtml(data.mountainName)}" width="300">
+
+
+        <div class="tab">
+          <ul class="tabnav" style="border:none">
+            <li><a href="#tab01" class="active" style="border:none">상세설명</a></li>
+            <li><a href="#tab02" style="border:none">관광정보</a></li>
+            <li><a href="#tab03" style="border:none">추천등산로</a></li>
+            <li><a href="#tab04" style="border:none">교통</a></li>
+          </ul>
+          <div class="tabcontent" style="border:none overflow-wrap: break-word"">
+            <div id="tab01" >
+              <p>${decodeHtml(data.description)}</p>
+            </div>
+            <div id="tab02">
+              <p>${decodeHtml(data.touristInfo)}</p>
+            </div>
+            <div id="tab03">
+              <p>${decodeHtml(data.hikingCourses)}</p>
+            </div>
+            <div id="tab04">
+              <p>${decodeHtml(data.transportation)}</p>
+            </div>
+          </div>
+        </div>
     `;
+    initializeTabs();
 }
+
+
+
+// Initialize tabs
+function initializeTabs() {
+    const tabLinks = document.querySelectorAll('.tabnav a');
+    const tabContents = document.querySelectorAll('.tabcontent > div');
+
+    // Ensure all tab contents are hidden initially
+    tabContents.forEach(content => content.style.display = 'none');
+
+    // Add click event listeners to tab links
+    tabLinks.forEach((link, index) => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Deactivate all links and hide all tab contents
+            tabLinks.forEach(link => link.classList.remove('active'));
+            tabContents.forEach(content => content.style.display = 'none');
+
+            // Activate the clicked tab and show its content
+            link.classList.add('active');
+            tabContents[index].style.display = 'block';
+        });
+    });
+
+    // Activate the first tab by default
+    if (tabLinks.length > 0) {
+        tabLinks[0].click();
+    }
+}
+
 
 // Initialize the map and handle the mountain search logic
 document.addEventListener('DOMContentLoaded', function () {
     initMap();  // Initialize the map
-    handleMountainSearch();  // Handle mountain search on button click
 
+    handleMountainSearch();  // Handle mountain search on button click
 });
