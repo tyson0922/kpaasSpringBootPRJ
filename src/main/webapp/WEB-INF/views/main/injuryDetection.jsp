@@ -205,14 +205,20 @@
                                 <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileUpload(this)">
 
                                 <!-- Button to trigger file input -->
-                                <button type="button"class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" style="width: 100%;" onclick="document.getElementById('fileInput').click();">
+                                <button
+                                        type="button"
+                                        class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0"
+                                        style="width: 100%; height: 60px; font-weight: bold; font-size: 20px;"
+                                        onclick="document.getElementById('fileInput').click();">
                                     사진 업로드
                                 </button>
+
+
                                 <br>
                                 <br>
 
                                 <!-- "상처 분석 시작" Button (Initially hidden) -->
-                                <button type="button" id="analyzeButton" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" style="display: none; width: 100%;" onclick="startAnalysis()">
+                                <button type="button" id="analyzeButton" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" style="display: none; width: 100%;," onclick="startAnalysis()">
                                     상처 분석 시작
                                 </button>
 
