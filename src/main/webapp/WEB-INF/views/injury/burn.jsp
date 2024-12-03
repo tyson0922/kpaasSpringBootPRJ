@@ -58,6 +58,14 @@
             align-items: center;
             justify-content: center; /* Center the controls horizontally */
         }
+        .carousel-inner {
+            height: 1000px; /* 원하는 높이로 설정 */
+            display: flex;
+            align-items: center; /* 내용 가운데 정렬 */
+        }
+        .carousel-item {
+            height: 100%; /* 부모 높이 채우기 */
+        }
 
         /* Override Bootstrap's default positioning of the carousel controls */
         .carousel-control-prev-icon,

@@ -61,6 +61,17 @@
             align-items: center;
             justify-content: center; /* Center the controls horizontally */
         }
+        .carousel-inner {
+            height: 600px; /* 원하는 높이로 설정 */
+            display: flex;
+            align-items: center; /* 내용 가운데 정렬 */
+        }
+        .carousel-item {
+            height: 100%; /* 부모 높이 채우기 */
+        }
+        .carousel-item .card-body {
+            overflow-y: auto; /* 내용이 넘치면 스크롤 추가 */
+        }
 
         /* Override Bootstrap's default positioning of the carousel controls */
         .carousel-control-prev-icon,
@@ -175,16 +186,18 @@
             <div class="container">
                 <div class="row">
                     <!-- Left Section: 1/3 of the screen -->
-                    <div class="col-lg-4 col-sm-4">
-                        <div class="card card-plain" style="border: none; box-shadow: none;">
-                            <div class="card-header p-0 position-relative" style="border: none;">
-                                <a class="d-block blur-shadow-image" style="outline: none;">
-                                    <!-- The existing image that will be replaced -->
+                    <div class="col-lg-4 col-sm-4 d-flex justify-content-center align-items-center">
+                        <div class="card card-plain" style="border: none; box-shadow: none; background-color: transparent;">
+                            <div class="card-header p-0 position-relative" style="border: none; background-color: transparent;">
+                                <a class="d-block" style="outline: none;">
+                                    <!-- 그림자 제거된 이미지 -->
                                     <img id="imageToReplace"
-                                         src="${pageContext.request.contextPath}/img/kpaas/hikingTrail.webp"
-                                         alt="img-blur-shadow"
-                                         class="img-fluid shadow border-radius-lg" loading="lazy">
+                                         src="${pageContext.request.contextPath}/img/kpaas/therapy2.png"
+                                         class="img-fluid border-radius-lg"
+                                         style="box-shadow: none; background-color: transparent;"
+                                         loading="lazy">
                                 </a>
+
                             </div>
                             <!-- Button below the image -->
                             <div class="card-body text-center mt-3 p-0" style="border: none; box-shadow: none;">
@@ -192,12 +205,14 @@
                                 <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileUpload(this)">
 
                                 <!-- Button to trigger file input -->
-                                <button type="button" class="btn btn-outline-success" style="width: 100%;" onclick="document.getElementById('fileInput').click();">
+                                <button type="button"class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" style="width: 100%;" onclick="document.getElementById('fileInput').click();">
                                     사진 업로드
                                 </button>
+                                <br>
+                                <br>
 
                                 <!-- "상처 분석 시작" Button (Initially hidden) -->
-                                <button type="button" id="analyzeButton" class="btn btn-outline-success" style="display: none; width: 100%;" onclick="startAnalysis()">
+                                <button type="button" id="analyzeButton" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" style="display: none; width: 100%;" onclick="startAnalysis()">
                                     상처 분석 시작
                                 </button>
 
@@ -210,7 +225,7 @@
                                 </div>
 
                                 <!-- "분석 결과" Button (Visible after analysis is complete) -->
-                                <button type="button" id="resultButton" class="btn btn-outline-success" style="display: none; width: 100%; margin-bottom: 0 !important;">
+                                <button type="button" id="resultButton" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" style="display: none; width: 100%; margin-bottom: 0 !important;">
                                     분석 결과
                                 </button>
 
@@ -241,8 +256,8 @@
                                             <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
                                                 class="active"></li>
                                             <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
-                                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
-                                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"></li>
+<%--                                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>--%>
+<%--                                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"></li>--%>
                                         </ol>
 
                                         <!-- Carousel Slides -->
@@ -251,7 +266,7 @@
                                             <div class="carousel-item active">
                                                 <div class="card-body px-0 py-3"><br><br>
                                                     <h4 class="text-dark font-weight-bold">
-                                                        사진 촬영 또는 업로드
+                                                        1. 사진 촬영 또는 업로드
                                                     </h4>
                                                     <p class="text-dark fs-5">
                                                         <strong style="font-weight: bold;">모바일에서:</strong> <br>휴대폰 카메라로
@@ -266,38 +281,51 @@
                                                 </div>
                                             </div>
                                             <!-- Slide 2 -->
-                                            <div class="carousel-item">
+                                            <div class="carousel-item ">
                                                 <div class="card-body px-0 py-3"><br><br>
                                                     <h4 class="text-dark font-weight-bold">
-                                                        업로드 버튼 클릭
+                                                        2. 업로드 버튼 클릭
                                                     </h4>
                                                     <p class="text-dark fs-5">
                                                         사진을 선택하거나 촬영한 후, 업로드 버튼을 클릭하여 분석을 위해 제출하세요.
                                                     </p><br><br>
-                                                </div>
-                                            </div>
-                                            <!-- Slide 3 -->
-                                            <div class="carousel-item">
-                                                <div class="card-body py-3"><br><br>
+
                                                     <h4 class="text-dark font-weight-bold">
-                                                        몇 초간 기다리세요
+                                                        3. 몇 초간 기다리세요
                                                     </h4>
                                                     <p class="text-dark fs-5">
                                                         이미지가 분석되는 동안 잠시 기다려 주세요. 몇 초가 걸릴 수 있습니다.
                                                     </p><br><br>
-                                                </div>
-                                            </div>
-                                            <!-- Slide 4 -->
-                                            <div class="carousel-item">
-                                                <div class="card-body px-0 py-3"><br><br>
                                                     <h4 class="text-dark font-weight-bold">
-                                                        진단 결과 확인
+                                                        4. 진단 결과 확인
                                                     </h4>
                                                     <p class="text-dark fs-5">
                                                         분석이 완료되면 상처에 대한 정보와 추가 조치에 대한 제안이 표시됩니다.
                                                     </p><br><br>
                                                 </div>
                                             </div>
+                                            <!-- Slide 3 -->
+<%--                                            <div class="carousel-item">--%>
+<%--                                                <div class="card-body py-3"><br><br>--%>
+<%--                                                    <h4 class="text-dark font-weight-bold">--%>
+<%--                                                        몇 초간 기다리세요--%>
+<%--                                                    </h4>--%>
+<%--                                                    <p class="text-dark fs-5">--%>
+<%--                                                        이미지가 분석되는 동안 잠시 기다려 주세요. 몇 초가 걸릴 수 있습니다.--%>
+<%--                                                    </p><br><br>--%>
+<%--                                                </div>--%>
+<%--                                            </div>--%>
+<%--                                            <!-- Slide 4 -->--%>
+<%--                                            <div class="carousel-item">--%>
+<%--                                                <div class="card-body px-0 py-3"><br><br>--%>
+<%--                                                    <h4 class="text-dark font-weight-bold">--%>
+<%--                                                        진단 결과 확인--%>
+<%--                                                    </h4>--%>
+<%--                                                    <p class="text-dark fs-5">--%>
+<%--                                                        분석이 완료되면 상처에 대한 정보와 추가 조치에 대한 제안이 표시됩니다.--%>
+<%--                                                    </p><br><br>--%>
+<%--                                                </div>--%>
+<%--                                            </div>--%>
                                         </div>
                                     </div>
                                 </div>

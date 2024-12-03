@@ -471,8 +471,8 @@
                     <p><strong>상행 시간(분):</strong> <span id="uphill-time">등산로를 선택하세요</span></p>
                     <p><strong>하행 시간(분):</strong> <span id="downhill-time">등산로를 선택하세요</span></p>
                     <p><strong>난이도:</strong> <span id="category">등산로를 선택하세요</span></p>
-                    <button class="btn btn-outline-success mt-2" id="save-route-btn" onclick="saveSelectedRoute()">등산로 저장하기</button>
-                    <button class="btn btn-outline-success mt-2" id="fetch-saved-routes-btn" onclick="fetchSavedRoutes()">저장된 등산로 조회하기</button>
+                    <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" id="save-route-btn" onclick="saveSelectedRoute()">등산로 저장하기</button><br>
+                    <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" id="fetch-saved-routes-btn" onclick="fetchSavedRoutes()">저장된 등산로 조회하기</button>
 
                     <div>
                         <p>총 거리: <span id="total-length">정보 없음</span></p>
@@ -482,8 +482,8 @@
                         <p>산 이름: <span id="mountains">정보 없음</span></p>
                     </div>
                     <br>
-                    <button class="btn btn-outline-success mt-2" onclick="centerOnUserLocation()">현재 위치</button>
-                    <button class="btn btn-outline-success mt-2" onclick="centerOnCentroid()">등산로 보기</button>
+                    <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" onclick="centerOnUserLocation()">현재 위치</button><br>
+                    <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" onclick="centerOnCentroid()">등산로 보기</button>
                 </div>
             </div>
         </div>

@@ -141,7 +141,8 @@
                     <input type="text" id="mountainName" name="mountainName" class="form-control"
                            placeholder="산 이름을 입력하세요">
                 </div>
-                <button id="searchButton" class="btn btn-outline-success mt-3">산 위치로 이동하기</button>
+                <br>
+                <button id="searchButton" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">산 위치로 이동하기</button>
             </div>
             <div class="col-12 d-flex flex-column align-items-start overflow-auto" style="padding: 1rem;">
                 <div id="mountainInfo"></div>
