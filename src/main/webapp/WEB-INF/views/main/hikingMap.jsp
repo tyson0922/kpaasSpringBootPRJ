@@ -53,7 +53,68 @@
         const naverClientSecret = '${naverClientSecret}';
     </script>
     <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapHandler.js" defer></script>
+<style>
+    .tab {
+        float: left;
+        width: 600px;
+        height: 290px;
+    }
 
+    .tabnav {
+        font-size: 0;
+        width: 600px;
+        border: 1px solid #ddd;
+    }
+
+    .tabnav li {
+        display: inline-block;
+        height: 46px;
+        text-align: center;
+        border-right: 1px solid #ddd;
+    }
+
+    .tabnav li a:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0px;
+        width: 100%;
+        height: 3px;
+    }
+
+    .tabnav li a.active:before {
+        background: #7ea21e;
+    }
+
+    .tabnav li a.active {
+        border-bottom: 1px solid #fff;
+    }
+
+    .tabnav li a {
+        position: relative;
+        display: block;
+        background: #f8f8f8;
+        color: #000;
+        padding: 0 30px;
+        line-height: 46px;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
+    .tabnav li a:hover,
+    .tabnav li a.active {
+        background: #fff;
+        color: #7ea21e;
+    }
+
+    .tabcontent {
+        padding: 20px;
+        height: 244px;
+        border: 1px solid #ddd;
+        border-top: none;
+    }
+
+</style>
 
 </head>
 
@@ -126,15 +187,15 @@
     <div class="card card-body blur shadow-blur mx-auto my-9" style="width: 90%; height: 100vh; overflow-y: scroll;">
         <div class="row h-100">
             <!-- Map Container Wrapper -->
-            <div class="col-md-9 col-12 d-flex flex-column" style="height: 100%;">
+            <div class="col-md-8 col-12 d-flex flex-column" style="height: 100%;">
                 <div id="map-wrapper" class="overflow-auto" style="flex-grow: 1;">
                     <div id="map" style="min-height: 600px; height: 100%;"></div>
                 </div>
             </div>
 
             <!-- Button Container -->
-            <div class="col-md-3 col-12 d-flex flex-column align-items-start mt-3 mt-md-0 overflow-auto"
-                 style="max-height: 100vh; padding: 1rem;">
+            <div class="col-md-4 col-12 d-flex flex-column align-items-start mt-3 mt-md-0 overflow-y-auto"
+                 style="max-height: 100vh; padding: 1rem; overflow-wrap: break-word">
                 <p>지도에서 네 지점을 눌러주세요</p>
                 <div class="form-group">
                     <label for="mountainName">산 이름</label>
@@ -143,10 +204,15 @@
                 </div>
                 <br>
                 <button id="searchButton" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">산 위치로 이동하기</button>
+
+                <br>
+                <div class="col-12 d-flex flex-column align-items-start overflow-auto" style="padding: 1rem;">
+                    <div id="mountainInfo"></div>
+                </div>
             </div>
-            <div class="col-12 d-flex flex-column align-items-start overflow-auto" style="padding: 1rem;">
-                <div id="mountainInfo"></div>
-            </div>
+<%--            <div class="col-12 d-flex flex-column align-items-start overflow-auto" style="padding: 1rem;">--%>
+<%--                <div id="mountainInfo"></div>--%>
+<%--            </div>--%>
         </div>
     </div>
 
