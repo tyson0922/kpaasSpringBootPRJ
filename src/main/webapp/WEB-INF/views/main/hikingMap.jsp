@@ -52,66 +52,66 @@
         const naverClientKey = '${naverClientKey}';
         const naverClientSecret = '${naverClientSecret}';
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const contextPath = '${pageContext.request.contextPath}';
+    </script>
     <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapHandler.js" defer></script>
+
 <style>
-    .tab {
-        float: left;
-        width: 600px;
-        height: 290px;
+    .custom-tabs .nav-link {
+        color: #388e3c; /* Green text for tabs */
+        border: 1px solid transparent; /* Default transparent border */
     }
 
-    .tabnav {
-        font-size: 0;
-        width: 600px;
-        border: 1px solid #ddd;
+    .custom-tabs .nav-link:hover {
+        color: #1b5e20; /* Darker green on hover */
     }
 
-    .tabnav li {
-        display: inline-block;
-        height: 46px;
-        text-align: center;
-        border-right: 1px solid #ddd;
+    .custom-tabs .nav-link.active {
+        background-color: #a5d6a7; /* Light green background for active tab */
+        color: #ffffff; /* White text for active tab */
+        border-color: #4caf50; /* Green border for active tab */
     }
 
-    .tabnav li a:before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0px;
-        width: 100%;
-        height: 3px;
+    .custom-tabs .nav-item {
+        flex: 1; /* Ensure each tab evenly fills the space */
+        text-align: center; /* Center-align text in tabs */
     }
 
-    .tabnav li a.active:before {
-        background: #7ea21e;
+    .tab-content {
+        background-color: #e8f5e9; /* Light green background */
+        border: 1px solid #4caf50; /* Green border for tab content */
+        border-radius: 8px; /* Rounded corners for tab content */
+        padding: 1rem; /* Add padding inside the content area */
     }
 
-    .tabnav li a.active {
-        border-bottom: 1px solid #fff;
+    .tab-pane p {
+        margin: 0;
+        font-size: 1rem; /* Standard text size for tab content */
+        color: #2e7d32; /* Deep green text color */
     }
 
-    .tabnav li a {
-        position: relative;
-        display: block;
-        background: #f8f8f8;
-        color: #000;
-        padding: 0 30px;
-        line-height: 46px;
-        text-decoration: none;
-        font-size: 16px;
+    h3 {
+        color: #2e7d32; /* Green header text */
+        font-weight: bold;
+        margin-bottom: 1rem; /* Space below header */
     }
 
-    .tabnav li a:hover,
-    .tabnav li a.active {
-        background: #fff;
-        color: #7ea21e;
+    .custom-tab-link {
+        font-size: 0.9rem; /* Adjust font size for tabs */
+        padding: 0.5rem; /* Adjust padding for better touch targets */
+        transition: all 0.3s ease; /* Smooth transition for hover effects */
     }
 
-    .tabcontent {
-        padding: 20px;
-        height: 244px;
-        border: 1px solid #ddd;
-        border-top: none;
+    .custom-tab-link:hover {
+        background-color: #c8e6c9; /* Slightly darker green on hover */
+    }
+
+    .custom-tab-link.active {
+        background-color: #4caf50; /* Dark green for active tab */
+        color: #ffffff; /* White text */
+        border-bottom-color: transparent; /* Seamless transition with tab content */
     }
 
 </style>
@@ -203,7 +203,7 @@
                            placeholder="산 이름을 입력하세요">
                 </div>
                 <br>
-                <button id="searchButton" class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0">산 위치로 이동하기</button>
+                <button id="searchButton" class="btn btn-sm bg-gradient-success my-2">산 위치로 이동하기</button>
 
                 <br>
                 <div class="col-12 d-flex flex-column align-items-start overflow-auto" style="padding: 1rem;">
