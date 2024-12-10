@@ -1,6 +1,7 @@
 // Initialize map-related variables
 var map = null;
 var markers = [];
+let mountainMarker = null;
 var polygon = null;
 var infoWindow = null;
 var centroidMarker = null;
@@ -21,12 +22,25 @@ function initMap() {
 
     // Add click event listener to the map for polygon drawing
     naver.maps.Event.addListener(map, 'click', function (e) {
+        mountainMarkerReset();
         handleMapClick(e.latlng);
+    });
+
+    // Display SweetAlert after the map is initialized
+    Swal.fire({
+        title: '안내',
+        text: '지도를 사용하여 네 지점을 선택하여 영역을 선택하세요. 산 위치를 찾으려면 드래그, 확대/축소 및 산 이름 입력을 사용할 수 있습니다.',
+        icon: 'info',
+        confirmButtonText: '확인',
+        background: '#d4edda', // Light blue background
+        color: '#155724', // Dark blue text
+        confirmButtonColor: '#28a745' // Blue button color
     });
 }
 
 // Function to handle map clicks and draw polygons
 function handleMapClick(latlng) {
+
     const pointNumber = ['First', 'Second', 'Third', 'Fourth'];
     console.log(`${pointNumber[clickCount]} point set at Lat: ${latlng.lat()}, Lng: ${latlng.lng()}`);
 
@@ -53,6 +67,7 @@ function handleMapClick(latlng) {
         resetMap();
     }
 }
+
 function drawPolygonOrLines() {
     // Remove the previous polygon or lines from the map if they exist
     if (polygon) {
@@ -94,7 +109,16 @@ function displayPolygonArea() {
 
     // 면적이 30 제곱킬로미터를 초과할 경우 사용자에게 알림
     if (areaInSquareKilometers > 30) {
-        alert(`선택된 영역이 넓어서 부정확한 결과가 나올 수 있습니다. 면적이 ${areaInSquareKilometers.toFixed(2)}km²로, 30km² 제한을 초과합니다`);
+        Swal.fire({
+            title: '영역이 너무 넓습니다 ⚠️',
+            text: `선택된 영역이 ${areaInSquareKilometers.toFixed(2)}km²로, 30km² 제한을 초과합니다. 부정확한 결과가 나올 수 있습니다.`,
+            icon: 'warning', // Warning icon for emphasis
+            confirmButtonText: '확인',
+            background: '#f8d7da', // Light red background for a warning
+            color: '#721c24', // Dark red text
+            confirmButtonColor: '#d33' // Button color
+        });
+
     }
 
     console.log(`면적: ${areaInSquareKilometers.toFixed(2)}km²`);
@@ -154,7 +178,7 @@ function calculateCentroid() {
         map: map,
         icon: {
             content: buttonElement,
-            anchor: new naver.maps.Point(12, 12)
+            anchor: new naver.maps.Point(buttonElement.offsetWidth / 2, buttonElement.offsetHeight / 2)
         }
     });
 
@@ -196,6 +220,17 @@ function savePointsToDatabase() {
         });
 }
 
+function mountainMarkerReset() {
+    // Remove the mountain marker from the map
+    if (mountainMarker) {
+        mountainMarker.setMap(null); // Remove it from the map
+        mountainMarker = null;      // Clear the reference
+    } else {
+        console.log('MountainMaker not found');
+    }
+    console.log('MountainMarker Reset finished');
+}
+
 function resetMap() {
     // Reset all markers, polygon, and counters
     clickCount = 0;
@@ -204,6 +239,12 @@ function resetMap() {
     // Remove markers from the map
     markers.forEach(marker => marker.setMap(null));
     markers = [];
+
+    // Remove the mountain marker from the map
+    if (mountainMarker) {
+        mountainMarker.setMap(null); // Remove it from the map
+        mountainMarker = null;      // Clear the reference
+    }
 
     // Remove the centroid marker from the map
     if (centroidMarker) {
@@ -225,6 +266,7 @@ function resetMap() {
 
     console.log('Markers and polygon reset. Click to start a new polygon.');
 }
+
 function fetchHikingRouteAndRedirect() {
     const apiUrl = '/api/hiking-route';  // Your API endpoint
 
@@ -282,7 +324,7 @@ function fetchCoordinatesAndMoveMap(mountainName) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ mountainName: mountainName })
+        body: JSON.stringify({mountainName: mountainName})
     })
         .then(response => {
             console.log('Fetch completed, response:', response);
@@ -352,18 +394,31 @@ function moveMapToLocation(lat, lng) {
         map.setZoom(12);  // Optionally, zoom in for a closer view
 
         // Add a marker at the new location
-        var marker = new naver.maps.Marker({
+        mountainMarker = new naver.maps.Marker({
             position: newLocation,
             map: map,
-            title: 'Mountain Location'
+            title: '산 위치',
+            icon: {
+                content: `
+            <div style="text-align: center;">
+                <div style="width: 20px; height: 20px; background-color: darkgreen; border-radius: 50%; margin: 0 auto;"></div>
+                <div style="font-size: 12px; color: black; margin-top: 4px;">산 위치</div>
+            </div>
+        `,
+                anchor: new naver.maps.Point(6, 18) // Align the marker correctly
+            },
+            animation: naver.maps.Animation.DROP,
+            scale: 2
+
         });
-        markers.push(marker);  // Store the new marker
+        markers.push(mountainMarker);  // Store the new marker
 
         console.log('Map successfully moved and marker added.');
     } else {
         console.error('Map object is not initialized!');
     }
 }
+
 function fetchMountainData(mountainName) {
     console.log('Fetching data for mountain:', mountainName);
 
@@ -372,7 +427,7 @@ function fetchMountainData(mountainName) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ mountainName: mountainName })
+        body: JSON.stringify({mountainName: mountainName})
     })
         .then(response => {
             if (!response.ok) {
@@ -398,11 +453,13 @@ function fetchMountainData(mountainName) {
             alert('Mountain data could not be retrieved. Please try again.');
         });
 }
+
 function decodeHtml(html) {
     const txt = document.createElement("textarea");
     txt.innerHTML = html;
     return txt.value;
 }
+
 function displayMountainData(data) {
     const infoSection = document.getElementById('mountainInfo');
 
@@ -414,31 +471,54 @@ function displayMountainData(data) {
 
 
         <div class="tab">
-          <ul class="tabnav" style="border:none">
-            <li><a href="#tab01" class="active" style="border:none">상세설명</a></li>
-            <li><a href="#tab02" style="border:none">관광정보</a></li>
-            <li><a href="#tab03" style="border:none">추천등산로</a></li>
-            <li><a href="#tab04" style="border:none">교통</a></li>
-          </ul>
-          <div class="tabcontent" style="border:none overflow-wrap: break-word"">
-            <div id="tab01" >
-              <p>${decodeHtml(data.description)}</p>
-            </div>
-            <div id="tab02">
-              <p>${decodeHtml(data.touristInfo)}</p>
-            </div>
-            <div id="tab03">
-              <p>${decodeHtml(data.hikingCourses)}</p>
-            </div>
-            <div id="tab04">
-              <p>${decodeHtml(data.transportation)}</p>
-            </div>
-          </div>
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs custom-tabs w-100 justify-content-between" id="infoTabs" role="tablist">
+        <li class="nav-item flex-fill" role="presentation">
+            <button class="nav-link active custom-tab-link w-100 text-center" id="details-tab" data-bs-toggle="tab"
+                    data-bs-target="#tab01" type="button" role="tab" aria-controls="tab01" aria-selected="true">
+                상세설명
+            </button>
+        </li>
+        <li class="nav-item flex-fill" role="presentation">
+            <button class="nav-link custom-tab-link w-100 text-center" id="tourism-tab" data-bs-toggle="tab"
+                    data-bs-target="#tab02" type="button" role="tab" aria-controls="tab02" aria-selected="false">
+                관광정보
+            </button>
+        </li>
+        <li class="nav-item flex-fill" role="presentation">
+            <button class="nav-link custom-tab-link w-100 text-center" id="hiking-tab" data-bs-toggle="tab"
+                    data-bs-target="#tab03" type="button" role="tab" aria-controls="tab03" aria-selected="false">
+                추천등산로
+            </button>
+        </li>
+        <li class="nav-item flex-fill" role="presentation">
+            <button class="nav-link custom-tab-link w-100 text-center" id="transport-tab" data-bs-toggle="tab"
+                    data-bs-target="#tab04" type="button" role="tab" aria-controls="tab04" aria-selected="false">
+                교통
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content w-100 overflow-y-auto" id="infoTabContent"
+         style="background-color: #e8f5e9; border: 1px solid #4caf50; border-radius: 0 0 8px 8px; padding: 1rem; max-height: 450px">
+        <div class="tab-pane fade show active" id="tab01" role="tabpanel" aria-labelledby="details-tab">
+            <p>${decodeHtml(data.description)}</p>
         </div>
+        <div class="tab-pane fade" id="tab02" role="tabpanel" aria-labelledby="tourism-tab">
+            <p>${decodeHtml(data.touristInfo)}</p>
+        </div>
+        <div class="tab-pane fade" id="tab03" role="tabpanel" aria-labelledby="hiking-tab">
+            <p>${decodeHtml(data.hikingCourses)}</p>
+        </div>
+        <div class="tab-pane fade" id="tab04" role="tabpanel" aria-labelledby="transport-tab">
+            <p>${decodeHtml(data.transportation)}</p>
+        </div>
+    </div>
+</div>
     `;
     initializeTabs();
 }
-
 
 
 // Initialize tabs
@@ -470,10 +550,10 @@ function initializeTabs() {
     }
 }
 
-
 // Initialize the map and handle the mountain search logic
 document.addEventListener('DOMContentLoaded', function () {
     initMap();  // Initialize the map
 
     handleMountainSearch();  // Handle mountain search on button click
 });
+

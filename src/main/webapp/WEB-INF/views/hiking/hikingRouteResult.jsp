@@ -57,6 +57,7 @@
     </script>
     <!-- Load hikingMapResult.js before inline scripts -->
     <%--    <script src="${pageContext.request.contextPath}/js/kpaasJs/hikingMapResult.js"></script>--%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Inline scripts -->
     <script type="text/javascript">
@@ -67,6 +68,7 @@
         let selectedRouteLine = null;
         let alertShown = false;
         let savedRoutes = [];
+        let savedPolylines = [];
         const hikingRouteData = JSON.parse('${hikingRouteDataJson}'); // Ensure JSON is parsed correctly
 
         console.log("Parsed Route Data:", hikingRouteData);
@@ -196,7 +198,15 @@
         function saveSelectedRoute() {
             // Ensure a line is selected
             if (!selectedRouteLine || !selectedRouteLine.routeInfo) {
-                alert("저장할 등산로를 선택하세요.");
+                Swal.fire({
+                    title: '등산로 선택 필요 🌲',
+                    text: '저장할 등산로를 선택하세요.',
+                    icon: 'warning',
+                    confirmButtonText: '확인',
+                    background: '#d4edda',
+                    color: '#155724',
+                    confirmButtonColor: '#28a745'
+                });
                 return;
             }
 
@@ -204,19 +214,46 @@
 
             // Prevent duplicate saves
             if (savedRoutes.includes(routeId)) {
-                alert("이미 저장된 등산로입니다.");
+                Swal.fire({
+                    title: '중복 저장 경고 🌿',
+                    text: '이미 저장된 등산로입니다.',
+                    icon: 'warning',
+                    confirmButtonText: '확인',
+                    background: '#d4edda',
+                    color: '#155724',
+                    confirmButtonColor: '#28a745'
+                });
             } else {
                 savedRoutes.push(routeId);
-                alert("등산로가 저장되었습니다.");
+                Swal.fire({
+                    title: '저장 완료 ✅',
+                    text: '등산로가 저장되었습니다.',
+                    icon: 'success',
+                    confirmButtonText: '확인',
+                    background: '#d4edda',
+                    color: '#155724',
+                    confirmButtonColor: '#28a745'
+                });
             }
+
             console.log("Saved Routes:", savedRoutes);
         }
 
+
         function fetchSavedRoutes() {
             if (savedRoutes.length === 0) {
-                alert("저장된 등산로가 없습니다.");
+                Swal.fire({
+                    title: '저장된 경로 없음 🚫',
+                    text: '저장된 등산로가 없습니다.',
+                    icon: 'info',
+                    confirmButtonText: '확인',
+                    background: '#d4edda',
+                    color: '#155724',
+                    confirmButtonColor: '#28a745' // Neutral gray button color
+                });
                 return;
             }
+
 
             fetch('/api/hiking-route/aggregate', {
                 method: 'POST',
@@ -264,66 +301,101 @@
             if (downhillTimeElem) downhillTimeElem.innerText = aggregatedInfo.totalDownMin || "정보 없음";
             if (mountainsElem) mountainsElem.innerText = aggregatedInfo.distinctMountainName.join(", ") || "정보 없음";
 
-            if (aggregatedInfo.aggregatedGeometry) {
-                displayAggregatedGeometry(aggregatedInfo.aggregatedGeometry);
+            if (aggregatedInfo.geometries && Array.isArray(aggregatedInfo.geometries)) {
+                displayIndividualGeometries(aggregatedInfo.geometries);
             } else {
-                console.warn("No aggregated geometry found.");
+                console.warn("No geometries found.");
             }
         }
 
-        function displayAggregatedGeometry(geometry) {
-            if (!geometry || typeof geometry !== 'string') {
-                console.error("Invalid geometry data:", geometry);
+        function displayIndividualGeometries(geometries) {
+            if (!Array.isArray(geometries) || geometries.length === 0) {
+                console.error("Invalid geometries data:", geometries);
                 return;
             }
 
-            console.log("Displaying Aggregated Geometry:", geometry);
+            geometries.forEach((geometry, index) => {
+                if (!geometry || typeof geometry !== 'string') {
+                    console.warn(`Invalid geometry at index ${index}:`, geometry);
+                    return;
+                }
 
-            // Remove outer MULTILINESTRING if necessary
-            if (geometry.startsWith("MULTILINESTRING(MULTILINESTRING(")) {
-                geometry = geometry.replace("MULTILINESTRING(MULTILINESTRING(", "MULTILINESTRING(").slice(0, -2);
-            }
+                console.log(`Displaying Geometry ${index + 1}:`, geometry);
 
-            const coordinates = geometry.match(/[-+]?\d*\.\d+|\d+/g);
+                const coordinates = geometry.match(/[-+]?\d*\.\d+|\d+/g);
 
-            if (!coordinates || coordinates.length % 2 !== 0) {
-                console.error("Invalid coordinates extracted from geometry:", coordinates);
-                return;
-            }
+                if (!coordinates || coordinates.length % 2 !== 0) {
+                    console.error("Invalid coordinates extracted from geometry:", coordinates);
+                    return;
+                }
 
-            const path = [];
-            for (let i = 0; i < coordinates.length; i += 2) {
-                const lat = parseFloat(coordinates[i + 1]);
-                const lng = parseFloat(coordinates[i]);
-                path.push(new naver.maps.LatLng(lat, lng));
-            }
+                const path = [];
+                for (let i = 0; i < coordinates.length; i += 2) {
+                    const lat = parseFloat(coordinates[i + 1]);
+                    const lng = parseFloat(coordinates[i]);
+                    path.push(new naver.maps.LatLng(lat, lng));
+                }
 
-            new naver.maps.Polyline({
-                map: map,
-                path: path,
-                strokeColor: '#FF0000', // Red for aggregated routes
-                strokeWeight: 5
+                const polyline = new naver.maps.Polyline({
+                    map: map,
+                    path: path,
+                    strokeColor: '#00FF00', // Green for individual routes
+                    strokeWeight: 4
+                });
+
+                savedPolylines.push(polyline);
             });
         }
 
-        // function displayRoutesOnMap(routes) {
-        //     routes.forEach(route => {
-        //         const coordinates = route.geometry.match(/[-+]?\d*\.\d+|\d+/g);
-        //         const path = [];
-        //         for (let i = 0; i < coordinates.length; i += 2) {
-        //             const lat = parseFloat(coordinates[i + 1]);
-        //             const lng = parseFloat(coordinates[i]);
-        //             path.push(new naver.maps.LatLng(lat, lng));
-        //         }
-        //         new naver.maps.Polyline({
-        //             map: map,
-        //             path: path,
-        //             strokeColor: '#FF0000',
-        //             strokeWeight: 5
-        //         });
-        //     });
-        // }
+        // Function to delete saved routes
+        function deleteSavedRoutes() {
+            if (savedRoutes.length === 0) {
+                Swal.fire({
+                    title: '삭제 불가 🚫',
+                    text: '저장된 경로가 없습니다.',
+                    icon: 'info',
+                    confirmButtonText: '확인',
+                    background: '#f8d7da',
+                    color: '#721c24',
+                    confirmButtonColor: '#dc3545'
+                });
+                return;
+            }
 
+            Swal.fire({
+                title: '확인 요청 ⚠️',
+                text: '저장된 경로를 삭제하시겠습니까?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '삭제',
+                cancelButtonText: '취소',
+                background: '#f8d7da',
+                color: '#721c24',
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    savedRoutes = []; // Clear saved routes
+
+
+                    savedPolylines.forEach(polyline => {
+                        polyline.setMap(null); // Remove the polyline from the map
+                    });
+                    savedPolylines = []; // Clear the array
+
+                    Swal.fire({
+                        title: '삭제 완료 ✅',
+                        text: '모든 저장된 경로가 삭제되었습니다.',
+                        icon: 'success',
+                        confirmButtonText: '확인',
+                        background: '#d4edda',
+                        color: '#155724',
+                        confirmButtonColor: '#28a745'
+                    });
+                    console.log("Saved Routes cleared:", savedRoutes);
+                }
+            });
+        }
 
 
         function showCurrentLocation() {
@@ -341,7 +413,13 @@
                                 map: map,
                                 title: "현재 위치",
                                 icon: {
-                                    content: '<div style="width: 12px; height: 12px; background-color: blue; border-radius: 50%;"></div>'
+                                    content: `
+                                                <div style="text-align: center;">
+                                                    <div style="width: 12px; height: 12px; background-color: red; border-radius: 50%; margin: 0 auto;"></div>
+                                                    <div style="font-size: 12px; color: black; margin-top: 4px;">현재 위치</div>
+                                                </div>
+                                              `,
+                                    anchor: new naver.maps.Point(6, 18)
                                 }
                             });
                         } else {
@@ -349,10 +427,26 @@
                         }
 
                         // Alert if accuracy is low (example: 100 meters threshold)
-                        if (accuracy > 100  && !alertShown) {
-                            alert("현재 위치가 GPS를 사용하지 않으므로 부정확할 수 있습니다.");
-                            alertShown = true;
+                        if (accuracy > 100 && !alertShown) {
+                            Swal.fire({
+                                title: '위치 부정확 🌲',
+                                text: '현재 위치가 GPS를 사용하지 않으므로 부정확할 수 있습니다.',
+                                icon: 'warning',
+                                confirmButtonText: '확인',
+                                background: '#d4edda', // 초록색 배경
+                                color: '#155724', // 초록색 텍스트
+                                confirmButtonColor: '#28a745', // 초록색 버튼
+                                showClass: {
+                                    popup: 'animate__animated animate__fadeInDown' // 등장 애니메이션
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animate__fadeOutUp' // 사라짐 애니메이션
+                                }
+                            }).then(() => {
+                                alertShown = true;
+                            });
                         }
+
                     },
                     (error) => {
                         console.error("Error fetching user location:", error);
@@ -384,7 +478,50 @@
 
 
     </script>
+    <style>
+        .custom-tabs .nav-link {
+            color: #388e3c; /* Green text for tabs */
+            border: 1px solid transparent;
+        }
 
+        .custom-tabs .nav-link:hover {
+            color: #1b5e20; /* Darker green on hover */
+        }
+
+        .custom-tabs .nav-link.active {
+            background-color: #a5d6a7; /* Light green background for active tab */
+            color: #ffffff; /* White text for active tab */
+            border-color: #4caf50; /* Green border for active tab */
+        }
+
+
+        .custom-button {
+            background-color: #4caf50; /* Green background */
+            color: #ffffff; /* White text */
+            border: none;
+        }
+
+        .custom-button:hover {
+            background-color: #388e3c; /* Darker green on hover */
+            color: #ffffff; /* White text */
+        }
+
+        .tab-content {
+            background-color: #e8f5e9; /* Light green background */
+            border: 1px solid #4caf50; /* Green border */
+            border-radius: 8px; /* Rounded corners */
+            padding: 1rem; /* Add padding */
+        }
+
+        h3 {
+            color: #2e7d32; /* Green header text */
+        }
+
+        .small-text {
+            font-size: 0.85rem; /* Adjust the font size to make it smaller */
+            padding: 0.375rem 0.75rem; /* Adjust padding for smaller text */
+        }
+    </style>
 
 </head>
 
@@ -454,39 +591,86 @@
      style="background-image: url('${pageContext.request.contextPath}/img/kpaas/kpaasBackground.webp');">
 
     <%--    산 지도 및 파라미터 시작--%>
-        <div class="card card-body blur shadow-blur mx-auto my-9"
-             style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem; overflow-y: scroll;">
-            <div class="row h-100">
-                <!-- Map Container -->
-                <div id="map-wrapper" class="col-md-9 col-12 overflow-auto" style="flex-grow: 1;">
-                    <div id="map" style="height: 100%; min-height: 600px;"></div>
-                </div>
-                <!-- Route Details Card -->
-                <div id="route-details"
-                     class="col-md-3 col-12 d-flex flex-column align-items-start overflow-auto"
-                     style="padding: 1rem;">
-                    <h3>선택한 등산로 상세정보</h3>
-                    <p><strong>산 이름:</strong> <span id="mountain-name">등산로를 선택하세요</span></p>
-                    <p><strong>거리(m):</strong> <span id="section-length">등산로를 선택하세요</span></p>
-                    <p><strong>상행 시간(분):</strong> <span id="uphill-time">등산로를 선택하세요</span></p>
-                    <p><strong>하행 시간(분):</strong> <span id="downhill-time">등산로를 선택하세요</span></p>
-                    <p><strong>난이도:</strong> <span id="category">등산로를 선택하세요</span></p>
-                    <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" id="save-route-btn" onclick="saveSelectedRoute()">등산로 저장하기</button><br>
-                    <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" id="fetch-saved-routes-btn" onclick="fetchSavedRoutes()">저장된 등산로 조회하기</button>
+    <div class="card card-body blur shadow-blur mx-auto my-9"
+         style="width: 90%; height: calc(100vh - 6rem); margin-top: 3rem; margin-bottom: 3rem; overflow-y: scroll;">
+        <div class="row h-100">
+            <!-- Map Container -->
+            <div id="map-wrapper" class="col-md-9 col-12 overflow-auto" style="flex-grow: 1;">
+                <div id="map" style="height: 100%; min-height: 600px;"></div>
+            </div>
+            <!-- Route Details Card -->
+            <div id="route-details"
+                 class="col-md-3 col-12 d-flex flex-column align-items-start overflow-auto"
+                 style="padding: 1rem;">
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs custom-tabs w-70 justify-content-between" id="routeDetailsTabs" role="tablist">
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button class="nav-link active custom-tab-link flex-fill" id="selected-route-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#selected-route" type="button" role="tab" aria-controls="selected-route"
+                                aria-selected="true">
+                            선택한 등산로
+                        </button>
+                    </li>
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button class="nav-link custom-tab-link flex-fill" id="saved-routes-tab" data-bs-toggle="tab"
+                                data-bs-target="#saved-routes" type="button" role="tab" aria-controls="saved-routes"
+                                aria-selected="false">
+                            저장된 등산로
+                        </button>
+                    </li>
+                </ul>
 
-                    <div>
+                <!-- Tab Content -->
+                <div class="tab-content w-70" id="routeDetailsTabContent"
+                     style="background-color: #e8f5e9; border: 1px solid #4caf50; border-radius: 0 0 8px 8px; padding: 1rem;">
+                    <!-- Selected Route Tab -->
+                    <div class="tab-pane fade show active w-100" id="selected-route" role="tabpanel"
+                         aria-labelledby="selected-route-tab">
+                        <%--                        <h3 style="color: #2e7d32;">선택한 등산로 상세정보</h3>--%>
+                        <p><strong>산 이름:</strong> <span id="mountain-name">등산로를 선택하세요</span></p>
+                        <p><strong>거리(m):</strong> <span id="section-length">등산로를 선택하세요</span></p>
+                        <p><strong>상행 시간(분):</strong> <span id="uphill-time">등산로를 선택하세요</span></p>
+                        <p><strong>하행 시간(분):</strong> <span id="downhill-time">등산로를 선택하세요</span></p>
+                        <p><strong>난이도:</strong> <span id="category">등산로를 선택하세요</span></p>
+                        <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0 custom-button"
+                                id="save-route-btn" onclick="saveSelectedRoute()">등산로 저장하기
+                        </button>
+                        <br>
+                    </div>
+
+                    <!-- Saved Routes Tab -->
+                    <div class="tab-pane fade w-70" id="saved-routes" role="tabpanel"
+                         aria-labelledby="saved-routes-tab">
+                        <%--                        <h3 style="color: #2e7d32;">저장된 등산로 상세정보</h3>--%>
                         <p>총 거리: <span id="total-length">정보 없음</span></p>
                         <p>난이도: <span id="difficulty-summary">정보 없음</span></p>
                         <p>오르막 시간: <span id="totalUphill-time">정보 없음</span></p>
                         <p>내리막 시간: <span id="totalDownhill-time">정보 없음</span></p>
                         <p>산 이름: <span id="mountains">정보 없음</span></p>
+
+                        <button class="btn btn-sm bg-gradient-success me-1 custom-button small-text"
+                                id="fetch-saved-routes-btn" onclick="fetchSavedRoutes()">저장된 경로 확인
+                        </button>
+
+                        <button class="btn btn-sm bg-gradient-danger mt-0 mb-0 custom-button small-text"
+                                id="delete-saved-routes-btn" onclick="deleteSavedRoutes()">저장된 경로 삭제하기
+                        </button>
+
+                        <br>
                     </div>
-                    <br>
-                    <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" onclick="centerOnUserLocation()">현재 위치</button><br>
-                    <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" onclick="centerOnCentroid()">등산로 보기</button>
                 </div>
+                <br>
+                <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" onclick="centerOnUserLocation()">
+                    현재 위치로 이동
+                </button>
+                <br>
+                <button class="btn btn-sm bg-gradient-success mb-0 me-1 mt-2 mt-md-0" onclick="centerOnCentroid()">등산로
+                    위치로 이동
+                </button>
             </div>
         </div>
+    </div>
 
 
     <!-- -------- START FOOTER 5 w/ DARK BACKGROUND ------- -->
