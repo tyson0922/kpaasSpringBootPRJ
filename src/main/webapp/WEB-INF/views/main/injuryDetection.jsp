@@ -369,6 +369,7 @@
 <script src="${pageContext.request.contextPath}/js/core/bootstrap.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/plugins/perfect-scrollbar.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/material-kit.min.js?v=3.0.4" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <%--<script src="${pageContext.request.contextPath}/js/kpaasJs/uploadHandler.js"></script>--%>
 <script>
@@ -620,10 +621,24 @@
 
         // Check if the result is "No predicted classes found" to display an alert in Korean
         if (resultText === "No predicted classes found.") {
-            alert("상처 분석 중 오류가 발생했습니다. 다른 상처 이미지를 입력해주세요.");
-            window.location.href = "/main/injuryDetection";
+            Swal.fire({
+                title: '분석 실패 🌱',
+                text: '상처 분석 중 오류가 발생했습니다. 다른 상처 이미지를 입력해주세요.',
+                icon: 'warning', // 경고 아이콘
+                confirmButtonText: '확인',
+                background: '#d4edda', // 연한 초록색 배경
+                color: '#155724', // 진한 초록색 텍스트
+                confirmButtonColor: '#28a745', // 초록색 버튼
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown' // 애니메이션 효과
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp' // 애니메이션 효과
+                }
+            }).then(() => {
+                window.location.href = "/main/injuryDetection"; // 확인 클릭 시 이동
+            });
         }
-
         if (resultButton) {
             resultButton.innerHTML = resultText;
             resultButton.style.display = 'block'; // Show the result button

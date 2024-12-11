@@ -251,24 +251,21 @@ public class HikingRouteService implements IHikingRouteService {
 
         if (routes.isEmpty()) {
             log.info("No routes found for userId: {} with routeIds: {}", userId, routeIds);
-            return new AggregatedHikingRouteDTO(userId, "", Collections.emptyList(), "0", "0", "0", Collections.emptyList());
+            return new AggregatedHikingRouteDTO(userId, Collections.emptyList(), Collections.emptyList(),
+                    "0", "0", "0", Collections.emptyList());
         }
 
-        // 1. Combine all geometries into one big multilinestring
-        StringBuilder aggregatedGeometryBuilder = new StringBuilder("MULTILINESTRING(");
+
+        // 1. Collect all geometries as separate strings
         List<String> geometries = new ArrayList<>();
         for (RoutePropertiesDTO route : routes) {
             if (route.getGeometry() != null && route.getGeometry().startsWith("MULTILINESTRING")) {
-                String cleanedGeometry = route.getGeometry()
-                        .replace("MULTILINESTRING(", "")
-                        .replace(")", "");
-                geometries.add(cleanedGeometry);
+                geometries.add(route.getGeometry());
             } else {
                 log.warn("Invalid or null geometry for routeId: {}", route.getRouteId());
             }
         }
-        aggregatedGeometryBuilder.append(String.join(", ", geometries)).append(")");
-        String aggregatedGeometry = aggregatedGeometryBuilder.toString();
+
 
         // 2. Get unique difficulty levels
         Set<String> catNamSet = routes.stream()
@@ -328,7 +325,7 @@ public class HikingRouteService implements IHikingRouteService {
         // 6. Build and return the aggregated DTO
         AggregatedHikingRouteDTO aggregatedDTO = new AggregatedHikingRouteDTO(
                 userId,
-                aggregatedGeometry,
+                geometries,
                 uniqueCatNam,
                 totalSecLen,
                 String.valueOf(totalUpMin),   // Convert to String for DTO
