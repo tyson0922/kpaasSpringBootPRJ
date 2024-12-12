@@ -34,6 +34,7 @@
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Include your login.js file -->
     <script src="${pageContext.request.contextPath}/js/kpaasJs/login.js"></script>
     <!-- CSS Files -->
